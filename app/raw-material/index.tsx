@@ -1,24 +1,19 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+
+import RawMaterialList from "../../src/components/RawMaterialList";
 
 export default function RawMaterialScreen() {
   return (
-    <View style={styles.container}>
+    <View>
       <Stack.Screen options={{ title: "Matéria Prima" }} />
 
-      <Text>Raw Material Screen</Text>
+      <RawMaterialList />
 
       <StatusBar style="auto" />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const styles = StyleSheet.create({});
