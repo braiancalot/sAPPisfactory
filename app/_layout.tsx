@@ -3,27 +3,38 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function RootLayout() {
   return (
-    <Tabs initialRouteName="index">
+    <Tabs>
       <Tabs.Screen
         name="raw-material"
         options={{
+          headerShown: false,
           tabBarLabel() {
             return null;
           },
+
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="layers" size={size} color={color} />
           ),
         }}
       />
+
       <Tabs.Screen
-        name="index"
+        name="factories"
         options={{
+          headerShown: false,
           tabBarLabel() {
             return null;
           },
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="factory" size={size} color={color} />
           ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

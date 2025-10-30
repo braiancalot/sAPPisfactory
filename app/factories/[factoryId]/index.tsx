@@ -1,10 +1,14 @@
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function RawMaterialScreen() {
+export default function FactoryScreen() {
   return (
     <View style={styles.container}>
-      <Text>Raw Material Screen</Text>
+      <Stack.Screen options={{ title: "Fábrica 1" }} />
+
+      <Text>Factory Screen</Text>
+
       <StatusBar style="auto" />
     </View>
   );
