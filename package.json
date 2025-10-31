@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@nozbe/watermelondb": "^0.28.0",
+    "babel-preset-expo": "~54.0.0",
     "expo": "~54.0.20",
     "expo-constants": "~18.0.10",
     "expo-linking": "~8.0.8",
@@ -24,6 +26,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.28.0",
     "@types/react": "~19.1.10",
     "typescript": "~5.9.2"
   }
