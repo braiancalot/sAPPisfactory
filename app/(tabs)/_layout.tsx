@@ -3,11 +3,15 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs
+      initialRouteName="factories"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Tabs.Screen
-        name="raw-material"
+        name="global-sources"
         options={{
-          headerShown: false,
           tabBarLabel() {
             return null;
           },
@@ -20,7 +24,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="factories"
         options={{
-          headerShown: false,
           tabBarLabel() {
             return null;
           },
