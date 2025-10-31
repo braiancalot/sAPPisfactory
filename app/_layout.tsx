@@ -1,42 +1,11 @@
-import { Tabs } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen
-        name="raw-material"
-        options={{
-          headerShown: false,
-          tabBarLabel() {
-            return null;
-          },
-
-          tabBarIcon: ({ size, color }) => (
-            <MaterialIcons name="layers" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="factories"
-        options={{
-          headerShown: false,
-          tabBarLabel() {
-            return null;
-          },
-          tabBarIcon: ({ size, color }) => (
-            <MaterialIcons name="factory" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="index"
-        options={{
-          href: null,
-        }}
-      />
-    </Tabs>
+    <>
+      <StatusBar style="auto" />
+      <Stack screenOptions={{ headerShown: false }} />
+    </>
   );
 }
