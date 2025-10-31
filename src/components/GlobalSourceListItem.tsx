@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-export default function RawMaterialListItem({ name, rate }) {
+export default function GlobalSourceListItem({ name, rate }) {
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{name}</Text>
