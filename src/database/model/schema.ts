@@ -1,6 +1,14 @@
-import { appSchema } from "@nozbe/watermelondb";
+import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export default appSchema({
   version: 1,
-  tables: [],
+  tables: [
+    tableSchema({
+      name: "global_sources",
+      columns: [
+        { name: "item", type: "string", isIndexed: true },
+        { name: "total_rate_per_min", type: "number" },
+      ],
+    }),
+  ],
 });
