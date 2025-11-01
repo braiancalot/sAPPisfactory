@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+
 import GlobalSource from "../db/model/GlobalSource";
 
 type GlobalSourceListItem = {
