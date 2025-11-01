@@ -20,7 +20,7 @@ function GlobalSourceList({
   );
 }
 
-const enhance = withObservables(["item"], () => ({
+const enhance = withObservables([], () => ({
   globalSources: globalSourcesCollection.query(),
 }));
 
