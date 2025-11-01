@@ -1,20 +1,26 @@
 import { FlatList } from "react-native";
+import { useEffect, useState } from "react";
+import { globalSourcesCollection } from "../db";
 import GlobalSourceListItem from "./GlobalSourceListItem";
-
-const sources = [
-  { name: "iron_ore", rate: 120 },
-  { name: "copper_ore", rate: 180 },
-  { name: "limestone", rate: 60 },
-];
+import GlobalSource from "../db/model/GlobalSource";
 
 export default function GlobalSourceList() {
+  const [globalSources, setGlobalSources] = useState<GlobalSource[]>([]);
+
+  useEffect(() => {
+    const fetchGlobalSource = async () => {
+      const globalSources = await globalSourcesCollection.query().fetch();
+      setGlobalSources(globalSources);
+    };
+
+    fetchGlobalSource();
+  }, []);
+
   return (
     <FlatList
-      data={sources}
+      data={globalSources}
       contentContainerStyle={{ gap: 8 }}
-      renderItem={({ item }) => (
-        <GlobalSourceListItem name={item.name} rate={item.rate} />
-      )}
+      renderItem={({ item }) => <GlobalSourceListItem source={item} />}
     />
   );
 }

@@ -1,20 +1,36 @@
-import { Button, StyleSheet, View } from "react-native";
+import { Button, StyleSheet, TextInput, View } from "react-native";
+import { useState } from "react";
 
 import GlobalSourceList from "../../../src/components/GlobalSourceList";
-import database from "../../../src/database";
+import database, { globalSourcesCollection } from "../../../src/db";
 
 export default function GlobalSourcesScreen() {
-  function handlePress() {
-    const GlobalResourceCollection = database.get("global_sources");
+  const [newItem, setNewItem] = useState("");
+
+  async function handlePress() {
+    await database.write(async () => {
+      await globalSourcesCollection.create((globalSource) => {
+        globalSource.item = newItem;
+        globalSource.totalRatePerMin = 0;
+      });
+    });
+
+    setNewItem("");
   }
 
   return (
     <View style={styles.container}>
       <GlobalSourceList />
 
-      <Button title="Adicionar recurso global" />
+      <TextInput
+        value={newItem}
+        onChangeText={setNewItem}
+        placeholder="Item"
+        placeholderTextColor="#c3c3c3"
+        style={styles.textInput}
+      />
 
-      <Button title="Read" onPress={handlePress} />
+      <Button title="Adicionar recurso global" onPress={handlePress} />
     </View>
   );
 }
@@ -23,5 +39,9 @@ const styles = StyleSheet.create({
   container: {
     padding: 8,
     gap: 16,
+  },
+  textInput: {
+    backgroundColor: "#FFF",
+    color: "#000",
   },
 });
