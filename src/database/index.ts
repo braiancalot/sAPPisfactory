@@ -3,6 +3,7 @@ import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 
 import schema from "./model/schema";
 import migrations from "./model/migrations";
+import GlobalSource from "./model/GlobalSource";
 
 const adapter = new SQLiteAdapter({
   schema,
@@ -15,7 +16,7 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
   adapter,
-  modelClasses: [],
+  modelClasses: [GlobalSource],
 });
 
 export default database;
