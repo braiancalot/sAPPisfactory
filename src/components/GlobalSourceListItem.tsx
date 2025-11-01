@@ -1,12 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import GlobalSource from "../db/model/GlobalSource";
 
-export default function GlobalSourceListItem({ name, rate }) {
+type GlobalSourceListItem = {
+  source: GlobalSource;
+};
+
+export default function GlobalSourceListItem({ source }: GlobalSourceListItem) {
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{name}</Text>
+      <Text style={styles.name}>{source.item}</Text>
       <View style={styles.rateContainer}>
-        <Text style={styles.rateNumber}>{rate}</Text>
+        <Text style={styles.rateNumber}>{source.totalRatePerMin}</Text>
         <Text style={styles.rateText}>/ min</Text>
       </View>
     </View>
