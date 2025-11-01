@@ -1,21 +1,16 @@
 import { FlatList } from "react-native";
-import { useEffect, useState } from "react";
+import { withObservables } from "@nozbe/watermelondb/react";
+
 import { globalSourcesCollection } from "../db";
-import GlobalSourceListItem from "./GlobalSourceListItem";
 import GlobalSource from "../db/model/GlobalSource";
 
-export default function GlobalSourceList() {
-  const [globalSources, setGlobalSources] = useState<GlobalSource[]>([]);
+import GlobalSourceListItem from "./GlobalSourceListItem";
 
-  useEffect(() => {
-    const fetchGlobalSource = async () => {
-      const globalSources = await globalSourcesCollection.query().fetch();
-      setGlobalSources(globalSources);
-    };
-
-    fetchGlobalSource();
-  }, []);
-
+function GlobalSourceList({
+  globalSources,
+}: {
+  globalSources: GlobalSource[];
+}) {
   return (
     <FlatList
       data={globalSources}
@@ -24,3 +19,9 @@ export default function GlobalSourceList() {
     />
   );
 }
+
+const enhance = withObservables(["item"], () => ({
+  globalSources: globalSourcesCollection.query(),
+}));
+
+export default enhance(GlobalSourceList);
