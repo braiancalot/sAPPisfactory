@@ -3,19 +3,30 @@ import { StyleSheet, Text, View } from "react-native";
 import { withObservables } from "@nozbe/watermelondb/react";
 
 import GlobalSource from "../db/model/GlobalSource";
+import { MaterialIcons } from "@expo/vector-icons";
+import database from "../db";
 
 type Props = {
   globalSource: GlobalSource;
 };
 
 function GlobalSourceListItem({ globalSource }: Props) {
+  async function handleDelete() {
+    await database.write(async () => {
+      await globalSource.markAsDeleted();
+    });
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{globalSource.item}</Text>
+
       <View style={styles.rateContainer}>
         <Text style={styles.rateNumber}>{globalSource.totalRatePerMin}</Text>
         <Text style={styles.rateText}>/ min</Text>
       </View>
+
+      <MaterialIcons name="delete" size={18} onPress={handleDelete} />
     </View>
   );
 }
