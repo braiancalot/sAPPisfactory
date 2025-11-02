@@ -1,23 +1,31 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+
+import { withObservables } from "@nozbe/watermelondb/react";
 
 import GlobalSource from "../db/model/GlobalSource";
 
-type GlobalSourceListItem = {
-  source: GlobalSource;
+type Props = {
+  globalSource: GlobalSource;
 };
 
-export default function GlobalSourceListItem({ source }: GlobalSourceListItem) {
+function GlobalSourceListItem({ globalSource }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{source.item}</Text>
+      <Text style={styles.name}>{globalSource.item}</Text>
       <View style={styles.rateContainer}>
-        <Text style={styles.rateNumber}>{source.totalRatePerMin}</Text>
+        <Text style={styles.rateNumber}>{globalSource.totalRatePerMin}</Text>
         <Text style={styles.rateText}>/ min</Text>
       </View>
     </View>
   );
 }
+
+const enhance = withObservables<Props, { globalSource: GlobalSource }>(
+  ["globalSource"],
+  ({ globalSource }) => ({ globalSource })
+);
+
+export default enhance(GlobalSourceListItem);
 
 const styles = StyleSheet.create({
   container: {

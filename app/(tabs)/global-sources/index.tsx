@@ -18,6 +18,16 @@ export default function GlobalSourcesScreen() {
     setNewItem("");
   }
 
+  async function handleTestUpdate() {
+    await database.write(async () => {
+      const globalSources = await globalSourcesCollection.query().fetch();
+      const firstGlobalSource = globalSources[0];
+      firstGlobalSource.update((globalSource) => {
+        globalSource.totalRatePerMin = 300;
+      });
+    });
+  }
+
   return (
     <View style={styles.container}>
       <GlobalSourceList />
@@ -31,6 +41,7 @@ export default function GlobalSourcesScreen() {
       />
 
       <Button title="Adicionar recurso global" onPress={handlePress} />
+      <Button title="Teste update" onPress={handleTestUpdate} />
     </View>
   );
 }

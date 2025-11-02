@@ -15,7 +15,7 @@ function GlobalSourceList({
     <FlatList
       data={globalSources}
       contentContainerStyle={{ gap: 8 }}
-      renderItem={({ item }) => <GlobalSourceListItem source={item} />}
+      renderItem={({ item }) => <GlobalSourceListItem globalSource={item} />}
     />
   );
 }
