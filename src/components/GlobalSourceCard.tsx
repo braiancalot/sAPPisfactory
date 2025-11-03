@@ -2,18 +2,19 @@ import { Image, StyleSheet, Text, View } from "react-native";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 
-import GlobalSource from "../db/model/GlobalSource";
 import { MaterialIcons } from "@expo/vector-icons";
+
 import database from "../db";
-import { getIconByItemId } from "../assets/iconMapper";
-import { theme } from "../theme/theme";
+import GlobalSource from "../db/model/GlobalSource";
 import { getItemData } from "../data/item";
+
+import { theme } from "../theme/theme";
 
 type Props = {
   globalSource: GlobalSource;
 };
 
-function GlobalSourceListItem({ globalSource }: Props) {
+function GlobalSourceCard({ globalSource }: Props) {
   const itemData = getItemData(globalSource.item);
 
   async function handleDelete() {
@@ -43,7 +44,7 @@ const enhance = withObservables<Props, { globalSource: GlobalSource }>(
   ({ globalSource }) => ({ globalSource })
 );
 
-export default enhance(GlobalSourceListItem);
+export default enhance(GlobalSourceCard);
 
 const styles = StyleSheet.create({
   container: {
