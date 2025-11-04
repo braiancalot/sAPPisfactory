@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 
@@ -8,7 +8,8 @@ import database from "../db";
 import GlobalSource from "../db/model/GlobalSource";
 import { getItemData } from "../data/item";
 
-import { theme } from "../theme/theme";
+// import { theme } from "../theme/theme";
+import { Image } from "@ui/Image";
 
 type Props = {
   globalSource: GlobalSource;
@@ -24,17 +25,26 @@ function GlobalSourceCard({ globalSource }: Props) {
   }
 
   return (
-    <View style={styles.container}>
-      <Image source={itemData.icon} style={styles.icon} />
+    <View style={styles.container} className="bg-surface">
+      <Image source={itemData.icon} className="w-12 h-12" />
 
-      <Text style={styles.name}>{itemData.name}</Text>
+      <Text className="text-lg text-textPrimary font-medium">
+        {itemData.name}
+      </Text>
 
       <View style={styles.rateContainer}>
-        <Text style={styles.rateNumber}>{globalSource.totalRatePerMin}</Text>
-        <Text style={styles.rateText}>/ min</Text>
+        <Text className="text-textPrimary text-xl font-bold">
+          {globalSource.totalRatePerMin}
+        </Text>
+        <Text className="text-textSecondary">/min</Text>
       </View>
 
-      <MaterialIcons name="delete" size={18} onPress={handleDelete} />
+      <MaterialIcons
+        name="delete"
+        size={18}
+        color="white"
+        onPress={handleDelete}
+      />
     </View>
   );
 }
@@ -53,31 +63,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 8,
     paddingVertical: 12,
-    backgroundColor: "#FFF",
+
     borderRadius: 4,
-    elevation: theme.elevations.card,
+    // elevation: theme.elevations.card,
   },
   icon: {
     width: 48,
     height: 48,
   },
-  name: {
-    fontSize: 16,
-    fontWeight: "medium",
-  },
   rateContainer: {
     flexDirection: "row",
     alignItems: "flex-end",
     gap: 2,
-  },
-  rateNumber: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  rateText: {
-    fontSize: 12,
-    fontWeight: "regular",
-    marginBottom: 2,
-    color: "#AAA",
   },
 });
