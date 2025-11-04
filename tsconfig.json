@@ -4,7 +4,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@ui/*": ["./src/components/ui/*"],
+      "@features/*": ["./src/components/features/*"]
     },
     "ignoreDeprecations": "6.0"
   },
