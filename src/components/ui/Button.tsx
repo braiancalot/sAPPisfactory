@@ -5,6 +5,7 @@ type Props = {
   onPress: () => void;
   disabled?: boolean;
   variant?: "primary" | "secondary" | "danger" | "ghost";
+  fullWidth?: boolean;
 };
 
 export default function Button({
@@ -12,39 +13,36 @@ export default function Button({
   title,
   disabled = false,
   variant = "primary",
+  fullWidth = false,
 }: Props) {
   const variantStyles = {
     primary: {
-      base: "bg-accent",
-      active: "active:bg-accent-dark",
+      container: "bg-accent active:bg-accent-dark",
       text: "text-text-primary",
     },
     secondary: {
-      base: "bg-surface-active",
-      active: "active:bg-surface",
+      container: "bg-surface-3 active:bg-surface-2",
       text: "text-text-primary",
     },
     danger: {
-      base: "bg-danger",
-      active: "active:bg-danger-dark",
+      container: "bg-danger active:bg-danger-dark",
       text: "text-text-primary",
     },
     ghost: {
-      base: "bg-transparent",
-      active: "active:bg-background",
+      container: "bg-transparent active:bg-background",
       text: "text-accent",
     },
   };
 
   const styles = variantStyles[variant];
-
-  const disabledStyle = disabled ? "opacity-50" : "";
+  const disabledStyle = disabled ? "opacity-40" : "";
+  const widthStyle = fullWidth ? "flex-1" : "min-w-[120px]";
 
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={`px-lg py-md rounded-md ${styles.base} ${styles.active} ${disabledStyle}`}
+      className={`px-lg py-md rounded-md ${styles.container} ${disabledStyle} ${widthStyle} items-center justify-center active:scale-95 active:opacity-90 `}
     >
       <Text className={`text-button font-semibold ${styles.text}`}>
         {title}
