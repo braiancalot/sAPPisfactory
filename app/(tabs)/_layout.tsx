@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { colors } from "@theme/colors";
 
 export default function TabLayout() {
   return (
@@ -7,6 +8,13 @@ export default function TabLayout() {
       initialRouteName="factories"
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
+        },
+        tabBarActiveTintColor: colors.accent.DEFAULT,
+        tabBarInactiveTintColor: colors["text-secondary"],
       }}
     >
       <Tabs.Screen

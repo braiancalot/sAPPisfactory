@@ -42,7 +42,7 @@ export default function Button({
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={`px-lg py-md rounded-md ${styles.container} ${disabledStyle} ${widthStyle} items-center justify-center active:scale-95 active:opacity-90 `}
+      className={`px-lg py-md rounded-md ${styles.container} ${disabledStyle} ${widthStyle} items-center justify-center active:scale-95 active:opacity-90`}
     >
       <Text className={`text-button font-semibold ${styles.text}`}>
         {title}
