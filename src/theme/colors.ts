@@ -11,7 +11,7 @@ export const colors = {
   outline: "#475569",
   divider: "rgba(148, 163, 184, 0.16)",
 
-  overlay: "rgba(15, 23, 42, 0.75)",
+  overlay: "rgba(10, 15, 25, 0.80)",
 
   "text-primary": "#f1f5f9",
   "text-secondary": "#94a3b8", // Cor sutil (placeholders, /min)
