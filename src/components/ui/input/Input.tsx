@@ -71,7 +71,7 @@ export default function Input({
       )}
       <TextInput
         ref={inputRef}
-        className={`bg-field rounded-md px-md py-md text-text-primary text-body border ${borderColor}`}
+        className={`bg-field rounded-md px-lg py-md text-text-primary text-body border ${borderColor}`}
         placeholderTextColor={colors["text-secondary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder}
