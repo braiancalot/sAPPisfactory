@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 
-import Modal from "@ui/layout/Modal";
-import Button from "@ui/input/Button";
+import Modal from "@ui/Modal";
+import Button from "@ui/Button";
 
 type Props = {
   visible: boolean;
