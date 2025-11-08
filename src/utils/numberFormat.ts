@@ -31,7 +31,7 @@ export function formatPtBrNumber(value: number | string): string {
   if (isNaN(numericValue)) return "";
 
   return numericValue.toLocaleString("pt-BR", {
-    maximumFractionDigits: 3,
+    maximumFractionDigits: 4,
     minimumFractionDigits: 0,
   });
 }
