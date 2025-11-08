@@ -1,4 +1,4 @@
-const icons = {
+const icons: { [key: string]: any } = {
   iron_ore: require("./icons/iron_ore.png"),
   copper_ore: require("./icons/copper_ore.png"),
   limestone: require("./icons/limestone.png"),

@@ -15,12 +15,16 @@ export const ITEM_DATABASE = {
   },
 };
 
-export const ITEM_LIST = Object.keys(ITEM_DATABASE).map((itemId) => ({
-  id: itemId,
-  name: ITEM_DATABASE[itemId].name,
-  icon: ITEM_DATABASE[itemId].icon,
-}));
+export type ItemId = keyof typeof ITEM_DATABASE;
 
-export function getItemData(itemId: string) {
+export const ITEM_LIST = (Object.keys(ITEM_DATABASE) as ItemId[]).map(
+  (itemId) => ({
+    id: itemId,
+    name: ITEM_DATABASE[itemId].name,
+    icon: ITEM_DATABASE[itemId].icon,
+  })
+);
+
+export function getItemData(itemId: ItemId) {
   return ITEM_DATABASE[itemId];
 }
