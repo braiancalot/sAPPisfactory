@@ -82,7 +82,7 @@ export default function Input({
         onSubmitEditing={handleSubmit}
       />
 
-      {error && <Text className="text-danger text-caption">{error}</Text>}
+      {error && <Text className="text-danger text-caption ml-sm">{error}</Text>}
     </View>
   );
 }

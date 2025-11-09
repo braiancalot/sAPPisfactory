@@ -1,4 +1,5 @@
 import { getIconByItemId } from "../assets/iconMapper";
+import { ImageSourcePropType } from "react-native";
 
 export const ITEM_DATABASE = {
   iron_ore: {
@@ -17,14 +18,16 @@ export const ITEM_DATABASE = {
 
 export type ItemId = keyof typeof ITEM_DATABASE;
 
-export const ITEM_LIST = (Object.keys(ITEM_DATABASE) as ItemId[]).map(
-  (itemId) => ({
-    id: itemId,
-    name: ITEM_DATABASE[itemId].name,
-    icon: ITEM_DATABASE[itemId].icon,
-  })
-);
+export type Item = {
+  id: ItemId;
+  name: string;
+  icon: ImageSourcePropType;
+};
 
-export function getItemData(itemId: ItemId) {
+export const ITEM_LIST: Item[] = (
+  Object.entries(ITEM_DATABASE) as [ItemId, Omit<Item, "id">][]
+).map(([id, data]) => ({ id, ...data }));
+
+export function getItemData(itemId: ItemId): Omit<Item, "id"> {
   return ITEM_DATABASE[itemId];
 }
