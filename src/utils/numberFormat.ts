@@ -1,12 +1,37 @@
-export function sanitizeNumber(value: string): string {
-  return value.replace(/\D/g, "");
-}
-
-export function formatNumber(value: string): string {
+export function sanitizeNumericInput(value: string): string {
   if (!value) return "";
 
-  const numeric = typeof value === "string" ? parseInt(value, 10) : value;
-  if (isNaN(numeric)) return "";
+  let sanitized = value.replace(/[^\d,]/g, "");
 
-  return numeric.toLocaleString("pt-BR");
+  const parts = sanitized.split(",");
+  if (parts.length > 2) {
+    sanitized = parts[0] + "," + parts.slice(1).join("");
+  }
+
+  return sanitized;
+}
+
+export function parsePtBrNumber(value: string): number {
+  if (!value) return NaN;
+
+  const normalized = value.replace(/\./g, "").replace(",", ".");
+
+  return parseFloat(normalized);
+}
+
+export function formatPtBrNumber(value: number | string): string {
+  let numericValue: number;
+
+  if (typeof value === "string") {
+    numericValue = parsePtBrNumber(value);
+  } else {
+    numericValue = value;
+  }
+
+  if (isNaN(numericValue)) return "";
+
+  return numericValue.toLocaleString("pt-BR", {
+    maximumFractionDigits: 4,
+    minimumFractionDigits: 0,
+  });
 }

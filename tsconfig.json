@@ -5,7 +5,8 @@
     "baseUrl": ".",
     "paths": {
       "@ui/*": ["./src/components/ui/*"],
-      "@features/*": ["./src/components/features/*"]
+      "@features/*": ["./src/components/features/*"],
+      "@theme/*": ["./src/theme/*"]
     },
     "ignoreDeprecations": "6.0"
   },

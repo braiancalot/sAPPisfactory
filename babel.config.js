@@ -14,6 +14,7 @@ module.exports = function (api) {
           alias: {
             "@ui": "./src/components/ui",
             "@feature": "./src/components/features",
+            "@theme": "./src/theme",
           },
         },
       ],
