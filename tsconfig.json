@@ -6,7 +6,9 @@
     "paths": {
       "@ui/*": ["./src/components/ui/*"],
       "@features/*": ["./src/components/features/*"],
-      "@theme/*": ["./src/theme/*"]
+      "@theme/*": ["./src/theme/*"],
+      "@db/*": ["./src/db/*"],
+      "@data/*": ["./src/data/*"]
     },
     "ignoreDeprecations": "6.0"
   },

@@ -2,14 +2,14 @@ import { Pressable } from "react-native";
 
 type Props = {
   children: React.ReactNode;
-  onPress: () => void;
-  onLongPress: () => void;
+  onPress?: () => void;
+  onLongPress?: () => void;
 };
 
 export default function PressableCard({
   children,
-  onPress,
-  onLongPress,
+  onPress = () => {},
+  onLongPress = () => {},
 }: Props) {
   return (
     <Pressable

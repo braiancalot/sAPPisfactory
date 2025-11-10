@@ -5,5 +5,5 @@ type Props = {
 };
 
 export default function ScreenContainer({ children }: Props) {
-  return <View className="flex-1 bg-background p-xl">{children}</View>;
+  return <View className="flex-1 bg-background p-lg">{children}</View>;
 }

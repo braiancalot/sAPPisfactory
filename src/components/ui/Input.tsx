@@ -4,26 +4,34 @@ import { Keyboard, Text, TextInput, View } from "react-native";
 import { sanitizeNumericInput } from "src/utils/numberFormat";
 
 type Props = {
+  value: string;
+  onChangeValue: (newValue: string) => void;
   label?: string;
-  placeholder: string;
+  autoFocus?: boolean;
+  placeholder?: string;
   numeric?: boolean;
   error?: string;
+  onSubmit?: (value: string) => void;
+  onBlur?: () => void;
 };
 
 export default function Input({
+  value,
+  onChangeValue,
   label,
-  placeholder,
+  autoFocus = false,
+  placeholder = "",
   numeric = false,
   error,
+  onSubmit = () => {},
+  onBlur = () => {},
 }: Props) {
-  const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     const hideSub = Keyboard.addListener("keyboardDidHide", () => {
       if (isFocused) {
-        console.log("keyboardDidHide → perdeu foco pelo botão voltar");
         inputRef.current?.blur();
       }
     });
@@ -36,23 +44,22 @@ export default function Input({
   function handleTextChange(text: string) {
     if (numeric) {
       const sanitized = sanitizeNumericInput(text);
-      setValue(sanitized);
+      onChangeValue(sanitized);
     } else {
-      setValue(text);
+      onChangeValue(text);
     }
   }
 
   function handleSubmit() {
-    console.log("handleSubmit");
+    onSubmit(value);
   }
 
   function handleBlur() {
-    console.log("handleBlur");
+    onBlur();
     setIsFocused(false);
   }
 
   function handleFocus() {
-    console.log("handleFocus");
     setIsFocused(true);
   }
 
@@ -75,6 +82,7 @@ export default function Input({
         placeholderTextColor={colors["text-secondary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder}
+        autoFocus={autoFocus}
         value={value}
         onChangeText={handleTextChange}
         onFocus={handleFocus}

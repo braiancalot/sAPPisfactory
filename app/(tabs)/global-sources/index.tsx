@@ -1,12 +1,32 @@
-import { View } from "react-native";
+import { useState } from "react";
 
-import GlobalSourceList from "../../../src/components/GlobalSourceList";
-import database, { globalSourcesCollection } from "../../../src/db";
+import database, { globalSourcesCollection } from "@db/index";
+import { ItemId } from "@data/item";
+
+import ScreenContainer from "@ui/ScreenContainer";
+import GlobalSourceList from "@features/global-source/GlobalSourceList";
+import FAB from "@ui/FAB";
+import AddGlobalSourceModal from "@features/global-source/AddGlobalSourceModal";
+import GlobalSource from "@db/model/GlobalSource";
+import ConfirmDialog from "@ui/ConfirmDialog";
+import { parsePtBrNumber } from "src/utils/numberFormat";
 
 export default function GlobalSourcesScreen() {
-  function handleFABPress() {}
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
+    useState(false);
+  const [globalSourceToDelete, setGlobalSourceToDelete] =
+    useState<GlobalSource | null>(null);
 
-  async function handleAdd(item: string, rate: number) {
+  function handleOpenAddModal() {
+    setAddModalVisible(true);
+  }
+
+  function handleCloseAddModal() {
+    setAddModalVisible(false);
+  }
+
+  async function handleAdd(item: ItemId, rate: number) {
     await database.write(async () => {
       await globalSourcesCollection.create((globalSource) => {
         globalSource.item = item;
@@ -15,19 +35,56 @@ export default function GlobalSourcesScreen() {
     });
   }
 
-  async function handleTestUpdate() {
+  async function handleUpdateRate(globalSource: GlobalSource, newRate: number) {
     await database.write(async () => {
-      const globalSources = await globalSourcesCollection.query().fetch();
-      const firstGlobalSource = globalSources[0];
-      firstGlobalSource.update((globalSource) => {
-        globalSource.totalRatePerMin = 300;
+      globalSource.update((globalSource) => {
+        globalSource.totalRatePerMin = newRate;
       });
     });
   }
 
+  function handleDelete(globalSource: GlobalSource) {
+    setGlobalSourceToDelete(globalSource);
+    setDeleteConfirmationVisible(true);
+  }
+
+  async function handleConfirmDeletion() {
+    if (!globalSourceToDelete) return;
+
+    await database.write(async () => {
+      await globalSourceToDelete.markAsDeleted();
+    });
+
+    setDeleteConfirmationVisible(false);
+  }
+
+  function handleCancelDelete() {
+    setGlobalSourceToDelete(null);
+    setDeleteConfirmationVisible(false);
+  }
+
   return (
-    <View className="flex-1 relative">
-      <GlobalSourceList />
-    </View>
+    <ScreenContainer>
+      <GlobalSourceList
+        onUpdateGlobalSource={handleUpdateRate}
+        onDeleteGlobalSource={handleDelete}
+      />
+
+      <FAB onPress={handleOpenAddModal} />
+
+      <AddGlobalSourceModal
+        visible={addModalVisible}
+        onClose={handleCloseAddModal}
+        onAdd={handleAdd}
+      />
+
+      <ConfirmDialog
+        visible={deleteConfirmationVisible}
+        title="Excluir fonte global?"
+        message="Tem certeza que deseja excluir a fonte?"
+        onConfirm={handleConfirmDeletion}
+        onCancel={handleCancelDelete}
+      />
+    </ScreenContainer>
   );
 }
