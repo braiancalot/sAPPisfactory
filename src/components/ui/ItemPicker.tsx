@@ -60,14 +60,10 @@ export default function ItemPicker({
 
   return (
     <View className="gap-xs">
-      {label && (
-        <Text className="text-text-primary font-medium text-subhead">
-          {label}
-        </Text>
-      )}
+      {label && <Text className="text-text-secondary text-body">{label}</Text>}
 
       <Pressable
-        className="bg-field rounded-md px-lg py-md text-text-primary text-body border border-border flex-row justify-between items-center gap-md"
+        className="bg-field rounded-md px-md py-sm text-text-primary text-body border border-border flex-row justify-between items-center gap-md"
         onPress={() => setModalVisible(true)}
       >
         {selectedItemData ? (
@@ -78,7 +74,7 @@ export default function ItemPicker({
             </Text>
           </View>
         ) : (
-          <Text className="text-body text-text-secondary">{placeholder}</Text>
+          <Text className="text-body text-text-tertiary">{placeholder}</Text>
         )}
 
         <MaterialCommunityIcons
@@ -92,6 +88,7 @@ export default function ItemPicker({
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         title="Selecione um Item"
+        animationType="slide"
       >
         <View className="max-h-[400]">
           <FlatList
@@ -99,14 +96,14 @@ export default function ItemPicker({
             data={ITEM_LIST}
             keyExtractor={(i) => i.id}
             getItemLayout={getItemLayout}
-            contentContainerClassName="gap-sm"
+            contentContainerClassName="gap-xs"
             renderItem={({ item }) => {
               const isSelected = item.id === selectedItemId;
               const selectedStyle = isSelected ? "bg-background" : "";
 
               return (
                 <Pressable
-                  className={`p-md rounded-md flex-row items-center justify-between ${selectedStyle} active:bg-surface-2 `}
+                  className={`p-sm rounded-md flex-row items-center justify-between ${selectedStyle} active:bg-surface-2 `}
                   onPress={() => handleSelect(item.id)}
                 >
                   <ItemBadge itemId={item.id} size="md" />

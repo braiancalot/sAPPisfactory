@@ -41,7 +41,8 @@ export default function AddGlobalSourceModal({
     <Modal
       visible={visible}
       onClose={handleClose}
-      title="Adicionar Fonte Global"
+      title="Adicionar fonte global"
+      animationType="fade"
     >
       <View className="gap-lg">
         <ItemPicker
@@ -59,7 +60,7 @@ export default function AddGlobalSourceModal({
         />
       </View>
 
-      <View className="flex-row gap-sm mt-2xl">
+      <View className="flex-row gap-md mt-2xl">
         <Button
           title="Cancelar"
           variant="secondary"

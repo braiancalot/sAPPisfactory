@@ -13,7 +13,7 @@ export default function PressableCard({
 }: Props) {
   return (
     <Pressable
-      className="bg-surface-2 active:bg-surface-4 p-lg rounded-lg"
+      className="bg-surface-2 active:bg-surface-3 p-md rounded-lg active:scale-[0.98]"
       onPress={onPress}
       onLongPress={onLongPress}
     >

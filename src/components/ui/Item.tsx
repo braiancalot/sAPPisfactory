@@ -1,4 +1,4 @@
-import { ImageSourcePropType, View } from "react-native";
+import { ImageSourcePropType } from "react-native";
 import { Image } from "@ui/Image";
 
 const variantStyles = {
@@ -15,11 +15,5 @@ type Props = {
 export default function Item({ icon, size }: Props) {
   const iconStyle = variantStyles[size];
 
-  const backgroundClass = size !== "sm" ? "p-xs bg-surface-3 rounded-md" : "";
-
-  return (
-    <View className={backgroundClass}>
-      <Image source={icon} className={iconStyle} />
-    </View>
-  );
+  return <Image source={icon} className={iconStyle} />;
 }

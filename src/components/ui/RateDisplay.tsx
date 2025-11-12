@@ -2,15 +2,9 @@ import { Text, View } from "react-native";
 import { formatPtBrNumber } from "src/utils/numberFormat";
 
 const variantStyles = {
-  sm: {
-    value: "font-medium text-body",
-  },
-  md: {
-    value: "font-bold text-title",
-  },
-  lg: {
-    value: "font-bold text-headline",
-  },
+  sm: "text-number-sm",
+  md: "text-number-md",
+  lg: "text-number-lg",
 };
 
 function getColorClass(value: number) {
@@ -32,19 +26,17 @@ export default function RateDisplay({
   showUnit = true,
   colored = true,
 }: Props) {
-  const styles = variantStyles[size];
+  const style = variantStyles[size];
   const colorsClass = colored ? getColorClass(value) : "text-text-secondary";
 
   return (
-    <View className="flex-row items-baseline gap-xs">
-      <Text className={`${styles.value} ${colorsClass}`} numberOfLines={1}>
+    <View className="flex-row items-baseline gap-2xs">
+      <Text className={`${style} ${colorsClass}`} numberOfLines={1}>
         {colored && value > 0 ? "+" : ""}
         {formatPtBrNumber(value)}
       </Text>
       {showUnit && (
-        <Text className="text-text-secondary text-caption font-medium">
-          /min
-        </Text>
+        <Text className="text-text-tertiary text-caption">/min</Text>
       )}
     </View>
   );
