@@ -3,23 +3,20 @@ import { formatPtBrNumber } from "src/utils/numberFormat";
 
 const variantStyles = {
   sm: {
-    value: "text-body",
-    unit: "text-caption",
+    value: "font-medium text-body",
   },
   md: {
-    value: "text-title",
-    unit: "text-body",
+    value: "font-bold text-title",
   },
   lg: {
-    value: "text-[32px]",
-    unit: "text-body",
+    value: "font-bold text-headline",
   },
 };
 
 function getColorClass(value: number) {
   if (value < 0) return "text-danger";
   if (value > 0) return "text-success";
-  return "text-warning";
+  return "text-text-secondary";
 }
 
 type Props = {
@@ -36,15 +33,18 @@ export default function RateDisplay({
   colored = true,
 }: Props) {
   const styles = variantStyles[size];
-  const colorsClass = colored ? getColorClass(value) : "text-text-primary";
+  const colorsClass = colored ? getColorClass(value) : "text-text-secondary";
 
   return (
-    <View className="flex-row items-baseline gap-xs ">
-      <Text className={`font-bold ${styles.value} ${colorsClass}`}>
+    <View className="flex-row items-baseline gap-xs">
+      <Text className={`${styles.value} ${colorsClass}`} numberOfLines={1}>
+        {colored && value > 0 ? "+" : ""}
         {formatPtBrNumber(value)}
       </Text>
       {showUnit && (
-        <Text className={`text-text-secondary ${styles.unit}`}>/min</Text>
+        <Text className="text-text-secondary text-caption font-medium">
+          /min
+        </Text>
       )}
     </View>
   );

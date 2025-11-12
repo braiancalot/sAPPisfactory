@@ -13,7 +13,7 @@ export default function FAB({ onPress, icon = "add" }: Props) {
   return (
     <Pressable
       onPress={onPress}
-      className="absolute bottom-xl right-xl w-14 h-14 bg-accent active:bg-accent-dark rounded-full items-center justify-center elevation-md"
+      className="absolute bottom-xl right-xl w-14 h-14 bg-accent active:bg-accent-dark rounded-full items-center justify-center"
     >
       <MaterialIcons name={icon} size={28} color={colors["text-primary"]} />
     </Pressable>

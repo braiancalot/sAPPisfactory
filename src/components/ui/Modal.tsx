@@ -22,10 +22,7 @@ export default function Modal({ visible, onClose, title, children }: Props) {
           onPress={onClose}
           className="absolute top-0 left-0 right-0 bottom-0"
         />
-        <View
-          className="bg-surface p-xl rounded-lg w-[90%] max-w-[500]"
-          style={{ elevation: 8 }}
-        >
+        <View className="bg-surface p-xl rounded-lg w-[90%] max-w-[500]">
           <View className="flex-row justify-between items-center mb-2xl">
             <Text className="text-title text-text-primary font-bold">
               {title}

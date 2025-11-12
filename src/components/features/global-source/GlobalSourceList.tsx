@@ -20,6 +20,7 @@ function GlobalSourceList({
   return (
     <FlatList
       data={globalSources}
+      keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <GlobalSourceCard
           globalSource={item}

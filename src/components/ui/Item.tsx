@@ -15,5 +15,11 @@ type Props = {
 export default function Item({ icon, size }: Props) {
   const iconStyle = variantStyles[size];
 
-  return <Image source={icon} className={iconStyle} />;
+  const backgroundClass = size !== "sm" ? "p-xs bg-surface-3 rounded-md" : "";
+
+  return (
+    <View className={backgroundClass}>
+      <Image source={icon} className={iconStyle} />
+    </View>
+  );
 }

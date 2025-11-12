@@ -1,11 +1,17 @@
 export function sanitizeNumericInput(value: string): string {
   if (!value) return "";
 
-  let sanitized = value.replace(/[^\d,]/g, "");
+  let sanitized = value.replace(/\./g, ",");
+
+  sanitized = sanitized.replace(/[^\d,]/g, "");
 
   const parts = sanitized.split(",");
   if (parts.length > 2) {
     sanitized = parts[0] + "," + parts.slice(1).join("");
+  }
+
+  if (sanitized.startsWith(",")) {
+    sanitized = "0" + sanitized;
   }
 
   return sanitized;

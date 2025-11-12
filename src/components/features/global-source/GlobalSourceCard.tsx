@@ -5,10 +5,12 @@ import { getItemData } from "@data/item";
 import PressableCard from "@ui/PressableCard";
 import RateDisplay from "@ui/RateDisplay";
 
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+
 import Item from "@ui/Item";
 import Input from "@ui/Input";
-import { formatPtBrNumber, parsePtBrNumber } from "src/utils/numberFormat";
+
+import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
 
 type Props = {
   globalSource: GlobalSource;
@@ -22,20 +24,22 @@ export default function GlobalSourceCard({
   onDelete,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(
-    formatPtBrNumber(globalSource.totalRatePerMin)
-  );
+  const [editValue, setEditValue] = useState("");
 
   const itemData = getItemData(globalSource.item);
+
+  function handleStartEdit() {
+    setEditValue(sanitizeNumericInput(globalSource.totalRatePerMin.toString()));
+    setIsEditing(true);
+  }
+
+  function handleCancelEdit() {
+    setIsEditing(false);
+  }
 
   async function handleSave() {
     setIsEditing(false);
     onUpdate(globalSource, parsePtBrNumber(editValue));
-  }
-
-  function handleCancelEdit() {
-    setEditValue(formatPtBrNumber(globalSource.totalRatePerMin));
-    setIsEditing(false);
   }
 
   function handleDelete() {
@@ -43,37 +47,41 @@ export default function GlobalSourceCard({
   }
 
   return (
-    <PressableCard onLongPress={handleDelete}>
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center gap-md">
+    <PressableCard onPress={handleStartEdit} onLongPress={handleDelete}>
+      <View className="flex-row items-center justify-between gap-md">
+        <View className="flex-row items-center gap-xl flex-1">
           <Item icon={itemData.icon} size="md" />
-          <Text className="text-body text-text-primary font-medium">
-            {itemData.name}
-          </Text>
-        </View>
 
-        <View className="gap-sm items-end">
-          {isEditing ? (
-            <Input
-              value={editValue}
-              onChangeValue={setEditValue}
-              autoFocus
-              numeric
-              onSubmit={handleSave}
-              onBlur={handleCancelEdit}
-            />
-          ) : (
-            <Pressable onPress={() => setIsEditing(true)}>
+          <View className="gap-xs items-start flex-1">
+            <Text
+              className="text-subhead text-text-primary font-bold"
+              numberOfLines={1}
+            >
+              {itemData.name}
+            </Text>
+
+            {isEditing ? (
+              <Input
+                value={editValue}
+                onChangeValue={setEditValue}
+                onSubmit={handleSave}
+                numeric
+                autoFocus
+                onBlur={handleCancelEdit}
+                variant="borderless"
+                className="border-b border-accent mb-[-1] w-24"
+              />
+            ) : (
               <RateDisplay
                 value={globalSource.totalRatePerMin}
                 size="sm"
                 colored={false}
               />
-            </Pressable>
-          )}
-
-          <RateDisplay value={globalSource.totalRatePerMin - 120.5} size="sm" />
+            )}
+          </View>
         </View>
+
+        <RateDisplay value={globalSource.totalRatePerMin - 120.5} size="md" />
       </View>
     </PressableCard>
   );

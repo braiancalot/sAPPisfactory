@@ -14,7 +14,6 @@ export default function PressableCard({
   return (
     <Pressable
       className="bg-surface-2 active:bg-surface-4 p-lg rounded-lg"
-      style={{ elevation: 2 }}
       onPress={onPress}
       onLongPress={onLongPress}
     >
