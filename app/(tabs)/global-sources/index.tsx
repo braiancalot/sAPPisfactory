@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import database, { globalSourcesCollection } from "@db/index";
-import { ItemId } from "@data/item";
+import { getItemData, ItemId } from "@data/item";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import GlobalSourceList from "@features/global-source/GlobalSourceList";
@@ -10,6 +10,7 @@ import AddGlobalSourceModal from "@features/global-source/AddGlobalSourceModal";
 import GlobalSource from "@db/model/GlobalSource";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import { parsePtBrNumber } from "src/utils/numberFormat";
+import { Text } from "react-native";
 
 export default function GlobalSourcesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -62,6 +63,9 @@ export default function GlobalSourcesScreen() {
     setGlobalSourceToDelete(null);
     setDeleteConfirmationVisible(false);
   }
+  const itemToDeleteData = globalSourceToDelete
+    ? getItemData(globalSourceToDelete.item)
+    : null;
 
   return (
     <ScreenContainer>
@@ -80,10 +84,20 @@ export default function GlobalSourcesScreen() {
 
       <ConfirmDialog
         visible={deleteConfirmationVisible}
-        title="Excluir fonte global?"
-        message="Tem certeza que deseja excluir a fonte?"
+        title="Remove fonte global?"
+        message={
+          <Text className="text-body text-text-secondary">
+            Tem certeza que deseja remover a fonte global{" "}
+            <Text className="font-bold text-secondary-light">
+              {itemToDeleteData?.name}
+            </Text>
+            ? As linhas de produção que usam esse recurso ficarão sem
+            suprimento.
+          </Text>
+        }
         onConfirm={handleConfirmDeletion}
         onCancel={handleCancelDelete}
+        confirmText="Remover"
       />
     </ScreenContainer>
   );

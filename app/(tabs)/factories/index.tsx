@@ -51,7 +51,7 @@ export default function FactoriesScreen() {
 
   return (
     <>
-      <ScrollScreenContainer>
+      <ScrollScreenContainer withFAB>
         <View className="gap-2xl">
           <View className="gap-md border border-border w-full p-md rounded-md">
             <Input placeholder="Siderúrgica" label="Nome" />
@@ -96,12 +96,15 @@ export default function FactoriesScreen() {
           </View>
 
           <View className="gap-md border border-border w-full p-md rounded-md">
+            <Button onPress={() => {}} variant="primary" title="Adicionar" />
             <Button
               onPress={() => {}}
               variant="primary"
-              title="Adicionar fonte"
+              title="Adicionar"
+              disabled
             />
             <Button onPress={() => {}} variant="secondary" title="Cancelar" />
+            <Button onPress={() => {}} variant="info" title="Detalhes" />
             <Button onPress={() => {}} variant="danger" title="Excluir" />
             <Button onPress={() => {}} variant="ghost" title="Voltar" />
           </View>
@@ -118,7 +121,7 @@ export default function FactoriesScreen() {
         </View>
       </ScrollScreenContainer>
 
-      {/* <FAB onPress={() => {}} /> */}
+      <FAB onPress={() => {}} />
 
       <Modal
         visible={modalVisible}

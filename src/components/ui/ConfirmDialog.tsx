@@ -6,7 +6,7 @@ import Button from "@ui/Button";
 type Props = {
   visible: boolean;
   title: string;
-  message: string;
+  message: string | React.ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
   confirmText?: string;
@@ -24,9 +24,13 @@ export default function ConfirmDialog({
 }: Props) {
   return (
     <Modal visible={visible} title={title} onClose={onCancel}>
-      <Text className="text-body text-text-secondary">{message}</Text>
+      {typeof message === "string" ? (
+        <Text className="text-body text-text-secondary">{message}</Text>
+      ) : (
+        <View>{message}</View>
+      )}
 
-      <View className="mt-xl flex-row gap-lg">
+      <View className="mt-xl flex-row gap-md">
         <Button
           onPress={onCancel}
           variant="secondary"
