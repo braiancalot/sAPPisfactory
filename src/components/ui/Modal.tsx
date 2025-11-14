@@ -6,15 +6,22 @@ type Props = {
   visible: boolean;
   onClose: () => void;
   title: string;
+  animationType?: "fade" | "slide" | "none";
   children: React.ReactNode;
 };
 
-export default function Modal({ visible, onClose, title, children }: Props) {
+export default function Modal({
+  visible,
+  onClose,
+  title,
+  animationType = "slide",
+  children,
+}: Props) {
   return (
     <RNModal
       visible={visible}
       transparent={true}
-      animationType="fade"
+      animationType={animationType}
       onRequestClose={onClose}
     >
       <View className="flex-1 items-center justify-center bg-overlay">
@@ -22,13 +29,11 @@ export default function Modal({ visible, onClose, title, children }: Props) {
           onPress={onClose}
           className="absolute top-0 left-0 right-0 bottom-0"
         />
-        <View className="bg-surface p-xl rounded-lg w-[90%] max-w-[500]">
-          <View className="flex-row justify-between items-center mb-2xl">
-            <Text className="text-title text-text-primary font-bold">
-              {title}
-            </Text>
+        <View className="bg-surface-2 p-lg rounded-lg w-[90%] max-w-[500]">
+          <View className="flex-row justify-between items-center mb-xl">
+            <Text className="text-title text-text-primary">{title}</Text>
 
-            <Pressable onPress={onClose}>
+            <Pressable onPress={onClose} className="active:scale-95">
               <MaterialIcons
                 name="close"
                 size={24}

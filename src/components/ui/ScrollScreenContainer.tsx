@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 
 type Props = {
   withFAB?: boolean;
@@ -9,7 +9,7 @@ export default function ScrollScreenContainer({
   withFAB = false,
   children,
 }: Props) {
-  const containerClass = withFAB ? "pb-[114]" : "";
+  const containerClass = withFAB ? "pb-[96]" : "";
 
   return (
     <ScrollView

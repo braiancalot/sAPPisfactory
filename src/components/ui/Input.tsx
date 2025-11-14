@@ -5,17 +5,17 @@ import { sanitizeNumericInput } from "src/utils/numberFormat";
 
 function getInputClass(variant: string, error: string, isFocused: boolean) {
   if (variant === "borderless") {
-    const textColor = error ? "text-danger" : "text-accent";
-    return `px-0 py-0 ${textColor} text-body font-bold`;
+    const textColor = error ? "text-danger" : "text-primary";
+    return `px-0 py-0 ${textColor} text-body`;
   }
 
   const borderColor = error
     ? "border-danger"
     : isFocused
-      ? "border-accent"
+      ? "border-primary"
       : "border-border";
 
-  return `bg-field rounded-md px-lg py-md text-text-primary text-body border ${borderColor}`;
+  return `bg-field rounded-md px-md py-sm text-text-primary text-body border ${borderColor}`;
 }
 
 type Props = {
@@ -86,15 +86,11 @@ export default function Input({
 
   return (
     <View className="gap-xs">
-      {label && (
-        <Text className="text-text-primary font-medium text-subhead ">
-          {label}
-        </Text>
-      )}
+      {label && <Text className="text-text-secondary text-body">{label}</Text>}
       <TextInput
         ref={inputRef}
         className={`${inputClass} ${className}`}
-        placeholderTextColor={colors["text-secondary"]}
+        placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder}
         autoFocus={autoFocus}
@@ -105,7 +101,9 @@ export default function Input({
         onSubmitEditing={handleSubmit}
       />
 
-      {error && <Text className="text-danger text-caption ml-sm">{error}</Text>}
+      {error && (
+        <Text className="text-danger text-footnote ml-sm">{error}</Text>
+      )}
     </View>
   );
 }

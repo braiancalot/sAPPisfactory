@@ -9,11 +9,11 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: colors.surface,
+          backgroundColor: colors["surface-1"],
           borderTopWidth: 1,
           borderTopColor: colors.border,
         },
-        tabBarActiveTintColor: colors.accent.DEFAULT,
+        tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors["text-secondary"],
       }}
     >

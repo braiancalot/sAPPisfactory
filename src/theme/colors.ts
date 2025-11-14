@@ -1,41 +1,40 @@
 export const colors = {
-  background: "#0f172a",
-  surface: "#1e293b",
-  "surface-2": "#243044",
-  "surface-3": "#2b3b52",
-  "surface-4": "#334155",
+  background: "#000000",
 
-  field: "#192234",
+  "surface-1": "#0f0f0f", // Recessed
+  "surface-2": "#1a1a1a", // Base
+  "surface-3": "#292929", // Elevated
+  "surface-4": "#3d3d3d", // Floating
 
-  border: "#334155",
-  outline: "#475569",
-  divider: "rgba(148, 163, 184, 0.16)",
+  primary: "#ff8533",
+  "primary-light": "#ffad70",
+  "primary-dark": "#f56b00",
+  "primary-disabled": "#4c270f",
 
-  overlay: "rgba(10, 15, 25, 0.80)",
+  secondary: "#5bb0c5",
+  "secondary-light": "#7dc9db",
+  "secondary-dark": "#3d8a9a",
 
-  "text-primary": "#f1f5f9",
-  "text-secondary": "#94a3b8", // Cor sutil (placeholders, /min)
-  "text-tertiary": "#64748b",
+  danger: "#ff3b3b",
+  "danger-dark": "#d92424",
 
-  accent: {
-    light: "#fb923c",
-    DEFAULT: "#F97316",
-    dark: "#B33C0B",
-  },
+  success: "#00d68f",
+  "success-dark": "#00a870",
 
-  danger: {
-    light: "#f87171",
-    DEFAULT: "#ef4444",
-    dark: "#dc2626",
-  },
-  success: {
-    light: "#4ade80",
-    DEFAULT: "#22c55e",
-    dark: "#16a34a",
-  },
-  warning: {
-    light: "#fbbf24",
-    DEFAULT: "#f59e0b",
-    dark: "#d97706",
-  },
+  warning: "#ffbf00",
+  "warning-dark": "#e6a800",
+
+  "text-primary": "#ffffff",
+  "text-secondary": "#C2C2C2",
+  "text-tertiary": "#858585",
+
+  "text-on-primary": "#1a1a1a",
+  "text-on-secondary": "#ffffff",
+  "text-on-danger": "#ffffff",
+  "text-on-success": "#1a1a1a",
+  "text-on-warning": "#1a1a1a",
+
+  border: "#404040",
+  field: "#0f0f0f",
+  overlay: "rgba(0, 0, 0, 0.85)",
 };

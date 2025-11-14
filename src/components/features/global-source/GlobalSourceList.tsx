@@ -28,7 +28,7 @@ function GlobalSourceList({
           onDelete={onDeleteGlobalSource}
         />
       )}
-      contentContainerClassName="gap-md pb-[90]"
+      contentContainerClassName="gap-md pb-[76]"
     />
   );
 }

@@ -49,14 +49,11 @@ export default function GlobalSourceCard({
   return (
     <PressableCard onPress={handleStartEdit} onLongPress={handleDelete}>
       <View className="flex-row items-center justify-between gap-md">
-        <View className="flex-row items-center gap-xl flex-1">
+        <View className="flex-row items-center gap-lg flex-1">
           <Item icon={itemData.icon} size="md" />
 
-          <View className="gap-xs items-start flex-1">
-            <Text
-              className="text-subhead text-text-primary font-bold"
-              numberOfLines={1}
-            >
+          <View className="gap-2xs items-start flex-1">
+            <Text className="text-subhead text-text-primary" numberOfLines={1}>
               {itemData.name}
             </Text>
 
@@ -69,7 +66,7 @@ export default function GlobalSourceCard({
                 autoFocus
                 onBlur={handleCancelEdit}
                 variant="borderless"
-                className="border-b border-accent mb-[-1] w-24"
+                className="border-b border-primary mb-[-1] w-24"
               />
             ) : (
               <RateDisplay
