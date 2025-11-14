@@ -35,12 +35,17 @@
         {
           "android": {
             "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
+              "pickFirst": [
+                "**/libc++_shared.so"
+              ]
             }
           }
         }
       ],
-      ["@lovesworking/watermelondb-expo-plugin-sdk-52-plus"]
+      [
+        "@lovesworking/watermelondb-expo-plugin-sdk-52-plus"
+      ],
+      "expo-font"
     ]
   }
 }

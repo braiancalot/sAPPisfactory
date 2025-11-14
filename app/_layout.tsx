@@ -1,9 +1,32 @@
 import { StatusBar } from "expo-status-bar";
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 
 import "../global.css";
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    InterRegular: require("../src/assets/fonts/Inter-Regular.ttf"),
+    InterMedium: require("../src/assets/fonts/Inter-Medium.ttf"),
+    InterSemiBold: require("../src/assets/fonts/Inter-SemiBold.ttf"),
+    InterBold: require("../src/assets/fonts/Inter-Bold.ttf"),
+    InterExtraBold: require("../src/assets/fonts/Inter-ExtraBold.ttf"),
+    RajdhaniBold: require("../src/assets/fonts/Rajdhani-Bold.ttf"),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
     <>
       <StatusBar style="auto" />
