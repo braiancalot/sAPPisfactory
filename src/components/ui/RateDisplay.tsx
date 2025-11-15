@@ -37,7 +37,7 @@ export default function RateDisplay({
     <View className="flex-row items-baseline gap-2xs">
       <Text
         variant={textVariant as any}
-        className={`${colorsClass}`}
+        className={`${colorsClass} flex-shrink`}
         numberOfLines={1}
       >
         {colored && value > 0 ? "+" : ""}

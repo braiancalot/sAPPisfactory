@@ -17,10 +17,12 @@ export function sanitizeNumericInput(value: string): string {
   return sanitized;
 }
 
-export function parsePtBrNumber(value: string): number {
+export function parsePtBrNumber(value: string, maxLength = 10): number {
   if (!value) return NaN;
 
-  const normalized = value.replace(/\./g, "").replace(",", ".");
+  const trimmed = value.slice(0, maxLength);
+
+  const normalized = trimmed.replace(/\./g, "").replace(",", ".");
 
   return parseFloat(normalized);
 }

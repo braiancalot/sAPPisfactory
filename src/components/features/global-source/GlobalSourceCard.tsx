@@ -49,15 +49,15 @@ export default function GlobalSourceCard({
 
   return (
     <PressableCard onPress={handleStartEdit} onLongPress={handleDelete}>
-      <View className="flex-row items-center justify-between gap-md">
+      <View className="flex-row items-baseline justify-between gap-md">
         <View className="flex-row items-center gap-lg flex-1">
           <Item icon={itemData.icon} size="md" />
 
-          <View className="gap-2xs items-start flex-1 ">
+          <View className="gap-2xs items-start flex-1">
             <Text
               variant="subhead"
-              className="text-text-primary"
-              numberOfLines={1}
+              className="text-text-primary flex-wrap"
+              numberOfLines={2}
             >
               {itemData.name}
             </Text>
@@ -83,7 +83,9 @@ export default function GlobalSourceCard({
           </View>
         </View>
 
-        <RateDisplay value={globalSource.totalRatePerMin - 120.5} size="md" />
+        <View className="max-w-40">
+          <RateDisplay value={globalSource.totalRatePerMin - 120.5} size="md" />
+        </View>
       </View>
     </PressableCard>
   );
