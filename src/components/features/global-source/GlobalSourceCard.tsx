@@ -5,12 +5,13 @@ import { getItemData } from "@data/item";
 import PressableCard from "@ui/PressableCard";
 import RateDisplay from "@ui/RateDisplay";
 
-import { Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import Item from "@ui/Item";
 import Input from "@ui/Input";
 
 import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
+import Text from "@ui/Text";
 
 type Props = {
   globalSource: GlobalSource;
@@ -52,8 +53,12 @@ export default function GlobalSourceCard({
         <View className="flex-row items-center gap-lg flex-1">
           <Item icon={itemData.icon} size="md" />
 
-          <View className="gap-2xs items-start flex-1">
-            <Text className="text-subhead text-text-primary" numberOfLines={1}>
+          <View className="gap-2xs items-start flex-1 ">
+            <Text
+              variant="subhead"
+              className="text-text-primary"
+              numberOfLines={1}
+            >
               {itemData.name}
             </Text>
 

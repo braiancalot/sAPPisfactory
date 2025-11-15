@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { colors } from "@theme/colors";
+import { typography } from "src/utils/typography";
 
 export default function GlobalSourcesLayout() {
   return (
@@ -12,9 +13,7 @@ export default function GlobalSourcesLayout() {
             backgroundColor: colors["surface-2"],
           },
           headerTintColor: colors["text-primary"],
-          headerTitleStyle: {
-            fontSize: 24,
-          },
+          headerTitleStyle: typography.headline,
         }}
       />
     </Stack>

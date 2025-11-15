@@ -9,8 +9,7 @@ import FAB from "@ui/FAB";
 import AddGlobalSourceModal from "@features/global-source/AddGlobalSourceModal";
 import GlobalSource from "@db/model/GlobalSource";
 import ConfirmDialog from "@ui/ConfirmDialog";
-import { parsePtBrNumber } from "src/utils/numberFormat";
-import { Text } from "react-native";
+import Text from "@ui/Text";
 
 export default function GlobalSourcesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -86,9 +85,9 @@ export default function GlobalSourcesScreen() {
         visible={deleteConfirmationVisible}
         title="Remove fonte global?"
         message={
-          <Text className="text-body text-text-secondary">
+          <Text variant="body" className="text-text-secondary">
             Tem certeza que deseja remover a fonte global{" "}
-            <Text className="font-bold text-secondary-light">
+            <Text variant="bodyHighlight" className="text-secondary-light">
               {itemToDeleteData?.name}
             </Text>
             ? As linhas de produção que usam esse recurso ficarão sem

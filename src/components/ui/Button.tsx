@@ -1,4 +1,5 @@
-import { Pressable, Text } from "react-native";
+import { Pressable } from "react-native";
+import Text from "@ui/Text";
 
 const variantStyles = {
   primary: {
@@ -60,10 +61,7 @@ export default function Button({
       disabled={disabled}
       className={`px-lg py-sm rounded-md items-center justify-center active:scale-98 ${widthStyle} ${containerClass}`}
     >
-      <Text
-        className={`text-button ${textClass}`}
-        style={{ fontFamily: "Inter_400Regular" }}
-      >
+      <Text variant="button" className={`${textClass}`}>
         {title}
       </Text>
     </Pressable>

@@ -1,5 +1,7 @@
-import { Text, View, ScrollView } from "react-native";
+import { View } from "react-native";
 import { useState } from "react";
+
+import { ItemId } from "src/data/item";
 
 import Card from "@ui/Card";
 import PressableCard from "@ui/PressableCard";
@@ -11,9 +13,8 @@ import FAB from "@ui/FAB";
 import RateDisplay from "@ui/RateDisplay";
 import ItemBadge from "@ui/ItemBadge";
 import ItemPicker from "@ui/ItemPicker";
-import { ItemId } from "src/data/item";
-import ScreenContainer from "@ui/ScreenContainer";
 import ScrollScreenContainer from "@ui/ScrollScreenContainer";
+import Text from "@ui/Text";
 
 export default function FactoriesScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -54,30 +55,39 @@ export default function FactoriesScreen() {
       <ScrollScreenContainer withFAB>
         <View className="gap-2xl">
           <View className="gap-md border border-border w-full p-md rounded-md">
-            <Input placeholder="Siderúrgica" label="Nome" />
+            <Input
+              placeholder="Siderúrgica"
+              label="Nome"
+              value=""
+              onChangeValue={() => {}}
+            />
 
             <Input
               label="Taxa de produção (por minuto)"
               placeholder="Ex: 780,5"
               numeric
+              value=""
+              onChangeValue={() => {}}
             />
 
             <Input
               label="Item"
               placeholder="Ex.: Minério de Ferro"
               error="Selecione um item."
+              value=""
+              onChangeValue={() => {}}
             />
           </View>
 
           <View className="gap-md border border-border w-full p-md rounded-md">
             <Card>
-              <Text className="text-bold text-title text-text-primary">
+              <Text variant="subhead" className="text-text-primary">
                 Factories Screen
               </Text>
             </Card>
 
             <PressableCard onPress={handlePress} onLongPress={handleLongPress}>
-              <Text className="text-bold text-title text-text-primary">
+              <Text variant="subhead" className="text-text-primary">
                 Factories Screen
               </Text>
             </PressableCard>
@@ -116,7 +126,12 @@ export default function FactoriesScreen() {
               onSelect={handleSelectItem}
             />
 
-            <Input placeholder="Siderúrgica" label="Nome" />
+            <Input
+              placeholder="Siderúrgica"
+              label="Nome"
+              value=""
+              onChangeValue={() => {}}
+            />
           </View>
         </View>
       </ScrollScreenContainer>
@@ -129,12 +144,19 @@ export default function FactoriesScreen() {
         title="Adicionar fonte"
       >
         <View className="gap-lg">
-          <Input label="Item" placeholder="Ex.: Minério de Ferro" />
+          <Input
+            label="Item"
+            placeholder="Ex.: Minério de Ferro"
+            value=""
+            onChangeValue={() => {}}
+          />
 
           <Input
             label="Taxa de produção (por minuto)"
             placeholder="Ex: 780,5"
             numeric
+            value=""
+            onChangeValue={() => {}}
           />
         </View>
 
@@ -148,7 +170,7 @@ export default function FactoriesScreen() {
           <Button
             onPress={handlePress}
             variant="primary"
-            title="Adicionar fonte"
+            title="Adicionar"
             fullWidth
           />
         </View>

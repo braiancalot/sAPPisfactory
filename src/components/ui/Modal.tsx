@@ -1,6 +1,8 @@
-import { View, Modal as RNModal, Pressable, Text } from "react-native";
+import { View, Modal as RNModal, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@theme/colors";
+
+import Text from "@ui/Text";
 
 type Props = {
   visible: boolean;
@@ -31,7 +33,9 @@ export default function Modal({
         />
         <View className="bg-surface-2 p-lg rounded-lg w-[90%] max-w-[500]">
           <View className="flex-row justify-between items-center mb-xl">
-            <Text className="text-title text-text-primary">{title}</Text>
+            <Text variant="title" className="text-text-primary">
+              {title}
+            </Text>
 
             <Pressable onPress={onClose} className="active:scale-95">
               <MaterialIcons

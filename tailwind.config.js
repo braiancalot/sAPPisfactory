@@ -26,34 +26,9 @@ module.exports = {
       },
 
       scale: {
+        97: 0.97,
         98: 0.98,
-      },
-
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Rajdhani", "Inter", "sans-serif"],
-      },
-
-      fontSize: {
-        // Utility
-        caption: ["12px", { lineHeight: "16px", fontWeight: "500" }],
-        footnote: ["13px", { lineHeight: "18px", fontWeight: "500" }],
-
-        // Body
-        body: ["15px", { lineHeight: "22px", fontWeight: "500" }],
-        subhead: ["16px", { lineHeight: "22px", fontWeight: "600" }],
-
-        // Action
-        button: ["16px", { lineHeight: "22px", fontWeight: "700" }],
-
-        // Headings
-        title: ["20px", { lineHeight: "28px", fontWeight: "700" }],
-        headline: ["24px", { lineHeight: "32px", fontWeight: "800" }],
-
-        // Numbers
-        "number-sm": ["15px", { lineHeight: "22px", fontWeight: "700" }],
-        "number-md": ["22px", { lineHeight: "28px", fontWeight: "700" }],
-        "number-lg": ["28px", { lineHeight: "34px", fontWeight: "700" }],
+        99: 0.99,
       },
 
       lineHeight: {

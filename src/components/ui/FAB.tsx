@@ -3,8 +3,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import "../../../global.css";
 import { colors } from "@theme/colors";
-import { LinearGradient } from "expo-linear-gradient";
-import { PRIMARY_GRADIENT } from "@theme/gradients.config";
 
 type Props = {
   onPress: () => void;

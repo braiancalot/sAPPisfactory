@@ -1,7 +1,8 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 
 import Modal from "@ui/Modal";
 import Button from "@ui/Button";
+import Text from "@ui/Text";
 
 type Props = {
   visible: boolean;
@@ -25,7 +26,9 @@ export default function ConfirmDialog({
   return (
     <Modal visible={visible} title={title} onClose={onCancel}>
       {typeof message === "string" ? (
-        <Text className="text-body text-text-secondary">{message}</Text>
+        <Text variant="body" className="text-text-secondary">
+          {message}
+        </Text>
       ) : (
         <View>{message}</View>
       )}

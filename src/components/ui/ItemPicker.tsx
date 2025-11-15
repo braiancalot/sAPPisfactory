@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { ITEM_LIST, ItemId, getItemData } from "src/data/item";
@@ -7,6 +7,7 @@ import { ITEM_LIST, ItemId, getItemData } from "src/data/item";
 import ItemBadge from "@ui/ItemBadge";
 import Modal from "@ui/Modal";
 import Item from "@ui/Item";
+import Text from "@ui/Text";
 
 import { colors } from "@theme/colors";
 
@@ -60,7 +61,11 @@ export default function ItemPicker({
 
   return (
     <View className="gap-xs">
-      {label && <Text className="text-text-secondary text-body">{label}</Text>}
+      {label && (
+        <Text variant="body" className="text-text-secondary">
+          {label}
+        </Text>
+      )}
 
       <Pressable
         className="bg-field rounded-md px-md py-sm text-text-primary text-body border border-border flex-row justify-between items-center gap-md"
@@ -69,12 +74,14 @@ export default function ItemPicker({
         {selectedItemData ? (
           <View className="flex-row items-center gap-sm">
             <Item icon={selectedItemData.icon} size="sm" />
-            <Text className="text-text-primary text-body">
+            <Text variant="body" className="text-text-primary">
               {selectedItemData.name}
             </Text>
           </View>
         ) : (
-          <Text className="text-body text-text-tertiary">{placeholder}</Text>
+          <Text variant="body" className="text-text-tertiary">
+            {placeholder}
+          </Text>
         )}
 
         <MaterialCommunityIcons

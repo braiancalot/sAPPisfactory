@@ -1,5 +1,6 @@
 import { colors } from "@theme/colors";
 import { Stack } from "expo-router";
+import { typography } from "src/utils/typography";
 
 export default function FactoriesLayout() {
   return (
@@ -12,9 +13,7 @@ export default function FactoriesLayout() {
             backgroundColor: colors["surface-2"],
           },
           headerTintColor: colors["text-primary"],
-          headerTitleStyle: {
-            fontSize: 24,
-          },
+          headerTitleStyle: typography.headline,
         }}
       />
 

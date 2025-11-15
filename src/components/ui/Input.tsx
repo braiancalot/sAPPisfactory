@@ -1,12 +1,15 @@
 import { colors } from "@theme/colors";
 import { useEffect, useRef, useState } from "react";
-import { Keyboard, Text, TextInput, View } from "react-native";
+import { Keyboard, TextInput, View } from "react-native";
 import { sanitizeNumericInput } from "src/utils/numberFormat";
+
+import Text from "@ui/Text";
+import { typography } from "src/utils/typography";
 
 function getInputClass(variant: string, error: string, isFocused: boolean) {
   if (variant === "borderless") {
     const textColor = error ? "text-danger" : "text-primary";
-    return `px-0 py-0 ${textColor} text-body`;
+    return `px-0 py-0 ${textColor}`;
   }
 
   const borderColor = error
@@ -15,7 +18,7 @@ function getInputClass(variant: string, error: string, isFocused: boolean) {
       ? "border-primary"
       : "border-border";
 
-  return `bg-field rounded-md px-md py-sm text-text-primary text-body border ${borderColor}`;
+  return `bg-field rounded-md px-md py-sm text-text-primary border ${borderColor}`;
 }
 
 type Props = {
@@ -86,10 +89,15 @@ export default function Input({
 
   return (
     <View className="gap-xs">
-      {label && <Text className="text-text-secondary text-body">{label}</Text>}
+      {label && (
+        <Text variant="body" className="text-text-secondary">
+          {label}
+        </Text>
+      )}
       <TextInput
         ref={inputRef}
         className={`${inputClass} ${className}`}
+        style={typography.body}
         placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder}
@@ -102,7 +110,9 @@ export default function Input({
       />
 
       {error && (
-        <Text className="text-danger text-footnote ml-sm">{error}</Text>
+        <Text variant="footnote" className="text-danger ml-sm">
+          {error}
+        </Text>
       )}
     </View>
   );

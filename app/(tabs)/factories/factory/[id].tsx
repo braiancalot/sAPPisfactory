@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import Text from "@ui/Text";
 
 export default function FactoryScreen() {
   return (
     <View style={styles.container}>
-      <Text>Factory Screen</Text>
+      <Text variant="title">Factory Screen</Text>
     </View>
   );
 }
