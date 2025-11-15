@@ -1,7 +1,9 @@
-import { View } from "react-native";
+import { router } from "expo-router";
 import { useState } from "react";
 
 import { ItemId } from "src/data/item";
+
+import { View } from "react-native";
 
 import Card from "@ui/Card";
 import PressableCard from "@ui/PressableCard";
@@ -76,6 +78,14 @@ export default function FactoriesScreen() {
               error="Selecione um item."
               value=""
               onChangeValue={() => {}}
+            />
+          </View>
+
+          <View className="gap-md border border-border w-full p-md rounded-md">
+            <Button
+              onPress={() => router.navigate("factories/factory/1")}
+              variant="info"
+              title="Fábrica >"
             />
           </View>
 

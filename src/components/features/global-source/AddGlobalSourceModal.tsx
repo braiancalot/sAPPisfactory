@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { ItemId } from "src/data/item";
+import { parsePtBrNumber } from "src/utils/numberFormat";
 
 import Modal from "@ui/Modal";
-import ItemPicker from "@ui/ItemPicker";
 import Input from "@ui/Input";
 import Button from "@ui/Button";
-import { parsePtBrNumber } from "src/utils/numberFormat";
+import ItemPicker from "@ui/ItemPicker";
 
 type Props = {
   visible: boolean;

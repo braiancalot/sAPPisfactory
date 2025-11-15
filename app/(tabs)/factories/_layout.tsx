@@ -17,7 +17,17 @@ export default function FactoriesLayout() {
         }}
       />
 
-      <Stack.Screen name="factory/[id]" options={{ title: "Fábrica" }} />
+      <Stack.Screen
+        name="factory/[id]"
+        options={{
+          title: "Fábrica",
+          headerStyle: {
+            backgroundColor: colors["surface-2"],
+          },
+          headerTintColor: colors["text-primary"],
+          headerTitleStyle: typography.headline,
+        }}
+      />
     </Stack>
   );
 }
