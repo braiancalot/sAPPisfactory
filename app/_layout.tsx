@@ -1,11 +1,11 @@
+import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SplashScreen, Stack } from "expo-router";
+import { useFonts } from "expo-font";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import "../global.css";
-import { useFonts } from "expo-font";
-import { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
 

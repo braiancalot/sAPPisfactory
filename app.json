@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "sAPPisfactory",
-    "slug": "sAPPisfactory",
+    "slug": "sappisfactory",
     "scheme": "sappisfactory",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -46,6 +46,13 @@
         "@lovesworking/watermelondb-expo-plugin-sdk-52-plus"
       ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "70142f10-2ded-473e-bb16-cb535d093f5d"
+      }
+    },
+    "owner": "braiancalot"
   }
 }
