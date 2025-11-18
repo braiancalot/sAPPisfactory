@@ -2,7 +2,8 @@ import { globalSourcesCollection } from "@db/index";
 import GlobalSource from "@db/model/GlobalSource";
 import { withObservables } from "@nozbe/watermelondb/react";
 
-import GlobalSourceCard from "./GlobalSourceCard";
+import GlobalSourceCard from "@features/global-source/GlobalSourceCard";
+import GlobalSourceListEmpty from "@features/global-source/GlobalSourceListEmpty";
 
 import { FlatList } from "react-native";
 
@@ -29,6 +30,7 @@ function GlobalSourceList({
         />
       )}
       contentContainerClassName="gap-md p-lg pb-[76]"
+      ListEmptyComponent={GlobalSourceListEmpty}
     />
   );
 }
