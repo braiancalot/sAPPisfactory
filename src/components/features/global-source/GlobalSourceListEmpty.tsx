@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import Text from "@ui/Text";
 
@@ -8,7 +8,11 @@ import { colors } from "@theme/colors";
 export default function GlobalSourceListEmpty() {
   return (
     <View className="items-center justify-center py-xl">
-      <MaterialIcons name="add-box" size={48} color={colors["text-tertiary"]} />
+      <MaterialCommunityIcons
+        name="pipe-wrench"
+        size={48}
+        color={colors["text-tertiary"]}
+      />
 
       <Text variant="subhead" className="text-text-secondary mt-md">
         Nenhuma fonte de global cadastrada

@@ -95,10 +95,7 @@ export default function GlobalSourceCard({
           </View>
 
           <View className="max-w-40">
-            <RateDisplay
-              value={globalSource.totalRatePerMin - 120.5}
-              size="md"
-            />
+            <RateDisplay value={globalSource.totalRatePerMin} size="md" />
           </View>
         </View>
       </PressableCard>
