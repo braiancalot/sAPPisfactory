@@ -1,15 +1,27 @@
-import { useEffect, useRef, useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { useState, useMemo, useRef, useCallback } from "react";
+import { Keyboard, Pressable, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { ITEM_LIST, ItemId, getItemData } from "src/data/item";
+import {
+  ITEM_LIST,
+  Item as ItemType,
+  ItemId,
+  getItemData,
+} from "src/data/item";
 
-import ItemBadge from "@ui/ItemBadge";
-import Modal from "@ui/Modal";
-import Item from "@ui/Item";
+import {
+  BottomSheetModal,
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetFlatList,
+  BottomSheetTextInput,
+} from "@gorhom/bottom-sheet";
+
 import Text from "@ui/Text";
+import Item from "@ui/Item";
 
 import { colors } from "@theme/colors";
+import { typography } from "src/utils/typography";
 
 type ItemPickerProps = {
   label?: string;
@@ -24,40 +36,64 @@ export default function ItemPicker({
   onSelect,
   placeholder = "Selecione um item",
 }: ItemPickerProps) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const flatListRef = useRef<FlatList<any>>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const selectedItemData = selectedItemId ? getItemData(selectedItemId) : null;
 
-  useEffect(() => {
-    if (modalVisible && selectedItemData && flatListRef.current) {
-      const index = ITEM_LIST.findIndex((item) => item.id === selectedItemId);
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) return ITEM_LIST;
 
-      if (index === -1) return;
+    const query = searchQuery.toLowerCase().trim();
+    return ITEM_LIST.filter((item) => item.name.toLowerCase().includes(query));
+  }, [searchQuery]);
 
-      setTimeout(() => {
-        flatListRef.current?.scrollToIndex({
-          index,
-          animated: true,
-          viewPosition: 0.5,
-        });
-      }, 100);
-    }
-  }, [modalVisible, selectedItemId]);
+  function handleOpen() {
+    Keyboard.dismiss();
+    bottomSheetRef.current?.present();
+  }
 
   function handleSelect(itemId: ItemId) {
     onSelect(itemId);
-    setModalVisible(false);
+    Keyboard.dismiss();
+    bottomSheetRef.current?.close();
+    setSearchQuery("");
   }
 
-  const ITEM_HEIGHT = 48;
-  function getItemLayout(_: any, index: number) {
-    return {
-      length: ITEM_HEIGHT,
-      offset: ITEM_HEIGHT * index,
-      index,
-    };
-  }
+  const renderItem = useCallback(
+    ({ item }: { item: ItemType }) => {
+      const isSelected = item.id === selectedItemId;
+
+      return (
+        <Pressable
+          className={`p-sm rounded-md flex-row items-center justify-between ${isSelected ? "bg-surface-3 border border-primary" : "bg-surface-1 active:bg-background border border-transparent"}`}
+          onPress={() => handleSelect(item.id)}
+        >
+          <View className="flex-row items-center gap-md flex-1">
+            <Item icon={item.icon} size="md" />
+            <Text
+              variant="body"
+              className={`${isSelected ? "text-text-primary" : "text-text-secondary"}`}
+              numberOfLines={1}
+            >
+              {item.name}
+            </Text>
+          </View>
+
+          {isSelected && (
+            <View className="w-6 h-6 bg-primary rounded-full items-center justify-center">
+              <MaterialIcons
+                name="check"
+                size={16}
+                color={colors["text-on-primary"]}
+              />
+            </View>
+          )}
+        </Pressable>
+      );
+    },
+    [selectedItemId]
+  );
 
   return (
     <View className="gap-xs">
@@ -68,8 +104,8 @@ export default function ItemPicker({
       )}
 
       <Pressable
-        className="bg-field rounded-md px-md py-sm text-text-primary text-body border border-border flex-row justify-between items-center gap-md"
-        onPress={() => setModalVisible(true)}
+        className="bg-field rounded-md px-md py-sm text-text-primary text-body border border-border flex-row justify-between items-center gap-md active:scale-99"
+        onPress={handleOpen}
       >
         {selectedItemData ? (
           <View className="flex-row items-center gap-sm">
@@ -91,43 +127,84 @@ export default function ItemPicker({
         />
       </Pressable>
 
-      <Modal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        title="Selecione um Item"
-        animationType="slide"
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        snapPoints={["50%"]}
+        enableDynamicSizing={false}
+        enablePanDownToClose
+        backdropComponent={renderBackdrop}
+        backgroundStyle={{ backgroundColor: colors["surface-2"] }}
+        handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
       >
-        <View className="max-h-[400]">
-          <FlatList
-            ref={flatListRef}
-            data={ITEM_LIST}
-            keyExtractor={(i) => i.id}
-            getItemLayout={getItemLayout}
-            contentContainerClassName="gap-xs"
-            renderItem={({ item }) => {
-              const isSelected = item.id === selectedItemId;
-              const selectedStyle = isSelected ? "bg-background" : "";
-
-              return (
-                <Pressable
-                  className={`p-sm rounded-md flex-row items-center justify-between ${selectedStyle} active:bg-surface-2 `}
-                  onPress={() => handleSelect(item.id)}
-                >
-                  <ItemBadge itemId={item.id} size="md" />
-
-                  {isSelected && (
-                    <MaterialIcons
-                      name="check"
-                      size={18}
-                      color={colors["text-secondary"]}
-                    />
-                  )}
-                </Pressable>
-              );
-            }}
-          />
+        <View className="px-lg pb-md border-b border-border">
+          <Text variant="title" className="text-text-primary">
+            Selecione um item
+          </Text>
         </View>
-      </Modal>
+
+        <View className="m-md flex-row items-center bg-field border border-border rounded-md px-md py-sm gap-sm">
+          <MaterialIcons
+            name="search"
+            size={20}
+            color={colors["text-secondary"]}
+          />
+
+          <BottomSheetTextInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Buscar item..."
+            style={typography.body}
+            className="flex-1 px-0 py-0 text-text-primary"
+          />
+
+          {searchQuery.length > 0 && (
+            <Pressable onPress={() => setSearchQuery("")}>
+              <MaterialIcons
+                name="close"
+                size={20}
+                color={colors["text-secondary"]}
+              />
+            </Pressable>
+          )}
+        </View>
+
+        <BottomSheetFlatList
+          data={filteredItems}
+          initialNumToRender={3}
+          keyExtractor={(i: ItemType) => i.id}
+          contentContainerClassName="gap-xs px-md"
+          keyboardShouldPersistTaps="handled"
+          windowSize={7}
+          ListEmptyComponent={
+            <View className="items-center justify-center py-xl">
+              <MaterialIcons
+                name="search-off"
+                size={48}
+                color={colors["text-tertiary"]}
+              />
+
+              <Text variant="body" className="text-text-secondary mt-md">
+                Nenhum item encontrado
+              </Text>
+              <Text variant="footnote" className="text-text-tertiary mt-xs">
+                Tente buscar por outro nome
+              </Text>
+            </View>
+          }
+          renderItem={renderItem}
+        />
+      </BottomSheetModal>
     </View>
+  );
+}
+
+function renderBackdrop(props: BottomSheetBackdropProps) {
+  return (
+    <BottomSheetBackdrop
+      {...props}
+      appearsOnIndex={0}
+      disappearsOnIndex={-1}
+      opacity={0.5}
+    />
   );
 }

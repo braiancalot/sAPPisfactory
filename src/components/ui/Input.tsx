@@ -8,8 +8,7 @@ import { typography } from "src/utils/typography";
 
 function getInputClass(variant: string, error: string, isFocused: boolean) {
   if (variant === "borderless") {
-    const textColor = error ? "text-danger" : "text-primary";
-    return `px-0 py-0 ${textColor}`;
+    return `px-0 py-0`;
   }
 
   const borderColor = error
@@ -88,7 +87,7 @@ export default function Input({
   const inputClass = getInputClass(variant, error, isFocused);
 
   return (
-    <View className="gap-xs">
+    <View className="gap-xs flex-grow">
       {label && (
         <Text variant="body" className="text-text-secondary">
           {label}

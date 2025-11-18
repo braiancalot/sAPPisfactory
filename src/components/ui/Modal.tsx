@@ -88,7 +88,7 @@ export default function Modal({ visible, onClose, title, children }: Props) {
               className="w-full items-center justify-center"
               style={modalStyle}
             >
-              <View className="bg-surface-2  rounded-lg w-[90%] max-w-[500]">
+              <View className="bg-surface-2 rounded-lg w-[90%] max-w-[500]">
                 <View className="flex-row justify-between items-center px-lg pt-lg pb-md border-b border-border">
                   <Text variant="title" className="text-text-primary">
                     {title}

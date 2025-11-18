@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { ItemId } from "src/data/item";
@@ -23,9 +23,14 @@ export default function AddGlobalSourceModal({
   const [rate, setRate] = useState("");
   const [selectedItemId, setSelectedItemId] = useState<ItemId | null>(null);
 
+  useEffect(() => {
+    if (visible) {
+      setSelectedItemId(null);
+      setRate("");
+    }
+  }, [visible]);
+
   function handleClose() {
-    setSelectedItemId(null);
-    setRate("");
     onClose();
   }
 
@@ -38,12 +43,7 @@ export default function AddGlobalSourceModal({
   const isValid = selectedItemId !== null && !!rate;
 
   return (
-    <Modal
-      visible={visible}
-      onClose={handleClose}
-      title="Adicionar fonte global"
-      animationType="fade"
-    >
+    <Modal visible={visible} onClose={handleClose} title="Adicionar fonte">
       <View className="gap-lg">
         <ItemPicker
           selectedItemId={selectedItemId}
