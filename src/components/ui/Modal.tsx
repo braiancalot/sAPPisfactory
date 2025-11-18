@@ -34,13 +34,17 @@ export default function Modal({ visible, onClose, title, children }: Props) {
     if (visible) {
       setIsRendered(true);
 
-      backdropOpacity.value = withTiming(1, { duration: 200 });
-      modalOpacity.value = withTiming(1, { duration: 150 });
-      modalScale.value = withSpring(1, {
-        damping: 15,
-        stiffness: 150,
-        mass: 0.3,
-      });
+      const timer = setTimeout(() => {
+        backdropOpacity.value = withTiming(1, { duration: 200 });
+        modalOpacity.value = withTiming(1, { duration: 150 });
+        modalScale.value = withSpring(1, {
+          damping: 15,
+          stiffness: 150,
+          mass: 0.3,
+        });
+      }, 0);
+
+      return () => clearTimeout(timer);
     } else {
       backdropOpacity.value = withTiming(0, { duration: 150 });
       modalScale.value = withTiming(0.9, { duration: 150 });
