@@ -4,10 +4,13 @@ import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import * as SystemUI from "expo-system-ui";
 
 import "../global.css";
+import { colors } from "@theme/colors";
 
 SplashScreen.preventAutoHideAsync();
+SystemUI.setBackgroundColorAsync(colors.background);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -33,7 +36,12 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
         <StatusBar style="auto" />
-        <Stack screenOptions={{ headerShown: false }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.background },
+          }}
+        />
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );

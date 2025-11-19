@@ -6,12 +6,13 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "backgroundColor": "#000",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000"
     },
     "ios": {
       "supportsTablet": true
@@ -19,10 +20,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.sAPPisfactory"
+      "package": "com.anonymous.sAPPisfactory",
+      "userInterfaceStyle": "dark"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -35,17 +37,14 @@
         {
           "android": {
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }
       ],
-      [
-        "@lovesworking/watermelondb-expo-plugin-sdk-52-plus"
-      ],
-      "expo-font"
+      ["@lovesworking/watermelondb-expo-plugin-sdk-52-plus"],
+      "expo-font",
+      "expo-system-ui"
     ],
     "extra": {
       "router": {},

@@ -15,6 +15,7 @@ export default function TabLayout() {
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors["text-secondary"],
+        sceneStyle: { backgroundColor: colors.background },
       }}
     >
       <Tabs.Screen

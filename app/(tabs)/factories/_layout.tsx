@@ -4,16 +4,21 @@ import { typography } from "src/utils/typography";
 
 export default function FactoriesLayout() {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        contentStyle: { backgroundColor: colors["background"] },
+        headerStyle: {
+          backgroundColor: colors["surface-2"],
+        },
+        headerTintColor: colors["text-primary"],
+        headerTitleStyle: typography.headline,
+        animation: "ios_from_right",
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
           title: "Fábricas",
-          headerStyle: {
-            backgroundColor: colors["surface-2"],
-          },
-          headerTintColor: colors["text-primary"],
-          headerTitleStyle: typography.headline,
         }}
       />
 
@@ -21,11 +26,6 @@ export default function FactoriesLayout() {
         name="factory/[id]"
         options={{
           title: "Fábrica",
-          headerStyle: {
-            backgroundColor: colors["surface-2"],
-          },
-          headerTintColor: colors["text-primary"],
-          headerTitleStyle: typography.headline,
         }}
       />
     </Stack>

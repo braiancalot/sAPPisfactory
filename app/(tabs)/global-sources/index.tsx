@@ -84,7 +84,7 @@ export default function GlobalSourcesScreen() {
 
       <ConfirmDialog
         visible={deleteConfirmationVisible}
-        title="Remove fonte global?"
+        title="Remover fonte global?"
         message={
           <Text variant="body" className="text-text-secondary">
             Tem certeza que deseja remover a fonte global{" "}
