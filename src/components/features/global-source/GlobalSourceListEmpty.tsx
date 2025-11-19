@@ -15,7 +15,7 @@ export default function GlobalSourceListEmpty() {
       />
 
       <Text variant="subhead" className="text-text-secondary mt-md">
-        Nenhuma fonte de global cadastrada
+        Nenhuma fonte global cadastrada
       </Text>
 
       <Text variant="body" className="text-text-tertiary mt-xs">

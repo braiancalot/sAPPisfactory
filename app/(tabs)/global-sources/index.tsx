@@ -62,6 +62,7 @@ export default function GlobalSourcesScreen() {
     setGlobalSourceToDelete(null);
     setDeleteConfirmationVisible(false);
   }
+
   const itemToDeleteData = globalSourceToDelete
     ? getItemData(globalSourceToDelete.item)
     : null;
