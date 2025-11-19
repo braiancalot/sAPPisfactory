@@ -10,5 +10,9 @@ export default appSchema({
         { name: "total_rate_per_min", type: "number" },
       ],
     }),
+    tableSchema({
+      name: "factories",
+      columns: [{ name: "name", type: "string" }],
+    }),
   ],
 });
