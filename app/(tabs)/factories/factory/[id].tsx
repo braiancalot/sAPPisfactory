@@ -1,28 +1,16 @@
-import { View } from "react-native";
-import { useRef } from "react";
+import { useLocalSearchParams } from "expo-router";
 
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import Button from "@ui/Button";
+import ScreenContainer from "@ui/ScreenContainer";
 import Text from "@ui/Text";
 
 export default function FactoryScreen() {
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const { id } = useLocalSearchParams();
 
   return (
-    <View className="bg-background flex-1">
-      <Button title="Abrir" onPress={() => bottomSheetRef.current?.expand()} />
-
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={["50%"]}
-        enablePanDownToClose
-      >
-        <BottomSheetView className="p-lg bg-surface-2">
-          <Text variant="body" className="text-text-primary">
-            Awesome
-          </Text>
-        </BottomSheetView>
-      </BottomSheet>
-    </View>
+    <ScreenContainer>
+      <Text variant="title" className="text-text-primary">
+        {id}
+      </Text>
+    </ScreenContainer>
   );
 }
