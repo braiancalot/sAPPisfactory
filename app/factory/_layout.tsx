@@ -1,8 +1,8 @@
-import { colors } from "@theme/colors";
 import { Stack } from "expo-router";
+import { colors } from "@theme/colors";
 import { typography } from "src/utils/typography";
 
-export default function FactoriesLayout() {
+export default function TabLayout() {
   return (
     <Stack
       screenOptions={{
@@ -16,14 +16,7 @@ export default function FactoriesLayout() {
       }}
     >
       <Stack.Screen
-        name="index"
-        options={{
-          title: "Fábricas",
-        }}
-      />
-
-      <Stack.Screen
-        name="factory/[id]"
+        name="[id]"
         options={{
           title: "Fábrica",
         }}

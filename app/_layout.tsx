@@ -35,7 +35,11 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <StatusBar style="auto" />
+        <StatusBar
+          style="dark"
+          translucent={false}
+          backgroundColor={colors["surface-2"]}
+        />
         <Stack
           screenOptions={{
             headerShown: false,
