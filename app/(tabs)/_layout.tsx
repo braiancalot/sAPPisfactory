@@ -26,6 +26,7 @@ export default function TabLayout() {
         headerStyle: { backgroundColor: colors["surface-2"] },
         headerTintColor: colors["text-primary"],
         headerTitleStyle: typography.headline,
+        animation: "shift",
       }}
     >
       <Tabs.Screen

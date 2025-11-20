@@ -56,7 +56,12 @@ export default function ItemPicker({
   function handleSelect(itemId: ItemId) {
     onSelect(itemId);
     Keyboard.dismiss();
-    bottomSheetRef.current?.close();
+    setTimeout(() => {
+      bottomSheetRef.current?.close();
+    }, 150);
+  }
+
+  function handleDismiss() {
     setSearchQuery("");
   }
 
@@ -135,6 +140,8 @@ export default function ItemPicker({
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: colors["surface-2"] }}
         handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
+        onDismiss={handleDismiss}
+        animationConfigs={{ velocity: 1000 }}
       >
         <View className="px-lg pb-md border-b border-border">
           <Text variant="title" className="text-text-primary">

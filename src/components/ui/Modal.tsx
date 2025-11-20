@@ -42,7 +42,7 @@ export default function Modal({ visible, onClose, title, children }: Props) {
           stiffness: 150,
           mass: 0.3,
         });
-      }, 0);
+      }, 2);
 
       return () => clearTimeout(timer);
     } else {
