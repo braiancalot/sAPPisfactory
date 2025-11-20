@@ -1,15 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { SplashScreen, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import * as SystemUI from "expo-system-ui";
 
 import "../global.css";
 import { colors } from "@theme/colors";
 
 SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+  duration: 400,
+  fade: true,
+});
+
 SystemUI.setBackgroundColorAsync(colors.background);
 
 export default function RootLayout() {
@@ -22,13 +29,21 @@ export default function RootLayout() {
     RajdhaniBold: require("../src/assets/fonts/Rajdhani-Bold.ttf"),
   });
 
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
+      setIsReady(true);
     }
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
+  useEffect(() => {
+    if (isReady) {
+      SplashScreen.hide();
+    }
+  }, [isReady]);
+
+  if (!isReady) {
     return null;
   }
 

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "sAPPisfactory",
+    "name": "sAPP Factory",
     "slug": "sappisfactory",
     "scheme": "sappisfactory",
     "version": "1.0.0",
@@ -24,7 +24,8 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.sAPPisfactory",
-      "userInterfaceStyle": "dark"
+      "userInterfaceStyle": "dark",
+      "displayName": "sAPP Factory"
     },
     "web": {
       "favicon": "./assets/favicon.png",
