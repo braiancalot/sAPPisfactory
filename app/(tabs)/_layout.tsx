@@ -10,11 +10,18 @@ export default function TabLayout() {
         headerShown: true,
         tabBarStyle: {
           backgroundColor: colors["surface-1"],
-          borderTopWidth: 1,
+          borderTopWidth: 0,
           borderTopColor: colors.border,
+          height: 60,
+          paddingTop: 6,
         },
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors["primary"],
         tabBarInactiveTintColor: colors["text-secondary"],
+        tabBarLabelStyle: {
+          fontSize: 11,
+          marginTop: 4,
+          fontWeight: 500,
+        },
         sceneStyle: { backgroundColor: colors.background },
         headerStyle: { backgroundColor: colors["surface-2"] },
         headerTintColor: colors["text-primary"],
@@ -25,7 +32,7 @@ export default function TabLayout() {
         name="global-sources"
         options={{
           title: "Fontes Globais",
-          tabBarLabel: () => null,
+          tabBarLabel: "Fontes",
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="layers" size={size} color={color} />
           ),
@@ -36,7 +43,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Fábricas",
-          tabBarLabel: () => null,
+          tabBarLabel: "Fábricas",
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="factory" size={size} color={color} />
           ),
