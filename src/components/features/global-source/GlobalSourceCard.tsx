@@ -85,11 +85,13 @@ export default function GlobalSourceCard({
                   className="border-b border-primary mb-[-1] w-24 text-primary"
                 />
               ) : (
-                <RateDisplay
-                  value={globalSource.totalRatePerMin}
-                  size="sm"
-                  colored={false}
-                />
+                <View className="h-[19]">
+                  <RateDisplay
+                    value={globalSource.totalRatePerMin}
+                    size="sm"
+                    colored={false}
+                  />
+                </View>
               )}
             </View>
           </View>
