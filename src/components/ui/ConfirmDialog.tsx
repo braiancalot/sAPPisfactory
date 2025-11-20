@@ -67,7 +67,6 @@ export default function ConfirmDialog({
       backgroundStyle={{ backgroundColor: colors["surface-2"] }}
       handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
       onChange={handleSheetChange}
-      animationConfigs={{ velocity: 1000 }}
     >
       <BottomSheetView>
         <View className="px-lg pb-lg">

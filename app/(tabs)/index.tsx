@@ -82,8 +82,7 @@ export default function FactoriesScreen() {
             <Text variant="bodyHighlight" className="text-secondary-light">
               {factoryToDelete?.name}
             </Text>
-            ? Todas as linhas de produção contidas nela serão perdidas
-            permanentemente{" "}
+            ? Todas as linhas de produção contidas nela serão{" "}
             <Text variant="bodyHighlight">perdidas permanentemente</Text>.
           </Text>
         }
