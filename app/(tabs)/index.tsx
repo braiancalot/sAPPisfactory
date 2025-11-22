@@ -29,7 +29,7 @@ export default function FactoriesScreen() {
   async function handleAdd(name: string) {
     await database.write(async () => {
       await factoriesCollection.create((factory) => {
-        factory.name = name.trim();
+        factory.name = name;
       });
     });
   }
