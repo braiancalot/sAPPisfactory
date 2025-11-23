@@ -40,19 +40,13 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
   }
 
   async function handleUpdateName(newName: string) {
-    await database.write(async () => {
-      factory.update((record) => {
-        record.name = newName;
-      });
-    });
+    await factory.updateName(newName);
 
     dismissAll();
   }
 
   async function handleConfirmDeletion() {
-    await database.write(async () => {
-      await factory.markAsDeleted();
-    });
+    await factory.delete();
 
     dismissAll();
     router.back();

@@ -48,9 +48,7 @@ export default function FactoriesScreen() {
   async function handleDelete() {
     if (!factoryToDelete) return;
 
-    await database.write(async () => {
-      await factoryToDelete.markAsDeleted();
-    });
+    await factoryToDelete.delete();
 
     confirmSheetRef.current?.dismiss();
   }

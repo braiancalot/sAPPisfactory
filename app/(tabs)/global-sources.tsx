@@ -38,11 +38,7 @@ export default function GlobalSourcesScreen() {
   }
 
   async function handleUpdateRate(globalSource: GlobalSource, newRate: number) {
-    await database.write(async () => {
-      globalSource.update((record) => {
-        record.totalRatePerMin = newRate;
-      });
-    });
+    await globalSource.updateRate(newRate);
   }
 
   function handleDeleteRequest(globalSource: GlobalSource) {
@@ -53,9 +49,7 @@ export default function GlobalSourcesScreen() {
   async function handleDelete() {
     if (!globalSourceToDelete) return;
 
-    await database.write(async () => {
-      await globalSourceToDelete.markAsDeleted();
-    });
+    await globalSourceToDelete.delete();
 
     confirmSheetRef.current?.dismiss();
   }
