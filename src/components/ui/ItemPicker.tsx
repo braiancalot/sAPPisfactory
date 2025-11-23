@@ -141,7 +141,6 @@ export default function ItemPicker({
         backgroundStyle={{ backgroundColor: colors["surface-2"] }}
         handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
         onDismiss={handleDismiss}
-        animationConfigs={{ velocity: 1000 }}
       >
         <View className="px-lg pb-md border-b border-border">
           <Text variant="title" className="text-text-primary">
