@@ -1,7 +1,8 @@
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
+import { withObservables } from "@nozbe/watermelondb/react";
 import database, { factoriesCollection } from "@db/index";
 import Factory from "@db/model/Factory";
 
@@ -11,27 +12,18 @@ import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
 
 import EditFactoryNameSheet from "@features/factory/EditFactoryNameSheet";
+import { ActivityIndicator, View } from "react-native";
+import { colors } from "@theme/colors";
 
-export default function FactoryScreen() {
-  const { id } = useLocalSearchParams();
-  const [factory, setFactory] = useState<Factory | null>(null);
+type FactoryDetailsProps = {
+  factory: Factory;
+};
 
+function FactoryDetails({ factory }: FactoryDetailsProps) {
   const { dismissAll } = useBottomSheetModal();
 
   const editSheetRef = useRef<BottomSheetModal>(null);
   const confirmSheetRef = useRef<BottomSheetModal>(null);
-
-  useEffect(() => {
-    const factoryId = Array.isArray(id) ? id[0] : id;
-    if (!factoryId) return;
-
-    async function getFactory() {
-      const result = await factoriesCollection.find(factoryId);
-      setFactory(result);
-    }
-
-    getFactory();
-  }, [id]);
 
   function handleOpenEditSheet() {
     dismissAll();
@@ -48,10 +40,8 @@ export default function FactoryScreen() {
   }
 
   async function handleUpdateName(newName: string) {
-    if (!factory) return;
-
     await database.write(async () => {
-      factory?.update((f) => {
+      factory.update((f) => {
         f.name = newName;
       });
     });
@@ -60,10 +50,8 @@ export default function FactoryScreen() {
   }
 
   async function handleConfirmDeletion() {
-    if (!factory) return;
-
     await database.write(async () => {
-      await factory?.markAsDeleted();
+      await factory.markAsDeleted();
     });
 
     dismissAll();
@@ -118,4 +106,25 @@ export default function FactoryScreen() {
       />
     </ScreenContainer>
   );
+}
+
+const enhance = withObservables(["factoryId"], ({ factoryId }) => ({
+  factory: factoriesCollection.findAndObserve(factoryId),
+}));
+
+const EnhancedFactoryDetails = enhance(FactoryDetails);
+
+export default function FactoryScreen() {
+  const { id } = useLocalSearchParams();
+
+  const factoryId = Array.isArray(id) ? id[0] : id;
+
+  if (!factoryId)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+
+  return <EnhancedFactoryDetails factoryId={factoryId} />;
 }

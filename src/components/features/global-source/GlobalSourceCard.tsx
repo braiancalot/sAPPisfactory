@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { withObservables } from "@nozbe/watermelondb/react";
 
 import Animated, {
   FadeInLeft,
@@ -25,11 +26,7 @@ type Props = {
   onDelete: (source: GlobalSource) => void;
 };
 
-export default function GlobalSourceCard({
-  globalSource,
-  onUpdate,
-  onDelete,
-}: Props) {
+function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
 
@@ -104,3 +101,9 @@ export default function GlobalSourceCard({
     </Animated.View>
   );
 }
+
+const enhance = withObservables(["globalSource"], ({ globalSource }) => ({
+  globalSource: globalSource,
+}));
+
+export default enhance(GlobalSourceCard);

@@ -1,3 +1,5 @@
+import { withObservables } from "@nozbe/watermelondb/react";
+
 import Animated, {
   FadeInLeft,
   FadeOutLeft,
@@ -17,8 +19,7 @@ type Props = {
   onDelete: (factory: Factory) => void;
 };
 
-// enhanced?
-export default function FactoryCard({ factory, onNavigate, onDelete }: Props) {
+function FactoryCard({ factory, onNavigate, onDelete }: Props) {
   function handlePress() {
     onNavigate(factory);
   }
@@ -51,3 +52,9 @@ export default function FactoryCard({ factory, onNavigate, onDelete }: Props) {
     </Animated.View>
   );
 }
+
+const enhance = withObservables(["factory"], ({ factory }) => ({
+  factory: factory,
+}));
+
+export default enhance(FactoryCard);
