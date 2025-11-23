@@ -41,8 +41,8 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
 
   async function handleUpdateName(newName: string) {
     await database.write(async () => {
-      factory.update((f) => {
-        f.name = newName;
+      factory.update((record) => {
+        record.name = newName;
       });
     });
 

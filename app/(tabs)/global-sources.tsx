@@ -30,17 +30,17 @@ export default function GlobalSourcesScreen() {
 
   async function handleAdd(item: ItemId, rate: number) {
     await database.write(async () => {
-      await globalSourcesCollection.create((globalSource) => {
-        globalSource.item = item;
-        globalSource.totalRatePerMin = rate;
+      await globalSourcesCollection.create((record) => {
+        record.item = item;
+        record.totalRatePerMin = rate;
       });
     });
   }
 
   async function handleUpdateRate(globalSource: GlobalSource, newRate: number) {
     await database.write(async () => {
-      globalSource.update((globalSource) => {
-        globalSource.totalRatePerMin = newRate;
+      globalSource.update((record) => {
+        record.totalRatePerMin = newRate;
       });
     });
   }
