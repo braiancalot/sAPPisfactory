@@ -1,18 +1,17 @@
 import { useRef, useState } from "react";
 import { router } from "expo-router";
 
-import database, { factoriesCollection } from "@db/index";
+import Factory from "@db/model/Factory";
+import { addFactory } from "src/services/factoryService";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import FAB from "@ui/FAB";
-
-import AddFactoryModal from "@features/factories/AddFactoryModal";
-import FactoryList from "@features/factories/FactoryList";
-import Factory from "@db/model/Factory";
-import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
+import ConfirmDialog from "@ui/ConfirmDialog";
+import FactoryList from "@features/factories/FactoryList";
+import AddFactoryModal from "@features/factories/AddFactoryModal";
 
 export default function FactoriesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -29,11 +28,7 @@ export default function FactoriesScreen() {
   }
 
   async function handleAdd(name: string) {
-    await database.write(async () => {
-      await factoriesCollection.create((record) => {
-        record.name = name;
-      });
-    });
+    await addFactory(name);
   }
 
   function handleNavigateToFactory(factory: Factory) {

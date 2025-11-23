@@ -1,17 +1,17 @@
 import { useRef, useState } from "react";
 
-import database, { globalSourcesCollection } from "@db/index";
+import GlobalSource from "@db/model/GlobalSource";
+import { addGlobalSource } from "src/services/globalSourceService";
 import { getItemData, ItemId } from "@data/item";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import ScreenContainer from "@ui/ScreenContainer";
-import GlobalSourceList from "@features/global-source/GlobalSourceList";
 import FAB from "@ui/FAB";
-import AddGlobalSourceModal from "@features/global-source/AddGlobalSourceModal";
-import GlobalSource from "@db/model/GlobalSource";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
+import AddGlobalSourceModal from "@features/global-source/AddGlobalSourceModal";
+import GlobalSourceList from "@features/global-source/GlobalSourceList";
 
 export default function GlobalSourcesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -29,12 +29,7 @@ export default function GlobalSourcesScreen() {
   }
 
   async function handleAdd(item: ItemId, rate: number) {
-    await database.write(async () => {
-      await globalSourcesCollection.create((record) => {
-        record.item = item;
-        record.totalRatePerMin = rate;
-      });
-    });
+    await addGlobalSource(item, rate);
   }
 
   async function handleUpdateRate(globalSource: GlobalSource, newRate: number) {
