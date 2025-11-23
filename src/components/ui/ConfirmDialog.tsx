@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
-
-import { BackHandler, View } from "react-native";
+import { forwardRef } from "react";
+import { View } from "react-native";
 
 import {
   BottomSheetBackdrop,
@@ -9,13 +8,14 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
+import { useBottomSheetBackHandler } from "@hooks/useBottomSheetBackHandler";
+
 import Button from "@ui/Button";
 import Text from "@ui/Text";
 
 import { colors } from "@theme/colors";
 
 type Props = {
-  visible: boolean;
   title: string;
   message: string | React.ReactNode;
   onConfirm: () => void;
@@ -24,86 +24,74 @@ type Props = {
   cancelText?: string;
 };
 
-export default function ConfirmDialog({
-  visible,
-  title,
-  message,
-  onConfirm,
-  onCancel,
-  confirmText = "Confirmar",
-  cancelText = "Cancelar",
-}: Props) {
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
+const ConfirmDialog = forwardRef<BottomSheetModal, Props>(
+  (
+    {
+      title,
+      message,
+      onConfirm,
+      onCancel,
+      confirmText = "Confirmar",
+      cancelText = "Cancelar",
+    },
+    ref
+  ) => {
+    const { handleSheetChanges } = useBottomSheetBackHandler(ref);
 
-  useEffect(() => {
-    if (visible) {
-      bottomSheetRef.current?.present();
-    } else {
-      bottomSheetRef.current?.close();
-    }
-
-    if (!visible) return;
-
-    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-      bottomSheetRef.current?.dismiss();
-      onCancel();
-      return true;
-    });
-
-    return () => sub.remove();
-  }, [visible]);
-
-  function handleSheetChange(index: number) {
-    if (index === -1) {
+    function handleDismiss() {
       onCancel();
     }
+
+    return (
+      <BottomSheetModal
+        ref={ref}
+        index={0}
+        enablePanDownToClose
+        backdropComponent={renderBackdrop}
+        backgroundStyle={{ backgroundColor: colors["surface-2"] }}
+        handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
+        onDismiss={handleDismiss}
+        onChange={handleSheetChanges}
+      >
+        <BottomSheetView>
+          <View className="pb-lg">
+            <View className="px-lg pb-md border-b border-border">
+              <Text variant="title" className="text-text-primary">
+                {title}
+              </Text>
+            </View>
+
+            <View className="px-lg mt-lg">
+              {typeof message === "string" ? (
+                <Text variant="body" className="text-text-secondary">
+                  {message}
+                </Text>
+              ) : (
+                <View>{message}</View>
+              )}
+            </View>
+
+            <View className="mt-2xl px-lg flex-row gap-md">
+              <Button
+                onPress={onCancel}
+                variant="secondary"
+                title={cancelText}
+                fullWidth
+              />
+
+              <Button
+                onPress={onConfirm}
+                variant="danger"
+                title={confirmText}
+                fullWidth
+              />
+            </View>
+          </View>
+        </BottomSheetView>
+      </BottomSheetModal>
+    );
   }
-
-  return (
-    <BottomSheetModal
-      ref={bottomSheetRef}
-      enablePanDownToClose
-      backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: colors["surface-2"] }}
-      handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
-      onChange={handleSheetChange}
-    >
-      <BottomSheetView>
-        <View className="px-lg pb-lg">
-          <View className="pt-md pb-lg">
-            <Text variant="title" className="text-text-primary">
-              {title}
-            </Text>
-          </View>
-
-          {typeof message === "string" ? (
-            <Text variant="body" className="text-text-secondary">
-              {message}
-            </Text>
-          ) : (
-            <View>{message}</View>
-          )}
-
-          <View className="mt-2xl flex-row gap-md">
-            <Button
-              onPress={onCancel}
-              variant="secondary"
-              title={cancelText}
-              fullWidth
-            />
-
-            <Button
-              onPress={onConfirm}
-              variant="danger"
-              title={confirmText}
-              fullWidth
-            />
-          </View>
-        </View>
-      </BottomSheetView>
-    </BottomSheetModal>
-  );
-}
+);
 
 function renderBackdrop(props: BottomSheetBackdropProps) {
   return (
@@ -115,3 +103,5 @@ function renderBackdrop(props: BottomSheetBackdropProps) {
     />
   );
 }
+
+export default ConfirmDialog;

@@ -17,6 +17,7 @@ module.exports = function (api) {
             "@theme": "./src/theme",
             "@db": "./src/db",
             "@data": "./src/data",
+            "@hooks": "./src/hooks",
           },
         },
       ],

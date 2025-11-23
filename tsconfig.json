@@ -8,7 +8,8 @@
       "@features/*": ["./src/components/features/*"],
       "@theme/*": ["./src/theme/*"],
       "@db/*": ["./src/db/*"],
-      "@data/*": ["./src/data/*"]
+      "@data/*": ["./src/data/*"],
+      "@hooks/*": ["./src/hooks/*"]
     },
     "ignoreDeprecations": "6.0"
   },

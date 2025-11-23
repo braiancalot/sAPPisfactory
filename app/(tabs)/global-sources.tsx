@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import database, { globalSourcesCollection } from "@db/index";
 import { getItemData, ItemId } from "@data/item";
+
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import GlobalSourceList from "@features/global-source/GlobalSourceList";
@@ -13,10 +15,10 @@ import Text from "@ui/Text";
 
 export default function GlobalSourcesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
-  const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
-    useState(false);
   const [globalSourceToDelete, setGlobalSourceToDelete] =
     useState<GlobalSource | null>(null);
+
+  const confirmSheetRef = useRef<BottomSheetModal>(null);
 
   function handleOpenAddModal() {
     setAddModalVisible(true);
@@ -43,24 +45,24 @@ export default function GlobalSourcesScreen() {
     });
   }
 
-  function handleDelete(globalSource: GlobalSource) {
+  function handleDeleteRequest(globalSource: GlobalSource) {
     setGlobalSourceToDelete(globalSource);
-    setDeleteConfirmationVisible(true);
+    confirmSheetRef.current?.present();
   }
 
-  async function handleConfirmDeletion() {
+  async function handleDelete() {
     if (!globalSourceToDelete) return;
 
     await database.write(async () => {
       await globalSourceToDelete.markAsDeleted();
     });
 
-    setDeleteConfirmationVisible(false);
+    confirmSheetRef.current?.dismiss();
   }
 
   function handleCancelDelete() {
     setGlobalSourceToDelete(null);
-    setDeleteConfirmationVisible(false);
+    confirmSheetRef.current?.dismiss();
   }
 
   const itemToDeleteData = globalSourceToDelete
@@ -71,7 +73,7 @@ export default function GlobalSourcesScreen() {
     <ScreenContainer>
       <GlobalSourceList
         onUpdateGlobalSource={handleUpdateRate}
-        onDeleteGlobalSource={handleDelete}
+        onDeleteGlobalSource={handleDeleteRequest}
       />
 
       <FAB onPress={handleOpenAddModal} />
@@ -83,7 +85,7 @@ export default function GlobalSourcesScreen() {
       />
 
       <ConfirmDialog
-        visible={deleteConfirmationVisible}
+        ref={confirmSheetRef}
         title="Remover fonte global?"
         message={
           <Text variant="body" className="text-text-secondary">
@@ -95,7 +97,7 @@ export default function GlobalSourcesScreen() {
             suprimento.
           </Text>
         }
-        onConfirm={handleConfirmDeletion}
+        onConfirm={handleDelete}
         onCancel={handleCancelDelete}
         confirmText="Remover"
       />

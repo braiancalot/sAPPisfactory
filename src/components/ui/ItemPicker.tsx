@@ -157,7 +157,7 @@ export default function ItemPicker({
           />
 
           <BottomSheetTextInput
-            value={searchQuery}
+            defaultValue=""
             onChangeText={setSearchQuery}
             placeholder="Buscar item..."
             style={typography.body}

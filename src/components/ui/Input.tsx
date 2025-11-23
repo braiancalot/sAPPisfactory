@@ -5,6 +5,7 @@ import { sanitizeNumericInput } from "src/utils/numberFormat";
 
 import Text from "@ui/Text";
 import { typography } from "src/utils/typography";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 function getInputClass(variant: string, error: string, isFocused: boolean) {
   if (variant === "borderless") {
@@ -21,8 +22,9 @@ function getInputClass(variant: string, error: string, isFocused: boolean) {
 }
 
 type Props = {
-  value: string;
+  value?: string;
   onChangeValue: (newValue: string) => void;
+  defaultValue?: string;
   label?: string;
   autoFocus?: boolean;
   placeholder?: string;
@@ -32,11 +34,13 @@ type Props = {
   onBlur?: () => void;
   variant?: "default" | "borderless";
   className?: string;
+  useBottomSheet?: boolean;
 };
 
 export default function Input({
   value,
   onChangeValue,
+  defaultValue,
   label,
   autoFocus = false,
   placeholder = "",
@@ -46,9 +50,12 @@ export default function Input({
   onBlur = () => {},
   variant = "default",
   className = "",
+  useBottomSheet = false,
 }: Props) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
+
+  const isUncontrolled = defaultValue !== undefined;
 
   useEffect(() => {
     const hideSub = Keyboard.addListener("keyboardDidHide", () => {
@@ -72,7 +79,7 @@ export default function Input({
   }
 
   function handleSubmit() {
-    onSubmit(value);
+    onSubmit(value || "");
   }
 
   function handleBlur() {
@@ -84,6 +91,7 @@ export default function Input({
     setIsFocused(true);
   }
 
+  const InputComponent = useBottomSheet ? BottomSheetTextInput : TextInput;
   const inputClass = getInputClass(variant, error, isFocused);
 
   return (
@@ -93,15 +101,16 @@ export default function Input({
           {label}
         </Text>
       )}
-      <TextInput
-        ref={inputRef}
+      <InputComponent
+        ref={inputRef as any}
         className={`${inputClass} ${className}`}
         style={typography.body}
         placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        value={value}
+        defaultValue={defaultValue}
+        value={isUncontrolled ? undefined : value}
         onChangeText={handleTextChange}
         onFocus={handleFocus}
         onBlur={handleBlur}

@@ -17,6 +17,7 @@ type Props = {
   onDelete: (factory: Factory) => void;
 };
 
+// enhanced?
 export default function FactoryCard({ factory, onNavigate, onDelete }: Props) {
   function handlePress() {
     onNavigate(factory);

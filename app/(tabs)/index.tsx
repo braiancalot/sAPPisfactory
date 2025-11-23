@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { router } from "expo-router";
 
 import database, { factoriesCollection } from "@db/index";
+
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import FAB from "@ui/FAB";
@@ -10,13 +13,12 @@ import FactoryList from "@features/factories/FactoryList";
 import Factory from "@db/model/Factory";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
-import { router } from "expo-router";
 
 export default function FactoriesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
-  const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
-    useState(false);
   const [factoryToDelete, setFactoryToDelete] = useState<Factory | null>(null);
+
+  const confirmSheetRef = useRef<BottomSheetModal>(null);
 
   function handleOpenAddModal() {
     setAddModalVisible(true);
@@ -38,31 +40,31 @@ export default function FactoriesScreen() {
     router.push(`/factory/${factory.id}`);
   }
 
-  function handleDelete(factory: Factory) {
+  function handleDeleteRequest(factory: Factory) {
     setFactoryToDelete(factory);
-    setDeleteConfirmationVisible(true);
+    confirmSheetRef.current?.present();
   }
 
-  async function handleConfirmDeletion() {
+  async function handleDelete() {
     if (!factoryToDelete) return;
 
     await database.write(async () => {
       await factoryToDelete.markAsDeleted();
     });
 
-    setDeleteConfirmationVisible(false);
+    confirmSheetRef.current?.dismiss();
   }
 
   function handleCancelDelete() {
     setFactoryToDelete(null);
-    setDeleteConfirmationVisible(false);
+    confirmSheetRef.current?.dismiss();
   }
 
   return (
     <ScreenContainer>
       <FactoryList
         onNavigateToFactory={handleNavigateToFactory}
-        onDeleteFactory={handleDelete}
+        onDeleteFactory={handleDeleteRequest}
       />
 
       <FAB onPress={handleOpenAddModal} />
@@ -74,7 +76,7 @@ export default function FactoriesScreen() {
       />
 
       <ConfirmDialog
-        visible={deleteConfirmationVisible}
+        ref={confirmSheetRef}
         title="Remover fábrica?"
         message={
           <Text variant="body" className="text-text-secondary">
@@ -86,7 +88,7 @@ export default function FactoriesScreen() {
             <Text variant="bodyHighlight">perdidas permanentemente</Text>.
           </Text>
         }
-        onConfirm={handleConfirmDeletion}
+        onConfirm={handleDelete}
         onCancel={handleCancelDelete}
         confirmText="Remover"
       />
