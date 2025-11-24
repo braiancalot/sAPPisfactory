@@ -14,6 +14,18 @@ export const ITEM_DATABASE = {
     name: "Calcário",
     icon: getIconByItemId("limestone"),
   },
+  iron_ingot: {
+    name: "Lingote de ferro",
+    icon: getIconByItemId("iron_ingot"),
+  },
+  reinforced_iron_plate: {
+    name: "Chapa de ferro reforçada",
+    icon: getIconByItemId("reinforced_iron_plate"),
+  },
+  modular_frame: {
+    name: "Armação modular",
+    icon: getIconByItemId("modular_frame"),
+  },
 };
 
 export type ItemId = keyof typeof ITEM_DATABASE;
