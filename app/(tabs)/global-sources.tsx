@@ -10,8 +10,8 @@ import ScreenContainer from "@ui/ScreenContainer";
 import FAB from "@ui/FAB";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
-import AddGlobalSourceModal from "@features/global-source/AddGlobalSourceModal";
-import GlobalSourceList from "@features/global-source/GlobalSourceList";
+import AddGlobalSourceModal from "@features/global-sources/AddGlobalSourceModal";
+import GlobalSourceList from "@features/global-sources/GlobalSourceList";
 
 export default function GlobalSourcesScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);

@@ -2,8 +2,8 @@ import { globalSourcesCollection } from "@db/index";
 import GlobalSource from "@db/model/GlobalSource";
 import { withObservables } from "@nozbe/watermelondb/react";
 
-import GlobalSourceCard from "@features/global-source/GlobalSourceCard";
-import GlobalSourceListEmpty from "@features/global-source/GlobalSourceListEmpty";
+import GlobalSourceCard from "@features/global-sources/GlobalSourceCard";
+import GlobalSourceListEmpty from "@features/global-sources/GlobalSourceListEmpty";
 
 import { FlatList } from "react-native";
 
