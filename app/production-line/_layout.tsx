@@ -18,7 +18,7 @@ export default function TabLayout() {
       <Stack.Screen
         name="[id]"
         options={{
-          title: "Fábrica",
+          title: "Linha de Produção",
         }}
       />
     </Stack>

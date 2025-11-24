@@ -22,6 +22,12 @@ export default class ProductionLine extends Model {
 
   @immutableRelation("factories", "factory_id") factory!: Relation<Factory>;
 
+  @writer async updateOutputBaseRate(newRate: number) {
+    await this.update((productionLine) => {
+      productionLine.outputBaseRate = newRate;
+    });
+  }
+
   @writer async delete() {
     await this.markAsDeleted();
   }

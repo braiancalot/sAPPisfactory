@@ -41,6 +41,11 @@ export const typography = StyleSheet.create({
     fontSize: 28,
     lineHeight: 32,
   },
+  headlineSm: {
+    fontFamily: "RajdhaniBold",
+    fontSize: 20,
+    lineHeight: 24,
+  },
   numberSm: {
     fontFamily: "InterMedium",
     fontSize: 15,

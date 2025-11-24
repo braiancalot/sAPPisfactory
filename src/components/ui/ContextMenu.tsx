@@ -46,7 +46,7 @@ export default function ContextMenu({ options }: Props) {
       >
         <MaterialIcons
           name="more-vert"
-          size={24}
+          size={20}
           color={colors["text-secondary"]}
         />
       </Pressable>

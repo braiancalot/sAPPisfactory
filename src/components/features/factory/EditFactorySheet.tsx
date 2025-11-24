@@ -24,7 +24,7 @@ type Props = {
   onCancel: () => void;
 };
 
-const EditFactoryNameSheet = forwardRef<BottomSheetModal, Props>(
+const EditFactorySheet = forwardRef<BottomSheetModal, Props>(
   ({ factory, onConfirm, onCancel }, ref) => {
     const [newName, setNewName] = useState("");
 
@@ -84,7 +84,11 @@ const EditFactoryNameSheet = forwardRef<BottomSheetModal, Props>(
               variant="primary"
               title="Salvar"
               fullWidth
-              disabled={!newName || newName.trim().length === 0}
+              disabled={
+                !newName ||
+                newName.trim().length === 0 ||
+                newName === factory?.name
+              }
             />
           </View>
         </BottomSheetView>
@@ -104,4 +108,4 @@ function renderBackdrop(props: BottomSheetBackdropProps) {
   );
 }
 
-export default EditFactoryNameSheet;
+export default EditFactorySheet;

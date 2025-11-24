@@ -7,6 +7,7 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import { factoriesCollection } from "@db/index";
 import { addProductionLine } from "src/services/productionLineService";
 import Factory from "@db/model/Factory";
+import ProductionLine from "@db/model/ProductionLine";
 import { getItemData, ItemId } from "@data/item";
 
 import ScreenContainer from "@ui/ScreenContainer";
@@ -14,12 +15,11 @@ import ContextMenu, { MenuItem } from "@ui/ContextMenu";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
 import FAB from "@ui/FAB";
-import EditFactoryNameSheet from "@features/factory/EditFactoryNameSheet";
+import EditFactorySheet from "@features/factory/EditFactorySheet";
 import AddProductionLineModal from "@features/factory/AddProductionLineModal";
+import ProductionLineList from "@features/factory/ProductionLineList";
 
 import { colors } from "@theme/colors";
-import ProductionLineList from "@features/factory/ProductionLineList";
-import ProductionLine from "@db/model/ProductionLine";
 
 type FactoryDetailsProps = {
   factory: Factory;
@@ -132,7 +132,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
         onAdd={handleAdd}
       />
 
-      <EditFactoryNameSheet
+      <EditFactorySheet
         ref={editSheetRef}
         factory={factory}
         onCancel={handleCancelAll}
@@ -168,7 +168,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
                 ? getItemData(productionLineToDelete.outputItem).name
                 : ""}
             </Text>
-            ? As linhas de produção que usam esse recurso ficarão sem
+            ? Outras linhas de produção que usam esse recurso ficarão sem
             suprimento.
           </Text>
         }
