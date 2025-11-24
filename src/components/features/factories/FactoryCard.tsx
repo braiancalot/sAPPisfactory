@@ -7,19 +7,31 @@ import Animated, {
 } from "react-native-reanimated";
 
 import Factory from "@db/model/Factory";
+import ProductionLine from "@db/model/ProductionLine";
 
 import PressableCard from "@ui/PressableCard";
 import Text from "@ui/Text";
+import Item from "@ui/Item";
 
 import { View } from "react-native";
+import { getItemData } from "@data/item";
 
-type Props = {
+type ExternalProps = {
   factory: Factory;
   onNavigate: (factory: Factory) => void;
   onDelete: (factory: Factory) => void;
 };
 
-function FactoryCard({ factory, onNavigate, onDelete }: Props) {
+type Props = ExternalProps & {
+  productionLines: ProductionLine[];
+};
+
+function FactoryCard({
+  factory,
+  productionLines,
+  onNavigate,
+  onDelete,
+}: Props) {
   function handlePress() {
     onNavigate(factory);
   }
@@ -35,17 +47,25 @@ function FactoryCard({ factory, onNavigate, onDelete }: Props) {
       layout={LinearTransition.springify()}
     >
       <PressableCard onPress={handlePress} onLongPress={handleDelete}>
-        <View className="flex-row items-baseline justify-between gap-md">
-          <View className="flex-row items-center gap-lg flex-1">
-            <View className="gap-2xs items-start flex-1">
-              <Text
-                variant="subhead"
-                className="text-text-primary flex-wrap"
-                numberOfLines={2}
-              >
-                {factory.name}
-              </Text>
-            </View>
+        <View className="flex-row items-end justify-between gap-md">
+          <View className="flex-1">
+            <Text
+              variant="subhead"
+              className="text-text-primary flex-wrap"
+              numberOfLines={1}
+            >
+              {factory.name}
+            </Text>
+          </View>
+
+          <View className="flex-row gap-xs">
+            {productionLines.map((productionLine) => (
+              <Item
+                key={productionLine.id}
+                icon={getItemData(productionLine.outputItem).icon}
+                size="sm"
+              />
+            ))}
           </View>
         </View>
       </PressableCard>
@@ -55,6 +75,7 @@ function FactoryCard({ factory, onNavigate, onDelete }: Props) {
 
 const enhance = withObservables(["factory"], ({ factory }) => ({
   factory: factory,
+  productionLines: factory.productionLines,
 }));
 
-export default enhance(FactoryCard) as React.ComponentType<Props>;
+export default enhance(FactoryCard) as React.ComponentType<ExternalProps>;
