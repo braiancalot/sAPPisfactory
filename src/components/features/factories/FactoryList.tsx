@@ -7,10 +7,13 @@ import FactoryListEmpty from "@features/factories/FactoryListEmpty";
 
 import { FlatList } from "react-native";
 
-type Props = {
-  factories: Factory[];
+type ExternalProps = {
   onNavigateToFactory: (factory: Factory) => void;
   onDeleteFactory: (factory: Factory) => void;
+};
+
+type Props = ExternalProps & {
+  factories: Factory[];
 };
 
 function FactoryList({
@@ -39,4 +42,4 @@ const enhance = withObservables([], () => ({
   factories: factoriesCollection.query(),
 }));
 
-export default enhance(FactoryList);
+export default enhance(FactoryList) as React.ComponentType<ExternalProps>;

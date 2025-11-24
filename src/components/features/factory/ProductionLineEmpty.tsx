@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import Text from "@ui/Text";
 

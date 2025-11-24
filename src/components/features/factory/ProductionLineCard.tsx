@@ -76,4 +76,4 @@ const enhance = withObservables(["productionLine"], ({ productionLine }) => ({
   productionLine: productionLine,
 }));
 
-export default enhance(ProductionLineCard);
+export default enhance(ProductionLineCard) as React.ComponentType<Props>;

@@ -106,4 +106,4 @@ const enhance = withObservables(["globalSource"], ({ globalSource }) => ({
   globalSource: globalSource,
 }));
 
-export default enhance(GlobalSourceCard);
+export default enhance(GlobalSourceCard) as React.ComponentType<Props>;

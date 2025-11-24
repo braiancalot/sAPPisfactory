@@ -7,10 +7,13 @@ import GlobalSourceListEmpty from "@features/global-source/GlobalSourceListEmpty
 
 import { FlatList } from "react-native";
 
-type Props = {
-  globalSources: GlobalSource[];
+type ExternalProps = {
   onUpdateGlobalSource: (source: GlobalSource, newRate: number) => void;
   onDeleteGlobalSource: (source: GlobalSource) => void;
+};
+
+type Props = ExternalProps & {
+  globalSources: GlobalSource[];
 };
 
 function GlobalSourceList({
@@ -39,4 +42,4 @@ const enhance = withObservables([], () => ({
   globalSources: globalSourcesCollection.query(),
 }));
 
-export default enhance(GlobalSourceList);
+export default enhance(GlobalSourceList) as React.ComponentType<ExternalProps>;

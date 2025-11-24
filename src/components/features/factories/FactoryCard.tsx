@@ -57,4 +57,4 @@ const enhance = withObservables(["factory"], ({ factory }) => ({
   factory: factory,
 }));
 
-export default enhance(FactoryCard);
+export default enhance(FactoryCard) as React.ComponentType<Props>;
