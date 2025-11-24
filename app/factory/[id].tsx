@@ -1,42 +1,74 @@
+import { useRef, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useRef } from "react";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 import { withObservables } from "@nozbe/watermelondb/react";
-import database, { factoriesCollection } from "@db/index";
+import { factoriesCollection } from "@db/index";
+import { addProductionLine } from "src/services/productionLineService";
 import Factory from "@db/model/Factory";
+import { getItemData, ItemId } from "@data/item";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import ContextMenu, { MenuItem } from "@ui/ContextMenu";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
-
+import FAB from "@ui/FAB";
 import EditFactoryNameSheet from "@features/factory/EditFactoryNameSheet";
-import { ActivityIndicator, View } from "react-native";
+import AddProductionLineModal from "@features/factory/AddProductionLineModal";
+
 import { colors } from "@theme/colors";
+import ProductionLineList from "@features/factory/ProductionLineList";
+import ProductionLine from "@db/model/ProductionLine";
 
 type FactoryDetailsProps = {
   factory: Factory;
 };
 
 function FactoryDetails({ factory }: FactoryDetailsProps) {
+  const [addModalVisible, setAddModalVisible] = useState(false);
   const { dismissAll } = useBottomSheetModal();
+  const [productionLineToDelete, setProductionLineToDelete] =
+    useState<ProductionLine | null>(null);
 
   const editSheetRef = useRef<BottomSheetModal>(null);
-  const confirmSheetRef = useRef<BottomSheetModal>(null);
+  const confirmFactoryDeletionSheetRef = useRef<BottomSheetModal>(null);
+  const confirmProductionLineDeletionSheetRef = useRef<BottomSheetModal>(null);
+
+  function handleOpenAddModal() {
+    setAddModalVisible(true);
+  }
+
+  function handleCloseAddModal() {
+    setAddModalVisible(false);
+  }
 
   function handleOpenEditSheet() {
     dismissAll();
     setTimeout(() => editSheetRef.current?.present(), 100);
   }
 
-  function handleDeleteRequest() {
+  function handleDeleteFactoryRequest() {
     dismissAll();
-    setTimeout(() => confirmSheetRef.current?.present(), 100);
+    setTimeout(() => confirmFactoryDeletionSheetRef.current?.present(), 100);
+  }
+
+  function handleDeleteProductionLineRequest(productionLine: ProductionLine) {
+    setProductionLineToDelete(productionLine);
+    confirmProductionLineDeletionSheetRef.current?.present();
   }
 
   function handleCancelAll() {
     dismissAll();
+  }
+
+  function handleCancelProductionLineDeletion() {
+    setProductionLineToDelete(null);
+    confirmProductionLineDeletionSheetRef.current?.dismiss();
+  }
+
+  async function handleAdd(item: ItemId, rate: number) {
+    await addProductionLine(factory, item, rate);
   }
 
   async function handleUpdateName(newName: string) {
@@ -45,11 +77,23 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
     dismissAll();
   }
 
-  async function handleConfirmDeletion() {
+  async function handleConfirmFactoryDeletion() {
     await factory.delete();
 
     dismissAll();
     router.back();
+  }
+
+  async function handleConfirmProductionLineDeletion() {
+    if (!productionLineToDelete) return;
+
+    await productionLineToDelete.delete();
+    setProductionLineToDelete(null);
+    confirmProductionLineDeletionSheetRef.current?.dismiss();
+  }
+
+  function handleNavigateToProductionLine(productionLine: ProductionLine) {
+    router.push(`production-line/${productionLine.id}`);
   }
 
   const menuOptions: MenuItem[] = [
@@ -60,7 +104,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
     },
     {
       label: "Excluir",
-      onPress: handleDeleteRequest,
+      onPress: handleDeleteFactoryRequest,
       icon: "delete",
     },
   ];
@@ -74,6 +118,20 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
         }}
       />
 
+      <ProductionLineList
+        factory={factory}
+        onNavigateToProductionLine={handleNavigateToProductionLine}
+        onDeleteProductionLine={handleDeleteProductionLineRequest}
+      />
+
+      <FAB onPress={handleOpenAddModal} />
+
+      <AddProductionLineModal
+        visible={addModalVisible}
+        onClose={handleCloseAddModal}
+        onAdd={handleAdd}
+      />
+
       <EditFactoryNameSheet
         ref={editSheetRef}
         factory={factory}
@@ -82,7 +140,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
       />
 
       <ConfirmDialog
-        ref={confirmSheetRef}
+        ref={confirmFactoryDeletionSheetRef}
         title="Remover fábrica?"
         message={
           <Text variant="body" className="text-text-secondary">
@@ -95,7 +153,27 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
           </Text>
         }
         onCancel={handleCancelAll}
-        onConfirm={handleConfirmDeletion}
+        onConfirm={handleConfirmFactoryDeletion}
+        confirmText="Remover"
+      />
+
+      <ConfirmDialog
+        ref={confirmProductionLineDeletionSheetRef}
+        title="Remover linha de produção?"
+        message={
+          <Text variant="body" className="text-text-secondary">
+            Tem certeza que deseja remover a linha de produção{" "}
+            <Text variant="bodyHighlight" className="text-secondary-light">
+              {productionLineToDelete
+                ? getItemData(productionLineToDelete.outputItem).name
+                : ""}
+            </Text>
+            ? As linhas de produção que usam esse recurso ficarão sem
+            suprimento.
+          </Text>
+        }
+        onConfirm={handleConfirmProductionLineDeletion}
+        onCancel={handleCancelProductionLineDeletion}
         confirmText="Remover"
       />
     </ScreenContainer>

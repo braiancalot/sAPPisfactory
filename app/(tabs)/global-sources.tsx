@@ -45,7 +45,7 @@ export default function GlobalSourcesScreen() {
     if (!globalSourceToDelete) return;
 
     await globalSourceToDelete.delete();
-
+    setGlobalSourceToDelete(null);
     confirmSheetRef.current?.dismiss();
   }
 

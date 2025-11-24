@@ -37,7 +37,7 @@ export default function AddFactoryModal({ visible, onClose, onAdd }: Props) {
       <View className="gap-lg">
         <Input
           label="Nome"
-          placeholder="Ex.: Siderúrgica "
+          placeholder="Siderúrgica "
           value={name}
           onChangeValue={setName}
         />

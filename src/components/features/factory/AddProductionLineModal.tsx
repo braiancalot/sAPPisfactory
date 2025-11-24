@@ -8,6 +8,7 @@ import Modal from "@ui/Modal";
 import Input from "@ui/Input";
 import Button from "@ui/Button";
 import ItemPicker from "@ui/ItemPicker";
+import Text from "@ui/Text";
 
 type Props = {
   visible: boolean;
@@ -15,7 +16,7 @@ type Props = {
   onAdd: (item: ItemId, rate: number) => Promise<void>;
 };
 
-export default function AddGlobalSourceModal({
+export default function AddProductionLineModal({
   visible,
   onClose,
   onAdd,
@@ -43,21 +44,29 @@ export default function AddGlobalSourceModal({
   const isValid = selectedItemId !== null && !!rate;
 
   return (
-    <Modal visible={visible} onClose={handleClose} title="Adicionar fonte">
+    <Modal
+      visible={visible}
+      onClose={handleClose}
+      title="Adicionar linha de produção"
+    >
       <View className="gap-lg">
         <ItemPicker
           selectedItemId={selectedItemId}
           onSelect={setSelectedItemId}
-          label="Item"
+          label="Item produzido"
         />
 
         <Input
-          label="Produção (por minuto)"
-          placeholder="180"
+          label="Taxa base de produção (por minuto)"
+          placeholder="60"
           numeric
           value={rate}
           onChangeValue={setRate}
         />
+
+        <Text variant="caption" className="text-text-tertiary">
+          Inputs (ingredientes) são definidos na tela da linha de produção.
+        </Text>
       </View>
 
       <View className="flex-row gap-md mt-2xl">
