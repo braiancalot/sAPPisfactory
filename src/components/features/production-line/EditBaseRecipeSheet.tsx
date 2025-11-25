@@ -25,7 +25,7 @@ type Props = {
   onCancel: () => void;
 };
 
-const EditProductionLineSheet = forwardRef<BottomSheetModal, Props>(
+const EditBaseRecipeSheet = forwardRef<BottomSheetModal, Props>(
   ({ productionLine, onConfirm, onCancel }, ref) => {
     const [newRate, setNewNumber] = useState("");
 
@@ -111,4 +111,4 @@ function renderBackdrop(props: BottomSheetBackdropProps) {
   );
 }
 
-export default EditProductionLineSheet;
+export default EditBaseRecipeSheet;

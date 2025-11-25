@@ -29,8 +29,8 @@ const variantStyles = {
   ghost: {
     container: "bg-transparent active:bg-background",
     containerDisabled: "bg-transparent",
-    text: "text-primary",
-    textDisabled: "text-primary",
+    text: "text-secondary",
+    textDisabled: "text-secondary",
   },
 };
 

@@ -10,10 +10,9 @@ import Factory from "@db/model/Factory";
 import { getItemData } from "@data/item";
 
 import ScreenContainer from "@ui/ScreenContainer";
-import ContextMenu, { MenuItem } from "@ui/ContextMenu";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
-import EditProductionLineSheet from "@features/production-line/EditProductionLineSheet";
+import BaseRecipeCard from "@features/production-line/BaseRecipeCard";
 
 import { colors } from "@theme/colors";
 
@@ -28,7 +27,6 @@ function ProductionLineDetails({
 }: ProductionLineDetailsProps) {
   const { dismissAll } = useBottomSheetModal();
 
-  const editSheetRef = useRef<BottomSheetModal>(null);
   const confirmProductionLineDeletionSheetRef = useRef<BottomSheetModal>(null);
 
   const outputItemData = getItemData(productionLine.outputItem);
@@ -38,26 +36,7 @@ function ProductionLineDetails({
 
   const headerTitle = `${factoryName} / ${itemName}`;
 
-  function handleOpenEditSheet() {
-    dismissAll();
-    setTimeout(() => editSheetRef.current?.present(), 100);
-  }
-
-  function handleDeleteProductionLineRequest() {
-    dismissAll();
-    setTimeout(
-      () => confirmProductionLineDeletionSheetRef.current?.present(),
-      100
-    );
-  }
-
   function handleCancelAll() {
-    dismissAll();
-  }
-
-  async function handleUpdateRate(newRate: number) {
-    await productionLine.updateOutputBaseRate(newRate);
-
     dismissAll();
   }
 
@@ -68,34 +47,17 @@ function ProductionLineDetails({
     router.back();
   }
 
-  const menuOptions: MenuItem[] = [
-    {
-      label: "Editar",
-      onPress: handleOpenEditSheet,
-      icon: "edit",
-    },
-    {
-      label: "Excluir",
-      onPress: handleDeleteProductionLineRequest,
-      icon: "delete",
-    },
-  ];
-
   return (
     <ScreenContainer>
       <Stack.Screen
         options={{
           title: headerTitle,
-          headerRight: () => <ContextMenu options={menuOptions} />,
         }}
       />
 
-      <EditProductionLineSheet
-        ref={editSheetRef}
-        productionLine={productionLine}
-        onCancel={handleCancelAll}
-        onConfirm={handleUpdateRate}
-      />
+      <View className="p-lg">
+        <BaseRecipeCard productionLine={productionLine} />
+      </View>
 
       <ConfirmDialog
         ref={confirmProductionLineDeletionSheetRef}
