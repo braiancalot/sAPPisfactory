@@ -1,7 +1,7 @@
 import { Text as RNText, TextProps } from "react-native";
 import { typography } from "src/utils/typography";
 
-type TextVariant =
+export type TextVariant =
   | "caption"
   | "footnote"
   | "body"
