@@ -5,5 +5,5 @@ type Props = {
 };
 
 export default function Card({ children }: Props) {
-  return <View className="bg-surface-2 rounded-lg p-lg">{children}</View>;
+  return <View className="bg-surface-1 rounded-lg p-lg">{children}</View>;
 }

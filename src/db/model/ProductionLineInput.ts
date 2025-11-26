@@ -25,6 +25,7 @@ export default class ProductionLineInput extends Model {
 
   @field("input_item") inputItem!: ItemId;
   @field("input_base_rate") inputBaseRate!: number;
+
   @field("source_type") sourceType!: "GLOBAL_SOURCE" | "PRODUCTION_LINE";
 
   @immutableRelation("production_lines", "production_line_id")
@@ -35,6 +36,12 @@ export default class ProductionLineInput extends Model {
 
   @immutableRelation("production_lines", "source_production_line_id")
   sourceProductionLine!: Relation<ProductionLine>;
+
+  @writer async updateInputBaseRate(newRate: number) {
+    await this.update((productionLineInput) => {
+      productionLineInput.inputBaseRate = newRate;
+    });
+  }
 
   @writer async delete() {
     await this.markAsDeleted();

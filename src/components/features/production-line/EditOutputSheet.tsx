@@ -21,13 +21,13 @@ import { colors } from "@theme/colors";
 
 type Props = {
   productionLine: ProductionLine | null;
-  onConfirm: (newNumber: number) => void;
+  onConfirm: (newRate: number) => void;
   onCancel: () => void;
 };
 
-const EditBaseRecipeSheet = forwardRef<BottomSheetModal, Props>(
+const EditOutputSheet = forwardRef<BottomSheetModal, Props>(
   ({ productionLine, onConfirm, onCancel }, ref) => {
-    const [newRate, setNewNumber] = useState("");
+    const [newRate, setNewRate] = useState("");
 
     const { handleSheetChanges } = useBottomSheetBackHandler(ref);
 
@@ -65,9 +65,10 @@ const EditBaseRecipeSheet = forwardRef<BottomSheetModal, Props>(
               defaultValue={sanitizeNumericInput(
                 productionLine?.outputBaseRate.toString() || "0"
               )}
-              onChangeValue={setNewNumber}
+              onChangeValue={setNewRate}
               useBottomSheet
               numeric
+              autoFocus
             />
           </View>
 
@@ -111,4 +112,4 @@ function renderBackdrop(props: BottomSheetBackdropProps) {
   );
 }
 
-export default EditBaseRecipeSheet;
+export default EditOutputSheet;
