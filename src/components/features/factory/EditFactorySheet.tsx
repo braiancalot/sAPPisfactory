@@ -64,6 +64,7 @@ const EditFactorySheet = forwardRef<BottomSheetModal, Props>(
               defaultValue={factory?.name || ""}
               onChangeValue={setNewName}
               useBottomSheet
+              autoFocus
             />
           </View>
 
