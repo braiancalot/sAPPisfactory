@@ -12,7 +12,7 @@ import { getItemData, ItemId } from "@data/item";
 import { addProductionLine } from "@services/productionLineService";
 
 import ScreenContainer from "@ui/ScreenContainer";
-import ContextMenu, { MenuItem } from "@ui/ContextMenu";
+import ContextMenu from "@ui/ContextMenu";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
 import FAB from "@ui/FAB";
@@ -21,6 +21,7 @@ import AddProductionLineModal from "@features/factory/AddProductionLineModal";
 import ProductionLineList from "@features/factory/ProductionLineList";
 
 import { colors } from "@theme/colors";
+import { MenuItem } from "@ui/MenuSheet";
 
 type FactoryDetailsProps = {
   factory: Factory;
@@ -107,6 +108,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
       label: "Excluir",
       onPress: handleDeleteFactoryRequest,
       icon: "delete",
+      isDestructive: true,
     },
   ];
 
