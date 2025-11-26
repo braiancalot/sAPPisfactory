@@ -9,7 +9,8 @@
       "@theme/*": ["./src/theme/*"],
       "@db/*": ["./src/db/*"],
       "@data/*": ["./src/data/*"],
-      "@hooks/*": ["./src/hooks/*"]
+      "@hooks/*": ["./src/hooks/*"],
+      "@services/*": ["./src/services/*"]
     },
     "ignoreDeprecations": "6.0"
   },

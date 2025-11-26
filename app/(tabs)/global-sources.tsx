@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 
 import GlobalSource from "@db/model/GlobalSource";
-import { addGlobalSource } from "src/services/globalSourceService";
+import { addGlobalSource } from "@services/globalSourceService";
 import { getItemData, ItemId } from "@data/item";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";

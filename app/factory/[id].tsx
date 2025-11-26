@@ -5,10 +5,11 @@ import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 import { factoriesCollection } from "@db/index";
-import { addProductionLine } from "src/services/productionLineService";
 import Factory from "@db/model/Factory";
 import ProductionLine from "@db/model/ProductionLine";
+
 import { getItemData, ItemId } from "@data/item";
+import { addProductionLine } from "@services/productionLineService";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import ContextMenu, { MenuItem } from "@ui/ContextMenu";

@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { router } from "expo-router";
 
 import Factory from "@db/model/Factory";
-import { addFactory } from "src/services/factoryService";
+import { addFactory } from "@services/factoryService";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
