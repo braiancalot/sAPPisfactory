@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { formatPtBrNumber } from "src/utils/numberFormat";
 
 import Text from "@ui/Text";
@@ -51,9 +51,3 @@ export default function RateDisplay({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontFamily: "InterBold",
-  },
-});
