@@ -6,6 +6,7 @@ import {
   BottomSheetModal,
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
 import { useBottomSheetBackHandler } from "src/hooks/useBottomSheetBackHandler";
@@ -28,54 +29,53 @@ type Props = {
 const MenuSheet = forwardRef<BottomSheetModal, Props>(({ options }, ref) => {
   const { handleSheetChanges } = useBottomSheetBackHandler(ref);
 
-  const snapPoints = [`${4 + 5.5 * options.length}%`];
-
   return (
     <BottomSheetModal
       ref={ref}
       index={0}
-      snapPoints={snapPoints}
-      enableDynamicSizing={false}
+      enableDynamicSizing={true}
       enablePanDownToClose
       backdropComponent={renderBackdrop}
       backgroundStyle={{ backgroundColor: colors["surface-2"] }}
       handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
       onChange={handleSheetChanges}
     >
-      <View className="gap-xs">
-        {options.map((option) => (
-          <View key={option.label}>
-            <Pressable
-              className="px-md py-sm flex-row justify-start items-center gap-md active:bg-surface-1"
-              onPress={() => {
-                if (ref && "current" in ref) {
-                  ref?.current?.close();
-                }
+      <BottomSheetView className="pb-md">
+        <View className="gap-2xs">
+          {options.map((option) => (
+            <View key={option.label}>
+              <Pressable
+                className="px-md py-md flex-row items-center gap-md active:bg-surface-3"
+                onPress={() => {
+                  if (ref && "current" in ref) {
+                    ref?.current?.close();
+                  }
 
-                option.onPress();
-              }}
-            >
-              <MaterialIcons
-                name={option.icon}
-                size={18}
-                color={
-                  option.isDestructive
-                    ? colors.danger
-                    : colors["text-secondary"]
-                }
-              />
-              <Text
-                variant="subhead"
-                className={
-                  option.isDestructive ? "text-danger" : "text-text-primary"
-                }
+                  option.onPress();
+                }}
               >
-                {option.label}
-              </Text>
-            </Pressable>
-          </View>
-        ))}
-      </View>
+                <MaterialIcons
+                  name={option.icon}
+                  size={22}
+                  color={
+                    option.isDestructive
+                      ? colors.danger
+                      : colors["text-secondary"]
+                  }
+                />
+                <Text
+                  variant="body"
+                  className={
+                    option.isDestructive ? "text-danger" : "text-text-primary"
+                  }
+                >
+                  {option.label}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      </BottomSheetView>
     </BottomSheetModal>
   );
 });
