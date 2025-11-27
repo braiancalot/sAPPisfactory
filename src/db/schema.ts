@@ -36,7 +36,7 @@ export default appSchema({
           isOptional: true,
         },
         {
-          name: "source_production_source_id",
+          name: "source_production_line_id",
           type: "string",
           isIndexed: true,
           isOptional: true,
