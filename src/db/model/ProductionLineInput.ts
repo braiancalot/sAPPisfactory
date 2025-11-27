@@ -17,29 +17,40 @@ export default class ProductionLineInput extends Model {
   static associations: Associations = {
     production_lines: { type: "belongs_to", key: "production_line_id" },
     global_sources: { type: "belongs_to", key: "global_source_id" },
-    production_lines_sources: {
-      type: "belongs_to",
-      key: "source_production_line_id",
-    },
   };
 
   @field("input_item") inputItem!: ItemId;
   @field("input_base_rate") inputBaseRate!: number;
-
   @field("source_type") sourceType!: "GLOBAL_SOURCE" | "PRODUCTION_LINE";
 
   @immutableRelation("production_lines", "production_line_id")
   productionLine!: Relation<ProductionLine>;
 
-  @immutableRelation("global_sources", "global_source_id")
+  @relation("global_sources", "global_source_id")
   globalSource!: Relation<GlobalSource>;
 
-  @immutableRelation("production_lines", "source_production_line_id")
+  @relation("production_lines", "source_production_line_id")
   sourceProductionLine!: Relation<ProductionLine>;
 
   @writer async updateInputBaseRate(newRate: number) {
     await this.update((productionLineInput) => {
       productionLineInput.inputBaseRate = newRate;
+    });
+  }
+
+  @writer async associateGlobalSource(id: string) {
+    await this.update((productionLineInput) => {
+      productionLineInput.sourceType = "GLOBAL_SOURCE";
+      productionLineInput.globalSource.id = id;
+      productionLineInput.sourceProductionLine.id = null;
+    });
+  }
+
+  @writer async associateProductionLine(id: string) {
+    await this.update((productionLineInput) => {
+      productionLineInput.sourceType = "PRODUCTION_LINE";
+      productionLineInput.sourceProductionLine.id = id;
+      productionLineInput.globalSource.id = null;
     });
   }
 

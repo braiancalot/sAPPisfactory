@@ -1,6 +1,9 @@
 import { useMemo, useRef, useState } from "react";
 import { View } from "react-native";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import Animated, {
+  LayoutAnimationConfig,
+  LinearTransition,
+} from "react-native-reanimated";
 
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
@@ -23,6 +26,11 @@ import AddInputModal from "@features/production-line/AddInputModal";
 import EditOutputSheet from "@features/production-line/EditOutputSheet";
 import EditInputSheet from "@features/production-line/EditInputSheet";
 import InputRow from "@features/production-line/InputRow";
+import AssociateInputSourceSheet, {
+  SourceType as SourceTypes,
+} from "@features/production-line/AssociateInputSourceSheet";
+
+import type { SourceType } from "@features/production-line/AssociateInputSourceSheet";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -46,6 +54,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
   const menuSheetRef = useRef<BottomSheetModal>(null);
   const editOutputSheetRef = useRef<BottomSheetModal>(null);
   const editInputSheetRef = useRef<BottomSheetModal>(null);
+  const associateInputSourceSheetRef = useRef<BottomSheetModal>(null);
 
   const outputItemData = getItemData(productionLine.outputItem);
 
@@ -73,6 +82,11 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
     setTimeout(() => editInputSheetRef.current?.present(), 100);
   }
 
+  async function handleRequestAssociateSource() {
+    dismissAll();
+    setTimeout(() => associateInputSourceSheetRef.current?.present(), 100);
+  }
+
   function handleCloseAddInputModal() {
     setAddInputModalVisible(false);
   }
@@ -91,6 +105,21 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
       await menuContext.data.updateInputBaseRate(newRate);
       dismissAll();
     }
+  }
+
+  async function handleAssociateInputSource(id: string, type: SourceType) {
+    const inputToUpdate =
+      menuContext?.type === "input" ? menuContext.data : null;
+
+    if (!inputToUpdate) return;
+
+    if (type === SourceTypes.GLOBAL_SOURCE) {
+      await inputToUpdate.associateGlobalSource(id);
+    } else if (type === SourceTypes.PRODUCTION_LINE) {
+      await inputToUpdate.associateProductionLine(id);
+    }
+
+    dismissAll();
   }
 
   async function handleAddInput(item: ItemId, rate: number) {
@@ -120,6 +149,11 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
     if (menuContext.type === "input") {
       return [
         {
+          label: "Associar origem",
+          icon: "link",
+          onPress: () => handleRequestAssociateSource(),
+        },
+        {
           label: "Editar taxa base de consumo",
           icon: "edit",
           onPress: () => handleRequestEditInputRate(),
@@ -137,7 +171,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
   }, [menuContext]);
 
   return (
-    <>
+    <LayoutAnimationConfig skipEntering>
       <Card>
         <View className="flex-row items-center justify-between">
           <Text variant="title" className="text-text-secondary">
@@ -145,7 +179,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
           </Text>
         </View>
 
-        <View className="mt-lg mb-xs px-xs flex-row items-center justify-between">
+        <View className="mt-lg mb-xs px-xs">
           <Text variant="caption" className="text-text-tertiary uppercase">
             Produzindo
           </Text>
@@ -169,7 +203,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
           </View>
         </PressableCard>
 
-        <View className="mt-lg mb-xs px-xs flex-row items-center justify-between">
+        <View className="mt-lg mb-xs px-xs">
           <Text variant="caption" className="text-text-tertiary uppercase">
             Ingredientes ({inputs.length})
           </Text>
@@ -211,12 +245,20 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
         onConfirm={handleUpdateInputRate}
       />
 
+      <AssociateInputSourceSheet
+        ref={associateInputSourceSheetRef}
+        input={menuContext?.type === "input" ? menuContext.data : null}
+        excludedLineId={productionLine.id}
+        onCancel={handleCancelAll}
+        onSelect={handleAssociateInputSource}
+      />
+
       <AddInputModal
         visible={addInputModalVisible}
         onClose={handleCloseAddInputModal}
         onAdd={handleAddInput}
       />
-    </>
+    </LayoutAnimationConfig>
   );
 }
 
