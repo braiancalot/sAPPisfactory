@@ -40,6 +40,8 @@ export const ITEM_LIST: Item[] = (
   Object.entries(ITEM_DATABASE) as [ItemId, Omit<Item, "id">][]
 ).map(([id, data]) => ({ id, ...data }));
 
-export function getItemData(itemId: ItemId): Omit<Item, "id"> {
-  return ITEM_DATABASE[itemId];
+export function getItemData(itemId: ItemId | undefined): Omit<Item, "id"> {
+  return itemId
+    ? ITEM_DATABASE[itemId]
+    : { name: "Desconhecido", icon: getIconByItemId("default") };
 }
