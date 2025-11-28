@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, {
   LayoutAnimationConfig,
@@ -11,19 +11,16 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
 
-import { getItemData, ItemId } from "@data/item";
+import { ItemId } from "@data/item";
 import { addProductionLineInput } from "@services/productionLineService";
 
 import Card from "@ui/Card";
-import Item from "@ui/Item";
-import RateDisplay from "@ui/RateDisplay";
+
 import Text from "@ui/Text";
 import Button from "@ui/Button";
-import PressableCard from "@ui/PressableCard";
 import MenuSheet, { MenuItem } from "@ui/MenuSheet";
 
 import AddInputModal from "@features/production-line/AddInputModal";
-import EditOutputSheet from "@features/production-line/EditOutputSheet";
 import EditInputSheet from "@features/production-line/EditInputSheet";
 import InputRow from "@features/production-line/InputRow";
 import AssociateInputSourceSheet, {
@@ -32,6 +29,7 @@ import AssociateInputSourceSheet, {
 
 import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
 import { router } from "expo-router";
+import ProductionLineOutputCard from "./ProductionLineOutputCard";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -41,36 +39,24 @@ type Props = ExternalProps & {
   inputs: ProductionLineInput[];
 };
 
-type MenuContext =
-  | { type: "output" }
-  | { type: "input"; data: ProductionLineInput }
-  | null;
-
 function BaseRecipeCard({ productionLine, inputs }: Props) {
-  const [addInputModalVisible, setAddInputModalVisible] = useState(false);
-  const [menuContext, setMenuContext] = useState<MenuContext>(null);
-
   const { dismissAll } = useBottomSheetModal();
 
+  const [addInputModalVisible, setAddInputModalVisible] = useState(false);
+  const [selectedInput, setSelectedInput] =
+    useState<ProductionLineInput | null>(null);
+
   const menuSheetRef = useRef<BottomSheetModal>(null);
-  const editOutputSheetRef = useRef<BottomSheetModal>(null);
   const editInputSheetRef = useRef<BottomSheetModal>(null);
   const associateInputSourceSheetRef = useRef<BottomSheetModal>(null);
-
-  const outputItemData = getItemData(productionLine.outputItem);
 
   function handleOpenAddInputModal() {
     setAddInputModalVisible(true);
   }
 
-  function handlePressOutput() {
-    setMenuContext({ type: "output" });
-    menuSheetRef.current?.present();
-  }
-
   function handleInputRowAction(input: ProductionLineInput) {
     if (!input.sourceType) {
-      setMenuContext({ type: "input", data: input });
+      setSelectedInput(input);
       setTimeout(() => associateInputSourceSheetRef.current?.present(), 100);
       return;
     }
@@ -83,13 +69,8 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
   }
 
   function handlePressInput(input: ProductionLineInput) {
-    setMenuContext({ type: "input", data: input });
+    setSelectedInput(input);
     menuSheetRef.current?.present();
-  }
-
-  async function handleRequestEditOutputRate() {
-    dismissAll();
-    setTimeout(() => editOutputSheetRef.current?.present(), 100);
   }
 
   async function handleRequestEditInputRate() {
@@ -110,28 +91,20 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
     dismissAll();
   }
 
-  async function handleUpdateOutputRate(newRate: number) {
-    await productionLine.updateOutputBaseRate(newRate);
-    dismissAll();
-  }
-
   async function handleUpdateInputRate(newRate: number) {
-    if (menuContext?.type === "input" && menuContext.data) {
-      await menuContext.data.updateInputBaseRate(newRate);
+    if (selectedInput) {
+      await selectedInput.updateInputBaseRate(newRate);
       dismissAll();
     }
   }
 
   async function handleAssociateInputSource(id: string, type: SourceType) {
-    const inputToUpdate =
-      menuContext?.type === "input" ? menuContext.data : null;
-
-    if (!inputToUpdate) return;
+    if (!selectedInput) return;
 
     if (type === SourceTypes.GLOBAL_SOURCE) {
-      await inputToUpdate.associateGlobalSource(id);
+      await selectedInput.associateGlobalSource(id);
     } else if (type === SourceTypes.PRODUCTION_LINE) {
-      await inputToUpdate.associateProductionLine(id);
+      await selectedInput.associateProductionLine(id);
     }
 
     dismissAll();
@@ -142,53 +115,35 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
   }
 
   async function handleDeleteInput() {
-    if (menuContext?.type === "input" && menuContext.data) {
-      await menuContext.data.delete();
+    if (selectedInput) {
+      await selectedInput.delete();
       dismissAll();
     }
   }
 
-  const menuOptions = useMemo((): MenuItem[] => {
-    if (!menuContext) return [];
-
-    if (menuContext.type === "output") {
-      return [
-        {
-          label: "Editar taxa base de produção",
-          icon: "edit",
-          onPress: () => handleRequestEditOutputRate(),
-        },
-      ];
-    }
-
-    if (menuContext.type === "input") {
-      return [
-        {
-          label: "Associar origem",
-          icon: "link",
-          onPress: () => handleRequestAssociateSource(),
-        },
-        {
-          label: "Editar taxa base de consumo",
-          icon: "edit",
-          onPress: () => handleRequestEditInputRate(),
-        },
-        {
-          label: "Excluir ingrediente",
-          icon: "delete",
-          isDestructive: true,
-          onPress: () => handleDeleteInput(),
-        },
-      ];
-    }
-
-    return [];
-  }, [menuContext]);
+  const menuOptions: MenuItem[] = [
+    {
+      label: "Associar origem",
+      icon: "link",
+      onPress: () => handleRequestAssociateSource(),
+    },
+    {
+      label: "Editar taxa base de consumo",
+      icon: "edit",
+      onPress: () => handleRequestEditInputRate(),
+    },
+    {
+      label: "Excluir ingrediente",
+      icon: "delete",
+      isDestructive: true,
+      onPress: () => handleDeleteInput(),
+    },
+  ];
 
   return (
     <LayoutAnimationConfig skipEntering>
-      <Card>
-        <View className="flex-row items-center justify-between">
+      <Card className="p-md">
+        <View className="flex-row items-center justify-between px-xs">
           <Text variant="title" className="text-text-secondary">
             Receita base
           </Text>
@@ -200,23 +155,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
           </Text>
         </View>
 
-        <PressableCard onPress={handlePressOutput}>
-          <View className="flex-row items-center gap-md justify-between py-xs">
-            <View className="flex-row items-center gap-lg flex-1">
-              <Item icon={outputItemData.icon} size="lg" />
-
-              <Text
-                variant="subhead"
-                className="text-text-primary flex-wrap flex-1"
-                numberOfLines={2}
-              >
-                {outputItemData.name}
-              </Text>
-            </View>
-
-            <RateDisplay value={productionLine.outputBaseRate} size="md" />
-          </View>
-        </PressableCard>
+        <ProductionLineOutputCard productionLine={productionLine} />
 
         <View className="mt-lg mb-xs px-xs">
           <Text variant="caption" className="text-text-tertiary uppercase">
@@ -251,23 +190,16 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
 
       <MenuSheet ref={menuSheetRef} options={menuOptions} />
 
-      <EditOutputSheet
-        ref={editOutputSheetRef}
-        productionLine={productionLine}
-        onCancel={handleCancelAll}
-        onConfirm={handleUpdateOutputRate}
-      />
-
       <EditInputSheet
         ref={editInputSheetRef}
-        input={menuContext?.type === "input" ? menuContext.data : null}
+        input={selectedInput}
         onCancel={handleCancelAll}
         onConfirm={handleUpdateInputRate}
       />
 
       <AssociateInputSourceSheet
         ref={associateInputSourceSheetRef}
-        input={menuContext?.type === "input" ? menuContext.data : null}
+        input={selectedInput}
         excludedLineId={productionLine.id}
         onCancel={handleCancelAll}
         onSelect={handleAssociateInputSource}

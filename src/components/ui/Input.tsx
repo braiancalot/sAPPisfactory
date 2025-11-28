@@ -1,10 +1,11 @@
 import { colors } from "@theme/colors";
 import { useEffect, useRef, useState } from "react";
-import { Keyboard, TextInput, View } from "react-native";
+import { Keyboard, TextInput, TextStyle, View, StyleProp } from "react-native";
 import { sanitizeNumericInput } from "src/utils/numberFormat";
 
 import Text from "@ui/Text";
 import { typography } from "src/utils/typography";
+
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 function getInputClass(variant: string, error: string, isFocused: boolean) {
@@ -35,6 +36,7 @@ type Props = {
   variant?: "default" | "borderless";
   className?: string;
   useBottomSheet?: boolean;
+  style?: StyleProp<TextStyle>;
 };
 
 export default function Input({
@@ -51,6 +53,7 @@ export default function Input({
   variant = "default",
   className = "",
   useBottomSheet = false,
+  style,
 }: Props) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
@@ -95,7 +98,7 @@ export default function Input({
   const inputClass = getInputClass(variant, error, isFocused);
 
   return (
-    <View className="gap-xs flex-grow">
+    <View className="gap-xs">
       {label && (
         <Text variant="body" className="text-text-secondary">
           {label}
@@ -104,7 +107,7 @@ export default function Input({
       <InputComponent
         ref={inputRef as any}
         className={`${inputClass} ${className}`}
-        style={typography.body}
+        style={[typography.body, { includeFontPadding: false }, style]}
         placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder}
