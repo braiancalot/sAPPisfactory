@@ -11,6 +11,7 @@ import Animated, {
 import ProductionLineInput from "@db/model/ProductionLineInput";
 import GlobalSource from "@db/model/GlobalSource";
 import ProductionLine from "@db/model/ProductionLine";
+import Factory from "@db/model/Factory";
 import { getItemData } from "@data/item";
 
 import Item from "@ui/Item";
@@ -20,21 +21,25 @@ import PressableCard from "@ui/PressableCard";
 import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
 import { colors } from "@theme/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import { of, switchMap } from "@nozbe/watermelondb/utils/rx";
 
 type ExternalProps = {
   input: ProductionLineInput;
   onPress: (input: ProductionLineInput) => void;
   onAction: (input: ProductionLineInput) => void;
 };
+
 type Props = ExternalProps & {
   globalSource?: GlobalSource | null;
   sourceProductionLine?: ProductionLine | null;
+  factory?: Factory | null;
 };
 
 function InputRow({
   input,
   globalSource,
   sourceProductionLine,
+  factory,
   onPress,
   onAction,
 }: Props) {
@@ -54,7 +59,7 @@ function InputRow({
       sourceProductionLine
     ) {
       return {
-        sourceName: "Linha de produção",
+        sourceName: factory?.name ?? "Linha de Produção",
         hasSource: true,
         isGlobal: false,
       };
@@ -65,7 +70,7 @@ function InputRow({
       hasSource: false,
       isGlobal: false,
     };
-  }, [input, globalSource, sourceProductionLine]);
+  }, [input, globalSource, sourceProductionLine, factory]);
 
   return (
     <Animated.View
@@ -141,6 +146,10 @@ const enhance = withObservables(["input"], ({ input }: ExternalProps) => ({
   input,
   globalSource: input.globalSource,
   sourceProductionLine: input.sourceProductionLine,
+
+  factory: input.sourceProductionLine
+    .observe()
+    .pipe(switchMap((line) => (line ? line.factory.observe() : of(null)))),
 }));
 
 export default enhance(InputRow) as React.ComponentType<ExternalProps>;
