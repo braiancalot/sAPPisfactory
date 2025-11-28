@@ -12,6 +12,8 @@ import { getItemData } from "@data/item";
 import ScreenContainer from "@ui/ScreenContainer";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
+import { MenuItem } from "@ui/MenuSheet";
+import ContextMenu from "@ui/ContextMenu";
 import BaseRecipeCard from "@features/production-line/BaseRecipeCard";
 
 import { colors } from "@theme/colors";
@@ -36,22 +38,40 @@ function ProductionLineDetails({
 
   const headerTitle = `${factoryName} / ${itemName}`;
 
+  function handleDeleteProductionLineRequest() {
+    dismissAll();
+    setTimeout(
+      () => confirmProductionLineDeletionSheetRef.current?.present(),
+      100
+    );
+  }
+
   function handleCancelAll() {
     dismissAll();
   }
 
-  async function handleConfirmFactoryDeletion() {
+  async function handleConfirmProductionLineDeletion() {
     await productionLine.delete();
 
     dismissAll();
     router.back();
   }
 
+  const menuOptions: MenuItem[] = [
+    {
+      label: "Excluir",
+      onPress: handleDeleteProductionLineRequest,
+      icon: "delete",
+      isDestructive: true,
+    },
+  ];
+
   return (
     <ScreenContainer>
       <Stack.Screen
         options={{
           title: headerTitle,
+          headerRight: () => <ContextMenu options={menuOptions} />,
         }}
       />
 
@@ -61,10 +81,10 @@ function ProductionLineDetails({
 
       <ConfirmDialog
         ref={confirmProductionLineDeletionSheetRef}
-        title="Remover fábrica?"
+        title="Remover linha de produção?"
         message={
           <Text variant="body" className="text-text-secondary">
-            Tem certeza que deseja remover a linha de produção{" "}
+            Tem certeza que deseja remover a linha de produção de{" "}
             <Text variant="bodyHighlight" className="text-secondary-light">
               {outputItemData.name}
             </Text>
@@ -73,7 +93,7 @@ function ProductionLineDetails({
           </Text>
         }
         onCancel={handleCancelAll}
-        onConfirm={handleConfirmFactoryDeletion}
+        onConfirm={handleConfirmProductionLineDeletion}
         confirmText="Remover"
       />
     </ScreenContainer>
