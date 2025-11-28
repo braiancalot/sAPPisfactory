@@ -21,7 +21,7 @@ export default class ProductionLineInput extends Model {
 
   @field("input_item") inputItem!: ItemId;
   @field("input_base_rate") inputBaseRate!: number;
-  @field("source_type") sourceType!: "GLOBAL_SOURCE" | "PRODUCTION_LINE";
+  @field("source_type") sourceType!: "GLOBAL_SOURCE" | "PRODUCTION_LINE" | null;
 
   @immutableRelation("production_lines", "production_line_id")
   productionLine!: Relation<ProductionLine>;
@@ -54,7 +54,21 @@ export default class ProductionLineInput extends Model {
     });
   }
 
+  @writer async clearGlobalSourceReference() {
+    await this.update((record) => {
+      record.sourceType = null;
+      record.globalSource.id = null;
+    });
+  }
+
+  @writer async clearSourceProductionLineReference() {
+    await this.update((record) => {
+      record.sourceType = null;
+      record.sourceProductionLine.id = null;
+    });
+  }
+
   @writer async delete() {
-    await this.markAsDeleted();
+    await this.destroyPermanently();
   }
 }

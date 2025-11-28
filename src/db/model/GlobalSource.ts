@@ -1,4 +1,4 @@
-import { Model, Query } from "@nozbe/watermelondb";
+import { Model, Q, Query } from "@nozbe/watermelondb";
 import { children, field, writer } from "@nozbe/watermelondb/decorators";
 
 import { ItemId } from "@data/item";
@@ -28,6 +28,15 @@ export default class GlobalSource extends Model {
   }
 
   @writer async delete() {
-    await this.markAsDeleted();
+    const usingInputs = await this.collection.database.collections
+      .get<ProductionLineInput>("production_line_inputs")
+      .query(Q.where("global_source_id", this.id))
+      .fetch();
+
+    for (const input of usingInputs) {
+      await this.callWriter(() => input.clearGlobalSourceReference());
+    }
+
+    await this.destroyPermanently();
   }
 }

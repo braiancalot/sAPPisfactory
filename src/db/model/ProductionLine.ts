@@ -1,4 +1,4 @@
-import { Model, Query, Relation } from "@nozbe/watermelondb";
+import { Model, Q, Query, Relation } from "@nozbe/watermelondb";
 import {
   children,
   field,
@@ -37,6 +37,17 @@ export default class ProductionLine extends Model {
   }
 
   @writer async delete() {
-    await this.markAsDeleted();
+    await this.inputs.destroyAllPermanently();
+
+    const usingInputs = await this.collection.database.collections
+      .get<ProductionLineInput>("production_line_inputs")
+      .query(Q.where("source_production_line_id", this.id))
+      .fetch();
+
+    for (const input of usingInputs) {
+      await this.callWriter(() => input.clearSourceProductionLineReference());
+    }
+
+    await this.destroyPermanently();
   }
 }

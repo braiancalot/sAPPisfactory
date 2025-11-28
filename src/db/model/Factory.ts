@@ -21,8 +21,12 @@ export default class Factory extends Model {
   }
 
   @writer async delete() {
-    await this.productionLines.destroyAllPermanently();
+    const lines = await this.productionLines.fetch();
 
-    await this.markAsDeleted();
+    for (const line of lines) {
+      await this.callWriter(() => line.delete());
+    }
+
+    await this.destroyPermanently();
   }
 }
