@@ -40,7 +40,7 @@ function ProductionLineCard({ productionLine, onNavigate, onDelete }: Props) {
       layout={LinearTransition.springify()}
     >
       <PressableCard onPress={handlePress} onLongPress={handleDelete}>
-        <View className="flex-row items-baseline justify-between gap-md">
+        <View className="flex-row items-center justify-between gap-md">
           <View className="flex-row items-center gap-lg flex-1">
             <Item icon={itemData.icon} size="md" />
 

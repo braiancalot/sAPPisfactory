@@ -19,6 +19,7 @@ import Text from "@ui/Text";
 import { View } from "react-native";
 
 import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
+import { typography } from "src/utils/typography";
 
 type Props = {
   globalSource: GlobalSource;
@@ -57,7 +58,7 @@ function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
       layout={LinearTransition.springify()}
     >
       <PressableCard onPress={handleStartEdit} onLongPress={handleDelete}>
-        <View className="flex-row items-baseline justify-between gap-md">
+        <View className="flex-row items-center justify-between gap-md">
           <View className="flex-row items-center gap-lg flex-1">
             <Item icon={itemData.icon} size="md" />
 
@@ -79,10 +80,11 @@ function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
                   autoFocus
                   onBlur={handleCancelEdit}
                   variant="borderless"
-                  className="border-b border-primary mb-[-1] w-24 text-primary"
+                  className="border-b border-secondary w-[80px] text-left text-secondary p-0 h-[19px]"
+                  style={[typography.numberSm, { paddingVertical: 0 }]}
                 />
               ) : (
-                <View className="h-[19]">
+                <View className="h-[19px]">
                   <RateDisplay
                     value={globalSource.totalRatePerMin}
                     size="sm"
