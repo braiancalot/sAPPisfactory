@@ -28,13 +28,13 @@ type ExternalProps = {
 };
 type Props = ExternalProps & {
   globalSource?: GlobalSource | null;
-  productionLineSource?: ProductionLine | null;
+  sourceProductionLine?: ProductionLine | null;
 };
 
 function InputRow({
   input,
   globalSource,
-  productionLineSource,
+  sourceProductionLine,
   onPress,
   onAction,
 }: Props) {
@@ -51,7 +51,7 @@ function InputRow({
 
     if (
       input.sourceType === SourceType.PRODUCTION_LINE &&
-      productionLineSource
+      sourceProductionLine
     ) {
       return {
         sourceName: "Linha de produção",
@@ -65,7 +65,7 @@ function InputRow({
       hasSource: false,
       isGlobal: false,
     };
-  }, [input, globalSource, productionLineSource]);
+  }, [input, globalSource, sourceProductionLine]);
 
   return (
     <Animated.View
@@ -140,7 +140,7 @@ function InputRow({
 const enhance = withObservables(["input"], ({ input }: ExternalProps) => ({
   input,
   globalSource: input.globalSource,
-  productionLineSource: input.sourceProductionLine,
+  sourceProductionLine: input.sourceProductionLine,
 }));
 
 export default enhance(InputRow) as React.ComponentType<ExternalProps>;

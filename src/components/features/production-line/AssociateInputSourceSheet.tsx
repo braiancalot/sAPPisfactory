@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, RefObject } from "react";
+import { forwardRef, RefObject } from "react";
 import { Pressable, View } from "react-native";
 
 import {
@@ -24,7 +24,7 @@ import Text from "@ui/Text";
 import Item from "@ui/Item";
 import RateDisplay from "@ui/RateDisplay";
 
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@theme/colors";
 
 export const SourceType = {
@@ -106,9 +106,14 @@ function AssociateInputSourceSheet({
 
       <BottomSheetScrollView contentContainerClassName="px-md pb-xl gap-xs">
         {globalSources.length === 0 && productionLines.length === 0 && (
-          <View className="items-center justify-center py-xl">
-            <Text variant="body" className="text-text-secondary">
-              Nenhuma fonte encontrada.
+          <View className="items-center justify-center py-2xl gap-sm opacity-50">
+            <MaterialCommunityIcons
+              name="database-off"
+              size={32}
+              color={colors["text-tertiary"]}
+            />
+            <Text variant="body" className="text-text-secondary text-center">
+              Nenhuma fonte compatível encontrada.
             </Text>
           </View>
         )}
@@ -175,7 +180,6 @@ const EnhancedComponent = withObservables(
     }
 
     return {
-      //   input: input,
       globalSources: globalSourcesCollection.query(
         Q.where("item", input.inputItem)
       ),
@@ -208,17 +212,6 @@ function SourceRow({
   onPress,
   factory,
 }: SourceRowProps) {
-  let name = "Fonte Desconhecida";
-  let rate = 0;
-
-  if (type === SourceType.GLOBAL_SOURCE) {
-    name = "Fonte Global";
-    rate = (model as GlobalSource).totalRatePerMin;
-  } else if (type === SourceType.PRODUCTION_LINE) {
-    name = factory?.name || "Carregando fábrica...";
-    rate = (model as ProductionLine).outputBaseRate;
-  }
-
   const itemId =
     type === SourceType.GLOBAL_SOURCE
       ? (model as GlobalSource).item
@@ -226,31 +219,61 @@ function SourceRow({
 
   const itemData = getItemData(itemId);
 
+  let contextInfo: string | null = null;
+  let iconName: React.ComponentProps<typeof MaterialIcons>["name"] | null =
+    null;
+
+  if (type === SourceType.PRODUCTION_LINE) {
+    contextInfo = factory?.name ?? "Fábrica sem nome";
+    iconName = "factory";
+  } else {
+    contextInfo = "Fonte Global";
+    iconName = "public";
+  }
+
+  const rate =
+    type === SourceType.GLOBAL_SOURCE
+      ? (model as GlobalSource).totalRatePerMin
+      : (model as ProductionLine).outputBaseRate;
+
   return (
     <Pressable
       className={`p-sm rounded-md flex-row items-center justify-between ${
         isSelected
-          ? "bg-surface-3 border border-primary"
+          ? "bg-surface-1 border border-primary"
           : "bg-surface-1 active:bg-surface-3 border border-transparent"
       }`}
       onPress={onPress}
     >
-      <View className="flex-row items-center gap-md flex-1">
+      <View className="flex-row items-center gap-lg flex-1 mr-md">
         <Item icon={itemData.icon} size="md" />
 
-        <View>
+        <View className="flex-1 gap-2xs">
           <Text
             variant="body"
-            className={`${isSelected ? "text-text-primary" : "text-text-secondary"}`}
+            className={`${isSelected ? "text-text-primary font-medium" : "text-text-secondary"}`}
             numberOfLines={1}
           >
-            {name}
+            {itemData.name}
           </Text>
 
-          {type === SourceType.PRODUCTION_LINE && (
-            <Text variant="caption" className="text-text-tertiary">
-              Linha de Produção
-            </Text>
+          {contextInfo && (
+            <View className="flex-row items-center gap-xs">
+              {iconName && (
+                <MaterialIcons
+                  name={iconName}
+                  size={12}
+                  color={colors["text-tertiary"]}
+                />
+              )}
+              <Text
+                variant="caption"
+                className="text-text-tertiary"
+                numberOfLines={1}
+              >
+                {contextInfo}
+              </Text>
+            </View>
           )}
         </View>
       </View>
