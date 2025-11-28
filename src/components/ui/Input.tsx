@@ -110,7 +110,7 @@ export default function Input({
         style={[typography.body, { includeFontPadding: false }, style]}
         placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
-        placeholder={placeholder}
+        placeholder={placeholder || "\u200B"}
         autoFocus={autoFocus}
         defaultValue={defaultValue}
         value={isUncontrolled ? undefined : value}
