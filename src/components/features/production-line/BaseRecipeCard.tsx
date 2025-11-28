@@ -30,7 +30,8 @@ import AssociateInputSourceSheet, {
   SourceType as SourceTypes,
 } from "@features/production-line/AssociateInputSourceSheet";
 
-import type { SourceType } from "@features/production-line/AssociateInputSourceSheet";
+import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
+import { router } from "expo-router";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -65,6 +66,20 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
   function handlePressOutput() {
     setMenuContext({ type: "output" });
     menuSheetRef.current?.present();
+  }
+
+  function handleInputRowAction(input: ProductionLineInput) {
+    if (!input.sourceType) {
+      setMenuContext({ type: "input", data: input });
+      setTimeout(() => associateInputSourceSheetRef.current?.present(), 100);
+      return;
+    }
+
+    if (input.sourceType === SourceType.PRODUCTION_LINE) {
+      router.push(`/production-line/${input.sourceProductionLine.id}`);
+    } else if (input.sourceType === SourceType.GLOBAL_SOURCE) {
+      router.push("/global-sources");
+    }
   }
 
   function handlePressInput(input: ProductionLineInput) {
@@ -211,7 +226,12 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
 
         <View className="gap-xs">
           {inputs.map((input) => (
-            <InputRow key={input.id} input={input} onPress={handlePressInput} />
+            <InputRow
+              key={input.id}
+              input={input}
+              onPress={handlePressInput}
+              onAction={handleInputRowAction}
+            />
           ))}
         </View>
 
