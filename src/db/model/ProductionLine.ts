@@ -10,6 +10,7 @@ import { Associations } from "@nozbe/watermelondb/Model";
 import { ItemId } from "@data/item";
 import Factory from "./Factory";
 import ProductionLineInput from "./ProductionLineInput";
+import ScaleGroup from "./ScaleGroup";
 
 export default class ProductionLine extends Model {
   static table = "production_lines";
@@ -17,6 +18,10 @@ export default class ProductionLine extends Model {
   static associations: Associations = {
     factories: { type: "belongs_to", key: "factory_id" },
     production_line_inputs: {
+      type: "has_many",
+      foreignKey: "production_line_id",
+    },
+    scale_groups: {
       type: "has_many",
       foreignKey: "production_line_id",
     },
@@ -30,6 +35,9 @@ export default class ProductionLine extends Model {
   @children("production_line_inputs")
   inputs!: Query<ProductionLineInput>;
 
+  @children("scale_groups")
+  scaleGroups!: Query<ScaleGroup>;
+
   @writer async updateOutputBaseRate(newRate: number) {
     await this.update((productionLine) => {
       productionLine.outputBaseRate = newRate;
@@ -38,6 +46,7 @@ export default class ProductionLine extends Model {
 
   @writer async delete() {
     await this.inputs.destroyAllPermanently();
+    await this.scaleGroups.destroyAllPermanently();
 
     const usingInputs = await this.collection.database.collections
       .get<ProductionLineInput>("production_line_inputs")

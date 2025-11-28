@@ -43,5 +43,14 @@ export default appSchema({
         },
       ],
     }),
+    tableSchema({
+      name: "scale_groups",
+      columns: [
+        { name: "module_count", type: "number" },
+        { name: "clock_speed_percent", type: "number" },
+        { name: "somersloop_count", type: "number" },
+        { name: "production_line_id", type: "string", isIndexed: true },
+      ],
+    }),
   ],
 });

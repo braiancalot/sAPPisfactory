@@ -7,6 +7,7 @@ import GlobalSource from "./model/GlobalSource";
 import Factory from "./model/Factory";
 import ProductionLine from "./model/ProductionLine";
 import ProductionLineInput from "./model/ProductionLineInput";
+import ScaleGroup from "./model/ScaleGroup";
 
 const adapter = new SQLiteAdapter({
   schema,
@@ -19,7 +20,13 @@ const adapter = new SQLiteAdapter({
 
 const database = new Database({
   adapter,
-  modelClasses: [GlobalSource, Factory, ProductionLine, ProductionLineInput],
+  modelClasses: [
+    GlobalSource,
+    Factory,
+    ProductionLine,
+    ProductionLineInput,
+    ScaleGroup,
+  ],
 });
 
 export default database;
@@ -35,3 +42,5 @@ export const productionLinesCollection =
 export const productionLineInputsCollection = database.get<ProductionLineInput>(
   "production_line_inputs"
 );
+
+export const scaleGroupsCollection = database.get<ScaleGroup>("scale_groups");
