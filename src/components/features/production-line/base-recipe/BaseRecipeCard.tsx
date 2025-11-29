@@ -30,16 +30,13 @@ import AssociateInputSourceSheet, {
 
 import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
 import { router } from "expo-router";
+import InputList from "./InputList";
 
-type ExternalProps = {
+type Props = {
   productionLine: ProductionLine;
 };
 
-type Props = ExternalProps & {
-  inputs: ProductionLineInput[];
-};
-
-function BaseRecipeCard({ productionLine, inputs }: Props) {
+function BaseRecipeCard({ productionLine }: Props) {
   const { dismissAll } = useBottomSheetModal();
 
   const [addInputModalVisible, setAddInputModalVisible] = useState(false);
@@ -54,7 +51,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
     setAddInputModalVisible(true);
   }
 
-  function handleInputRowAction(input: ProductionLineInput) {
+  function handleInputAction(input: ProductionLineInput) {
     if (!input.sourceType) {
       setSelectedInput(input);
       setTimeout(() => associateInputSourceSheetRef.current?.present(), 100);
@@ -68,7 +65,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
     }
   }
 
-  function handlePressInput(input: ProductionLineInput) {
+  function handleInputPress(input: ProductionLineInput) {
     setSelectedInput(input);
     menuSheetRef.current?.present();
   }
@@ -159,25 +156,17 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
 
         <View className="mt-lg mb-xs px-xs">
           <Text variant="caption" className="text-text-tertiary uppercase">
-            Ingredientes ({inputs.length})
+            Ingredientes (qtd de inputs)
           </Text>
         </View>
 
-        <View className="gap-sm">
-          {inputs.map((input) => (
-            <InputRow
-              key={input.id}
-              input={input}
-              onPress={handlePressInput}
-              onAction={handleInputRowAction}
-            />
-          ))}
-        </View>
+        <InputList
+          productionLine={productionLine}
+          onInputAction={handleInputAction}
+          onInputPress={handleInputPress}
+        />
 
-        <Animated.View
-          layout={LinearTransition.springify().damping(250)}
-          className="mt-xs w-full"
-        >
+        <Animated.View className="mt-xs w-full">
           <Button
             variant="ghost"
             title="Adicionar ingrediente"
@@ -214,9 +203,11 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
   );
 }
 
-const enhance = withObservables(["productionLine"], ({ productionLine }) => ({
-  productionLine,
-  inputs: productionLine.inputs,
-}));
+const enhance = withObservables(
+  ["productionLine"],
+  ({ productionLine }: Props) => ({
+    productionLine,
+  })
+);
 
-export default enhance(BaseRecipeCard) as React.ComponentType<ExternalProps>;
+export default enhance(BaseRecipeCard) as React.ComponentType<Props>;

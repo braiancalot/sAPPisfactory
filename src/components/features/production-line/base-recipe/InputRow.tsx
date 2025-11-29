@@ -146,7 +146,6 @@ const enhance = withObservables(["input"], ({ input }: ExternalProps) => ({
   input,
   globalSource: input.globalSource,
   sourceProductionLine: input.sourceProductionLine,
-
   factory: input.sourceProductionLine
     .observe()
     .pipe(switchMap((line) => (line ? line.factory.observe() : of(null)))),
