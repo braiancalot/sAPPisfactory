@@ -24,6 +24,8 @@ export const colors = {
   warning: "#ffbf00",
   "warning-dark": "#e6a800",
 
+  alien: "#a14dd1",
+
   "text-primary": "#ffffff",
   "text-secondary": "#C2C2C2",
   "text-tertiary": "#858585",

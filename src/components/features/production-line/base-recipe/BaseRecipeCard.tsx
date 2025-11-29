@@ -22,14 +22,14 @@ import MenuSheet, { MenuItem } from "@ui/MenuSheet";
 
 import AddInputModal from "@features/production-line/AddInputModal";
 import EditInputSheet from "@features/production-line/EditInputSheet";
-import InputRow from "@features/production-line/InputRow";
+import InputRow from "@features/production-line/base-recipe/InputRow";
+import OutputCard from "@features/production-line/base-recipe/OutputCard";
 import AssociateInputSourceSheet, {
   SourceType as SourceTypes,
 } from "@features/production-line/AssociateInputSourceSheet";
 
 import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
 import { router } from "expo-router";
-import ProductionLineOutputCard from "./ProductionLineOutputCard";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -155,7 +155,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
           </Text>
         </View>
 
-        <ProductionLineOutputCard productionLine={productionLine} />
+        <OutputCard productionLine={productionLine} />
 
         <View className="mt-lg mb-xs px-xs">
           <Text variant="caption" className="text-text-tertiary uppercase">
@@ -163,7 +163,7 @@ function BaseRecipeCard({ productionLine, inputs }: Props) {
           </Text>
         </View>
 
-        <View className="gap-xs">
+        <View className="gap-sm">
           {inputs.map((input) => (
             <InputRow
               key={input.id}

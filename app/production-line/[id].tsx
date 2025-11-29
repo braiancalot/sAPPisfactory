@@ -9,14 +9,16 @@ import ProductionLine from "@db/model/ProductionLine";
 import Factory from "@db/model/Factory";
 import { getItemData } from "@data/item";
 
-import ScreenContainer from "@ui/ScreenContainer";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
 import { MenuItem } from "@ui/MenuSheet";
 import ContextMenu from "@ui/ContextMenu";
-import BaseRecipeCard from "@features/production-line/BaseRecipeCard";
+
+import BaseRecipeCard from "@features/production-line/base-recipe/BaseRecipeCard";
+import ScaleGroupCard from "@features/production-line/scale-group/ScaleGroupCard";
 
 import { colors } from "@theme/colors";
+import ScrollScreenContainer from "@ui/ScrollScreenContainer";
 
 type ProductionLineDetailsProps = {
   productionLine: ProductionLine;
@@ -67,7 +69,7 @@ function ProductionLineDetails({
   ];
 
   return (
-    <ScreenContainer>
+    <ScrollScreenContainer>
       <Stack.Screen
         options={{
           title: headerTitle,
@@ -75,8 +77,10 @@ function ProductionLineDetails({
         }}
       />
 
-      <View className="p-lg">
+      <View className="px-md py-lg gap-lg">
         <BaseRecipeCard productionLine={productionLine} />
+
+        <ScaleGroupCard productionLine={productionLine} />
       </View>
 
       <ConfirmDialog
@@ -96,7 +100,7 @@ function ProductionLineDetails({
         onConfirm={handleConfirmProductionLineDeletion}
         confirmText="Remover"
       />
-    </ScreenContainer>
+    </ScrollScreenContainer>
   );
 }
 

@@ -1,24 +1,24 @@
+import { useState } from "react";
 import { View } from "react-native";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 import ProductionLine from "@db/model/ProductionLine";
 
 import { getItemData } from "@data/item";
+import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
+import { typography } from "src/utils/typography";
 
 import Item from "@ui/Item";
 import RateDisplay from "@ui/RateDisplay";
 import Text from "@ui/Text";
 import PressableCard from "@ui/PressableCard";
-import { useState } from "react";
-import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
 import Input from "@ui/Input";
-import { typography } from "src/utils/typography";
 
 type Props = {
   productionLine: ProductionLine;
 };
 
-function ProductionLineOutputCard({ productionLine }: Props) {
+function OutputCard({ productionLine }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
 
@@ -88,4 +88,4 @@ const enhance = withObservables(["productionLine"], ({ productionLine }) => ({
   productionLine,
 }));
 
-export default enhance(ProductionLineOutputCard) as React.ComponentType<Props>;
+export default enhance(OutputCard) as React.ComponentType<Props>;

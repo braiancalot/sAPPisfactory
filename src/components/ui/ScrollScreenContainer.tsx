@@ -13,7 +13,7 @@ export default function ScrollScreenContainer({
 
   return (
     <ScrollView
-      contentContainerClassName={`p-lg ${containerClass}`}
+      contentContainerClassName={`${containerClass}`}
       className="flex-1 bg-background"
     >
       {children}
