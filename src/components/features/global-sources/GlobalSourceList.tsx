@@ -32,7 +32,7 @@ function GlobalSourceList({
           onDelete={onDeleteGlobalSource}
         />
       )}
-      contentContainerClassName="gap-md p-lg pb-[76]"
+      contentContainerClassName="px-md py-lg pb-[96] gap-md"
       ListEmptyComponent={GlobalSourceListEmpty}
     />
   );
