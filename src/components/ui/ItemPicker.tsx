@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -28,6 +28,7 @@ type ItemPickerProps = {
   selectedItemId: ItemId | null;
   onSelect: (itemId: ItemId) => void;
   placeholder?: string;
+  startOpen?: boolean;
 };
 
 export default function ItemPicker({
@@ -35,11 +36,18 @@ export default function ItemPicker({
   selectedItemId,
   onSelect,
   placeholder = "Selecione um item",
+  startOpen = false,
 }: ItemPickerProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const selectedItemData = selectedItemId ? getItemData(selectedItemId) : null;
+
+  useEffect(() => {
+    if (startOpen) {
+      bottomSheetRef.current?.present();
+    }
+  }, [startOpen]);
 
   const filteredItems = useMemo(() => {
     if (!searchQuery.trim()) return ITEM_LIST;
