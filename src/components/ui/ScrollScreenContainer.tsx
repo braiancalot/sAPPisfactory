@@ -1,22 +1,17 @@
-import { ScrollView } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 type Props = {
   withFAB?: boolean;
   children: React.ReactNode;
 };
 
-export default function ScrollScreenContainer({
-  withFAB = false,
-  children,
-}: Props) {
-  const containerClass = withFAB ? "pb-[96]" : "";
-
+export default function ScrollScreenContainer({ children }: Props) {
   return (
-    <ScrollView
-      contentContainerClassName={`${containerClass}`}
+    <KeyboardAwareScrollView
+      contentContainerClassName="pb-[96]"
       className="flex-1 bg-background"
     >
       {children}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }

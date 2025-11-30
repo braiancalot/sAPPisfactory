@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import "../global.css";
 import { colors } from "@theme/colors";
@@ -50,17 +51,16 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <StatusBar
-          style="dark"
-          translucent={false}
-          backgroundColor={colors["surface-2"]}
-        />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.background },
-          }}
-        />
+        <KeyboardProvider>
+          <StatusBar style="dark" backgroundColor={colors["surface-2"]} />
+
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: colors.background },
+            }}
+          />
+        </KeyboardProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
