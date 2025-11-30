@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
-import Animated, {
-  FadeInLeft,
-  FadeOutLeft,
-  LinearTransition,
-} from "react-native-reanimated";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 
@@ -191,77 +186,71 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
   }
 
   return (
-    <Animated.View
-      entering={FadeInLeft}
-      exiting={FadeOutLeft}
-      layout={LinearTransition.springify()}
+    <View
+      className={`flex-row items-center p-sm gap-md rounded-md bg-surface-2 border ${hasSomersloop ? "border-alien/50" : "border-transparent"}`}
     >
-      <View
-        className={`flex-row items-center p-sm gap-md rounded-md bg-surface-2 border ${hasSomersloop ? "border-alien/50" : "border-transparent"}`}
-      >
-        <View>
-          <Stepper
-            value={scaleGroup.moduleCount}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-            onDelete={handleDelete}
-          />
+      <View>
+        <Stepper
+          value={scaleGroup.moduleCount}
+          onIncrement={handleIncrement}
+          onDecrement={handleDecrement}
+          onDelete={handleDelete}
+        />
+      </View>
+
+      <View className="flex-1 px-md justify-center gap-xs">
+        <View className="flex-row justify-between items-baseline gap-xs">
+          <Text
+            variant="body"
+            className="text-text-tertiary flex-1"
+            numberOfLines={1}
+          >
+            Clock
+          </Text>
+
+          {isEditingClock ? (
+            <View className="flex-row items-end">
+              <Input
+                value={clockEditValue}
+                onChangeValue={setClockEditValue}
+                onBlur={saveClock}
+                onSubmit={saveClock}
+                autoFocus
+                numeric
+                variant="borderless"
+                className="border-b border-secondary min-w-[8] max-w-[90] mb-[-1px] text-right text-secondary p-0"
+                style={[typography.numberSm, { paddingVertical: 0 }]}
+              />
+              <Text variant="numberSm" className="text-secondary">
+                %
+              </Text>
+            </View>
+          ) : (
+            <Pressable onPress={startClockEdit}>
+              <Text variant="body" className="text-primary">
+                {scaleGroup.clockSpeedPercent}%
+              </Text>
+            </Pressable>
+          )}
         </View>
 
-        <View className="flex-1 px-md justify-center gap-xs">
-          <View className="flex-row justify-between items-baseline gap-xs">
-            <Text
-              variant="body"
-              className="text-text-tertiary flex-1"
-              numberOfLines={1}
-            >
-              Clock
-            </Text>
-
-            {isEditingClock ? (
-              <View className="flex-row items-end">
-                <Input
-                  value={clockEditValue}
-                  onChangeValue={setClockEditValue}
-                  onBlur={saveClock}
-                  onSubmit={saveClock}
-                  autoFocus
-                  numeric
-                  variant="borderless"
-                  className="border-b border-secondary min-w-[8] max-w-[90] mb-[-1px] text-right text-secondary p-0"
-                  style={[typography.numberSm, { paddingVertical: 0 }]}
-                />
-                <Text variant="numberSm" className="text-secondary">
-                  %
-                </Text>
-              </View>
-            ) : (
-              <Pressable onPress={startClockEdit}>
-                <Text variant="body" className="text-primary">
-                  {scaleGroup.clockSpeedPercent}%
-                </Text>
-              </Pressable>
-            )}
-          </View>
-
-          <View className="h-1 bg-surface-4 rounded-full overflow-hidden w-full">
-            <View
-              className="h-full bg-primary"
-              style={{
-                width: `${Math.min(scaleGroup.clockSpeedPercent / 2.5, 100)}%`,
-              }}
-            />
-          </View>
-        </View>
-
-        <View className="items-end pl-xs">
-          <SomersloopSelector
-            count={scaleGroup.somersloopCount}
-            onToggle={handleToggleSomersloop}
+        <View className="h-1 bg-surface-4 rounded-full overflow-hidden w-full">
+          <View
+            className="h-full bg-primary"
+            style={{
+              width: `${Math.min(scaleGroup.clockSpeedPercent / 2.5, 100)}%`,
+            }}
           />
         </View>
       </View>
-    </Animated.View>
+
+      <View className="items-end pl-xs">
+        <SomersloopSelector
+          count={scaleGroup.somersloopCount}
+          onToggle={handleToggleSomersloop}
+        />
+      </View>
+    </View>
   );
 }
 

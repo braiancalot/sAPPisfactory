@@ -1,13 +1,9 @@
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { View } from "react-native";
-import Animated, {
-  LayoutAnimationConfig,
-  LinearTransition,
-} from "react-native-reanimated";
 
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
-import { withObservables } from "@nozbe/watermelondb/react";
 import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
 
@@ -15,28 +11,24 @@ import { ItemId } from "@data/item";
 import { addProductionLineInput } from "@services/productionLineService";
 
 import Card from "@ui/Card";
-
 import Text from "@ui/Text";
 import Button from "@ui/Button";
 import MenuSheet, { MenuItem } from "@ui/MenuSheet";
 
 import AddInputModal from "@features/production-line/AddInputModal";
 import EditInputSheet from "@features/production-line/EditInputSheet";
-import InputRow from "@features/production-line/base-recipe/InputRow";
 import OutputCard from "@features/production-line/base-recipe/OutputCard";
 import AssociateInputSourceSheet, {
   SourceType as SourceTypes,
 } from "@features/production-line/AssociateInputSourceSheet";
-
 import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
-import { router } from "expo-router";
-import InputList from "./InputList";
+import InputList from "@features/production-line/base-recipe/InputList";
 
 type Props = {
   productionLine: ProductionLine;
 };
 
-function BaseRecipeCard({ productionLine }: Props) {
+export default function BaseRecipeCard({ productionLine }: Props) {
   const { dismissAll } = useBottomSheetModal();
 
   const [addInputModalVisible, setAddInputModalVisible] = useState(false);
@@ -138,44 +130,42 @@ function BaseRecipeCard({ productionLine }: Props) {
   ];
 
   return (
-    <LayoutAnimationConfig skipEntering>
-      <Card className="p-md">
-        <View className="flex-row items-center justify-between px-xs">
-          <Text variant="title" className="text-text-secondary">
-            Receita base
-          </Text>
-        </View>
+    <Card className="p-md">
+      <View className="flex-row items-center justify-between px-xs">
+        <Text variant="title" className="text-text-secondary">
+          Receita
+        </Text>
+      </View>
 
-        <View className="mt-lg mb-xs px-xs">
-          <Text variant="caption" className="text-text-tertiary uppercase">
-            Produzindo
-          </Text>
-        </View>
+      <View className="mt-lg mb-xs px-xs">
+        <Text variant="caption" className="text-text-tertiary uppercase">
+          Produção
+        </Text>
+      </View>
 
-        <OutputCard productionLine={productionLine} />
+      <OutputCard productionLine={productionLine} />
 
-        <View className="mt-lg mb-xs px-xs">
-          <Text variant="caption" className="text-text-tertiary uppercase">
-            Ingredientes (qtd de inputs)
-          </Text>
-        </View>
+      <View className="mt-lg mb-xs px-xs">
+        <Text variant="caption" className="text-text-tertiary uppercase">
+          Ingredientes
+        </Text>
+      </View>
 
-        <InputList
-          productionLine={productionLine}
-          onInputAction={handleInputAction}
-          onInputPress={handleInputPress}
+      <InputList
+        productionLine={productionLine}
+        onInputAction={handleInputAction}
+        onInputPress={handleInputPress}
+      />
+
+      <View className="mt-xs w-full">
+        <Button
+          variant="ghost"
+          title="Adicionar ingrediente"
+          icon="add"
+          size="sm"
+          onPress={handleOpenAddInputModal}
         />
-
-        <Animated.View className="mt-xs w-full">
-          <Button
-            variant="ghost"
-            title="Adicionar ingrediente"
-            icon="add"
-            size="sm"
-            onPress={handleOpenAddInputModal}
-          />
-        </Animated.View>
-      </Card>
+      </View>
 
       <MenuSheet ref={menuSheetRef} options={menuOptions} />
 
@@ -199,15 +189,6 @@ function BaseRecipeCard({ productionLine }: Props) {
         onClose={handleCloseAddInputModal}
         onAdd={handleAddInput}
       />
-    </LayoutAnimationConfig>
+    </Card>
   );
 }
-
-const enhance = withObservables(
-  ["productionLine"],
-  ({ productionLine }: Props) => ({
-    productionLine,
-  })
-);
-
-export default enhance(BaseRecipeCard) as React.ComponentType<Props>;

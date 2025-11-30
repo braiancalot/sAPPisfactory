@@ -29,7 +29,7 @@ function InputList({ inputs, onInputAction, onInputPress }: Props) {
           onPress={onInputPress}
         />
       )}
-      contentContainerClassName="mt-lg gap-sm"
+      contentContainerClassName="gap-sm"
       ListEmptyComponent={InputEmpty}
       scrollEnabled={false}
     />

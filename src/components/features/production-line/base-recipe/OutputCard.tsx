@@ -45,7 +45,7 @@ function OutputCard({ productionLine }: Props) {
     <PressableCard onPress={handlePress}>
       <View className="flex-row items-center gap-md">
         <View className="flex-row items-center gap-lg flex-1">
-          <Item icon={outputItem.icon} size="lg" />
+          <Item icon={outputItem.icon} size="md" />
 
           <Text
             variant="subhead"
@@ -76,7 +76,11 @@ function OutputCard({ productionLine }: Props) {
           </View>
         ) : (
           <View className="h-[25px] justify-center">
-            <RateDisplay value={productionLine.outputBaseRate} size="md" />
+            <RateDisplay
+              value={productionLine.outputBaseRate}
+              size="md"
+              colored={false}
+            />
           </View>
         )}
       </View>

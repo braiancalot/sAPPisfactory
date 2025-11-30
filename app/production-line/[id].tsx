@@ -19,6 +19,7 @@ import ScaleGroupCard from "@features/production-line/scale-group/ScaleGroupCard
 
 import { colors } from "@theme/colors";
 import ScrollScreenContainer from "@ui/ScrollScreenContainer";
+import SummaryCard from "@features/production-line/summary/SummaryCard";
 
 type ProductionLineDetailsProps = {
   productionLine: ProductionLine;
@@ -77,10 +78,10 @@ function ProductionLineDetails({
         }}
       />
 
-      <View className="px-md py-lg gap-lg">
-        <BaseRecipeCard productionLine={productionLine} />
-
+      <View className="px-md py-lg gap-xl">
+        <SummaryCard productionLine={productionLine} />
         <ScaleGroupCard productionLine={productionLine} />
+        <BaseRecipeCard productionLine={productionLine} />
       </View>
 
       <ConfirmDialog
