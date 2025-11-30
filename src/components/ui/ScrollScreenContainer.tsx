@@ -10,6 +10,7 @@ export default function ScrollScreenContainer({ children }: Props) {
     <KeyboardAwareScrollView
       contentContainerClassName="pb-[96]"
       className="flex-1 bg-background"
+      keyboardShouldPersistTaps="always"
     >
       {children}
     </KeyboardAwareScrollView>
