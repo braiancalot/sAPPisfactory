@@ -1,20 +1,13 @@
+import { View } from "react-native";
 import { withObservables } from "@nozbe/watermelondb/react";
-
-import Animated, {
-  FadeInLeft,
-  FadeOutLeft,
-  LinearTransition,
-} from "react-native-reanimated";
 
 import Factory from "@db/model/Factory";
 import ProductionLine from "@db/model/ProductionLine";
+import { getItemData } from "@data/item";
 
-import PressableCard from "@ui/PressableCard";
 import Text from "@ui/Text";
 import Item from "@ui/Item";
-
-import { View } from "react-native";
-import { getItemData } from "@data/item";
+import SwipeableCard from "@ui/SwipeableCard";
 
 type ExternalProps = {
   factory: Factory;
@@ -41,35 +34,34 @@ function FactoryCard({
   }
 
   return (
-    <Animated.View
-      entering={FadeInLeft}
-      exiting={FadeOutLeft}
-      layout={LinearTransition.springify()}
+    <SwipeableCard
+      onPress={handlePress}
+      onDelete={handleDelete}
+      shouldResetOnAction
+      className="p-md rounded-lg"
     >
-      <PressableCard onPress={handlePress} onLongPress={handleDelete}>
-        <View className="flex-row items-end justify-between gap-md">
-          <View className="flex-1">
-            <Text
-              variant="subhead"
-              className="text-text-primary flex-wrap"
-              numberOfLines={1}
-            >
-              {factory.name}
-            </Text>
-          </View>
-
-          <View className="flex-row gap-xs">
-            {productionLines.map((productionLine) => (
-              <Item
-                key={productionLine.id}
-                icon={getItemData(productionLine.outputItem).icon}
-                size="sm"
-              />
-            ))}
-          </View>
+      <View className="flex-row items-end justify-between gap-md">
+        <View className="flex-1">
+          <Text
+            variant="subhead"
+            className="text-text-primary flex-wrap"
+            numberOfLines={1}
+          >
+            {factory.name}
+          </Text>
         </View>
-      </PressableCard>
-    </Animated.View>
+
+        <View className="flex-row gap-xs">
+          {productionLines.map((productionLine) => (
+            <Item
+              key={productionLine.id}
+              icon={getItemData(productionLine.outputItem).icon}
+              size="sm"
+            />
+          ))}
+        </View>
+      </View>
+    </SwipeableCard>
   );
 }
 

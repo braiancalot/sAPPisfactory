@@ -1,22 +1,15 @@
 import { useState } from "react";
+import { View } from "react-native";
 import { withObservables } from "@nozbe/watermelondb/react";
-
-import Animated, {
-  FadeInLeft,
-  FadeOutLeft,
-  LinearTransition,
-} from "react-native-reanimated";
 
 import GlobalSource from "@db/model/GlobalSource";
 import { getItemData } from "@data/item";
-import PressableCard from "@ui/PressableCard";
-import RateDisplay from "@ui/RateDisplay";
 
+import RateDisplay from "@ui/RateDisplay";
 import Item from "@ui/Item";
 import Input from "@ui/Input";
 import Text from "@ui/Text";
-
-import { View } from "react-native";
+import SwipeableCard from "@ui/SwipeableCard";
 
 import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
 import { typography } from "src/utils/typography";
@@ -52,55 +45,55 @@ function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
   }
 
   return (
-    <Animated.View
-      entering={FadeInLeft}
-      exiting={FadeOutLeft}
-      layout={LinearTransition.springify()}
+    <SwipeableCard
+      onPress={handleStartEdit}
+      onDelete={handleDelete}
+      disabled={isEditing}
+      shouldResetOnAction
+      className="p-md rounded-lg"
     >
-      <PressableCard onPress={handleStartEdit} onLongPress={handleDelete}>
-        <View className="flex-row items-center justify-between gap-md">
-          <View className="flex-row items-center gap-lg flex-1">
-            <Item icon={itemData.icon} size="md" />
+      <View className="flex-row items-center justify-between gap-md">
+        <View className="flex-row items-center gap-lg flex-1">
+          <Item icon={itemData.icon} size="md" />
 
-            <View className="gap-2xs items-start flex-1">
-              <Text
-                variant="subhead"
-                className="text-text-primary flex-wrap"
-                numberOfLines={2}
-              >
-                {itemData.name}
-              </Text>
+          <View className="gap-2xs items-start flex-1">
+            <Text
+              variant="subhead"
+              className="text-text-primary flex-wrap"
+              numberOfLines={2}
+            >
+              {itemData.name}
+            </Text>
 
-              {isEditing ? (
-                <Input
-                  value={editValue}
-                  onChangeValue={setEditValue}
-                  onSubmit={handleSave}
-                  numeric
-                  autoFocus
-                  onBlur={handleCancelEdit}
-                  variant="borderless"
-                  className="border-b border-secondary w-[80px] text-left text-secondary p-0 h-[19px]"
-                  style={[typography.numberSm, { paddingVertical: 0 }]}
+            {isEditing ? (
+              <Input
+                value={editValue}
+                onChangeValue={setEditValue}
+                onSubmit={handleSave}
+                numeric
+                autoFocus
+                onBlur={handleCancelEdit}
+                variant="borderless"
+                className="border-b border-secondary w-[48px] text-left text-secondary p-0 h-[19px]"
+                style={[typography.numberSm, { paddingVertical: 0 }]}
+              />
+            ) : (
+              <View className="h-[19px]">
+                <RateDisplay
+                  value={globalSource.totalRatePerMin}
+                  size="sm"
+                  colored={false}
                 />
-              ) : (
-                <View className="h-[19px]">
-                  <RateDisplay
-                    value={globalSource.totalRatePerMin}
-                    size="sm"
-                    colored={false}
-                  />
-                </View>
-              )}
-            </View>
-          </View>
-
-          <View className="max-w-40">
-            <RateDisplay value={globalSource.totalRatePerMin} size="md" />
+              </View>
+            )}
           </View>
         </View>
-      </PressableCard>
-    </Animated.View>
+
+        <View className="max-w-40">
+          <RateDisplay value={globalSource.totalRatePerMin} size="md" />
+        </View>
+      </View>
+    </SwipeableCard>
   );
 }
 

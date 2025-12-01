@@ -1,20 +1,13 @@
+import { View } from "react-native";
 import { withObservables } from "@nozbe/watermelondb/react";
-
-import Animated, {
-  FadeInLeft,
-  FadeOutLeft,
-  LinearTransition,
-} from "react-native-reanimated";
 
 import ProductionLine from "@db/model/ProductionLine";
 import { getItemData } from "@data/item";
 
-import PressableCard from "@ui/PressableCard";
 import RateDisplay from "@ui/RateDisplay";
 import Item from "@ui/Item";
 import Text from "@ui/Text";
-
-import { View } from "react-native";
+import SwipeableCard from "@ui/SwipeableCard";
 
 type Props = {
   productionLine: ProductionLine;
@@ -34,41 +27,40 @@ function ProductionLineCard({ productionLine, onNavigate, onDelete }: Props) {
   }
 
   return (
-    <Animated.View
-      entering={FadeInLeft}
-      exiting={FadeOutLeft}
-      layout={LinearTransition.springify()}
+    <SwipeableCard
+      onPress={handlePress}
+      onDelete={handleDelete}
+      shouldResetOnAction
+      className="p-md rounded-lg"
     >
-      <PressableCard onPress={handlePress} onLongPress={handleDelete}>
-        <View className="flex-row items-center justify-between gap-md">
-          <View className="flex-row items-center gap-lg flex-1">
-            <Item icon={itemData.icon} size="md" />
+      <View className="flex-row items-center justify-between gap-md">
+        <View className="flex-row items-center gap-lg flex-1">
+          <Item icon={itemData.icon} size="md" />
 
-            <View className="gap-2xs items-start flex-1">
-              <Text
-                variant="subhead"
-                className="text-text-primary flex-wrap"
-                numberOfLines={2}
-              >
-                {itemData.name}
-              </Text>
+          <View className="gap-2xs items-start flex-1">
+            <Text
+              variant="subhead"
+              className="text-text-primary flex-wrap"
+              numberOfLines={2}
+            >
+              {itemData.name}
+            </Text>
 
-              <View className="h-[19]">
-                <RateDisplay
-                  value={productionLine.outputBaseRate}
-                  size="sm"
-                  colored={false}
-                />
-              </View>
+            <View className="h-[19]">
+              <RateDisplay
+                value={productionLine.outputBaseRate}
+                size="sm"
+                colored={false}
+              />
             </View>
           </View>
-
-          <View className="max-w-40">
-            <RateDisplay value={productionLine.outputBaseRate} size="md" />
-          </View>
         </View>
-      </PressableCard>
-    </Animated.View>
+
+        <View className="max-w-40">
+          <RateDisplay value={productionLine.outputBaseRate} size="md" />
+        </View>
+      </View>
+    </SwipeableCard>
   );
 }
 

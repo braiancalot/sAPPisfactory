@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import Text from "@ui/Text";
@@ -7,7 +7,10 @@ import { colors } from "@theme/colors";
 
 export default function ProductionLineEmpty() {
   return (
-    <View className="items-center justify-center py-xl">
+    <Animated.View
+      entering={FadeIn.duration(200).delay(200)}
+      className="items-center justify-center py-xl"
+    >
       <MaterialIcons
         name="conveyor-belt"
         size={48}
@@ -21,6 +24,6 @@ export default function ProductionLineEmpty() {
       <Text variant="body" className="text-text-tertiary mt-xs">
         Adicione sua primeira linha para começar a calcular
       </Text>
-    </View>
+    </Animated.View>
   );
 }
