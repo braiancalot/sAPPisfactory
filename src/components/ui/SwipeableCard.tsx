@@ -1,15 +1,14 @@
 import Animated, {
   FadeIn,
-  FadeInLeft,
   FadeOut,
   interpolateColor,
   LinearTransition,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Dimensions, Pressable, View } from "react-native";
 
@@ -65,10 +64,8 @@ export default function SwipeableCard({
       const shouldTrigger = translateX.value < TRANSLATE_X_THRESHOLD;
 
       if (shouldTrigger && onDelete) {
-        // runOnJS(Haptics.notificationAsync)(
-        //   Haptics.NotificationFeedbackType.Success
-        // );
-        runOnJS(onDelete)();
+        // scheduleOnRN(Haptics.notificationAsync, Haptics.NotificationFeedbackType.Success)
+        scheduleOnRN(onDelete);
 
         if (!shouldResetOnAction) {
           translateX.value = withTiming(-SCREEN_WIDTH, { duration: 300 });

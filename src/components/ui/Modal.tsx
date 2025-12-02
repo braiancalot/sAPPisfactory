@@ -3,12 +3,12 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@theme/colors";
@@ -50,7 +50,7 @@ export default function Modal({ visible, onClose, title, children }: Props) {
       modalScale.value = withTiming(0.9, { duration: 150 });
       modalOpacity.value = withTiming(0, { duration: 150 }, (finished) => {
         if (finished) {
-          runOnJS(setIsRendered)(false);
+          scheduleOnRN(setIsRendered, false);
         }
       });
     }
