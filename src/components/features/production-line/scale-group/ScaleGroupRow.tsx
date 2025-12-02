@@ -189,6 +189,7 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
   return (
     <SwipeableCard
       onDelete={handleDelete}
+      disabled={isEditingClock}
       className={`p-sm rounded-md bg-surface-2 border ${hasSomersloop ? "border-alien/50" : "border-transparent"}`}
     >
       <View className="flex-row items-center gap-md">
@@ -235,7 +236,12 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
             )}
           </View>
 
-          <View className="h-1 bg-surface-4 rounded-full overflow-hidden w-full">
+          <View className="h-1 bg-surface-4 rounded-full overflow-hidden w-full relative">
+            <View
+              className="absolute top-0 bottom-0 w-[2px] bg-white/40"
+              style={{ left: "40%" }}
+            />
+
             <View
               className="h-full bg-primary"
               style={{
