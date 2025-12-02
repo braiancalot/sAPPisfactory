@@ -49,6 +49,7 @@ export default function AddGlobalSourceModal({
           selectedItemId={selectedItemId}
           onSelect={setSelectedItemId}
           label="Item"
+          startOpen
         />
 
         <Input

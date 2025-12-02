@@ -45,7 +45,13 @@ export default function ItemPicker({
 
   useEffect(() => {
     if (startOpen) {
-      bottomSheetRef.current?.present();
+      const timer = setTimeout(() => {
+        requestAnimationFrame(() => {
+          bottomSheetRef.current?.present();
+        });
+      }, 50);
+
+      return () => clearTimeout(timer);
     }
   }, [startOpen]);
 
