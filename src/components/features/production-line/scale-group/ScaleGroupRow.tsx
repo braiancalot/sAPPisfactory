@@ -42,7 +42,7 @@ function SomersloopSelector({ count, onToggle }: SomersloopSelector) {
       <Pressable
         onPress={onToggle}
         hitSlop={8}
-        className={`w-8 h-8 rounded-full items-center justify-center ${
+        className={`w-8 h-8 rounded-full items-center justify-center active:scale-95 ${
           isActive ? "bg-alien/20 active:bg-alien/30" : "bg-surface-3"
         }`}
       >
@@ -102,7 +102,7 @@ function Stepper({ value, onIncrement, onDecrement, onDelete }: StepperProps) {
     <Pressable
       onPress={onPress}
       hitSlop={8}
-      className="w-7 h-7 items-center justify-center bg-surface-3 rounded-full active:bg-surface-4"
+      className="w-7 h-7 items-center justify-center bg-surface-3 rounded-full active:bg-surface-4 active:scale-95"
       onLongPress={onLongPress}
     >
       <MaterialIcons name={icon} size={14} color={colors["text-primary"]} />
@@ -122,7 +122,7 @@ function Stepper({ value, onIncrement, onDecrement, onDelete }: StepperProps) {
 
         <Pressable
           onPress={toggle}
-          className={`justify-center items-center ${isOpen ? "w-[32px]" : "w-auto"}`}
+          className={`justify-center items-center active:scale-95 ${isOpen ? "w-[32px]" : "w-auto"}`}
         >
           <Text variant="numberMd" className="text-text-primary">
             {value}
@@ -227,7 +227,7 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
                 </Text>
               </View>
             ) : (
-              <Pressable onPress={startClockEdit}>
+              <Pressable onPress={startClockEdit} className="active:scale-95">
                 <Text variant="body" className="text-primary">
                   {scaleGroup.clockSpeedPercent}%
                 </Text>

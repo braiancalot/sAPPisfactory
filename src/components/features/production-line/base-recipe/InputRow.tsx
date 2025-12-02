@@ -124,7 +124,7 @@ function InputRow({
           <Pressable
             onPress={() => onAction(input)}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            className={`w-8 h-8 rounded-full items-center justify-center ${
+            className={`w-8 h-8 rounded-full items-center justify-center active:scale-90 ${
               hasSource
                 ? "bg-secondary/10 active:bg-secondary/30"
                 : "bg-warning/10 active:bg-warning/30"
