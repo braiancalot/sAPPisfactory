@@ -40,6 +40,7 @@ export default function AddFactoryModal({ visible, onClose, onAdd }: Props) {
           placeholder="Siderúrgica "
           value={name}
           onChangeValue={setName}
+          autoFocus
         />
       </View>
 

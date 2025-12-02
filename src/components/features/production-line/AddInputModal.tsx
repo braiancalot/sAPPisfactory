@@ -49,7 +49,6 @@ export default function AddInputModal({ visible, onClose, onAdd }: Props) {
           selectedItemId={selectedItemId}
           onSelect={setSelectedItemId}
           label="Item consumido"
-          startOpen
         />
 
         <Input

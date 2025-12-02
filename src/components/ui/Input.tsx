@@ -1,6 +1,13 @@
 import { colors } from "@theme/colors";
 import { useEffect, useRef, useState } from "react";
-import { Keyboard, TextInput, TextStyle, View, StyleProp } from "react-native";
+import {
+  Keyboard,
+  TextInput,
+  TextStyle,
+  View,
+  StyleProp,
+  InteractionManager,
+} from "react-native";
 import { sanitizeNumericInput } from "src/utils/numberFormat";
 
 import Text from "@ui/Text";
@@ -61,6 +68,23 @@ export default function Input({
   const isUncontrolled = defaultValue !== undefined;
 
   useEffect(() => {
+    if (autoFocus) {
+      const timer = setTimeout(
+        () => {
+          const animationFrame = requestAnimationFrame(() => {
+            inputRef.current?.focus();
+          });
+
+          return () => cancelAnimationFrame(animationFrame);
+        },
+        useBottomSheet ? 0 : 250
+      );
+
+      return () => clearTimeout(timer);
+    }
+  }, [autoFocus, useBottomSheet]);
+
+  useEffect(() => {
     const hideSub = Keyboard.addListener("keyboardDidHide", () => {
       if (isFocused) {
         inputRef.current?.blur();
@@ -111,7 +135,7 @@ export default function Input({
         placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder || "\u200B"}
-        autoFocus={autoFocus}
+        // autoFocus={useBottomSheet ? autoFocus : undefined}
         defaultValue={defaultValue}
         value={isUncontrolled ? undefined : value}
         onChangeText={handleTextChange}

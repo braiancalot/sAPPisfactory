@@ -54,7 +54,6 @@ export default function AddProductionLineModal({
           selectedItemId={selectedItemId}
           onSelect={setSelectedItemId}
           label="Item produzido"
-          startOpen
         />
 
         <Input
