@@ -1,4 +1,5 @@
 import Animated, {
+  FadeIn,
   FadeInLeft,
   FadeOut,
   interpolateColor,
@@ -10,7 +11,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { Dimensions, View } from "react-native";
+import { Dimensions, Pressable, View } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@theme/colors";
@@ -34,7 +35,7 @@ export default function SwipeableCard({
   onPress,
   onDelete,
   disabled = false,
-  shouldResetOnAction = true,
+  shouldResetOnAction = false,
   backgroundColor = colors["surface-2"],
   activeBackgroundColor = colors["surface-3"],
   className = "",
@@ -47,7 +48,7 @@ export default function SwipeableCard({
     .enabled(!disabled)
     .activeOffsetX([-20, 1000])
     .onBegin(() => {
-      isPressed.value = true;
+      isSwiping.value = false;
     })
     .onUpdate((event) => {
       if (Math.abs(event.translationX) > 5) {
@@ -74,40 +75,22 @@ export default function SwipeableCard({
           return;
         }
       }
+
       translateX.value = withSpring(0, {
         mass: 1,
-        damping: 50,
-        stiffness: 300,
+        damping: 60,
+        stiffness: 500,
         overshootClamping: true,
       });
     })
     .onFinalize(() => {
       isSwiping.value = false;
-      isPressed.value = false;
     });
-
-  const tapGesture = Gesture.Tap()
-    .enabled(!!onPress && !disabled)
-    .onBegin(() => {
-      isPressed.value = true;
-    })
-    .onFinalize(() => {
-      isPressed.value = false;
-    })
-    .onEnd(() => {
-      if (onPress && !isSwiping.value) {
-        runOnJS(onPress)();
-      }
-    });
-
-  const gesture = Gesture.Exclusive(panGesture, tapGesture);
 
   const rStyle = useAnimatedStyle(() => {
     const scale = onPress
-      ? withSpring(isPressed.value ? 0.99 : 1, {
-          mass: 0.5,
-          damping: 20,
-          stiffness: 400,
+      ? withTiming(isPressed.value ? 0.985 : 1, {
+          duration: 150,
         })
       : 1;
 
@@ -124,15 +107,44 @@ export default function SwipeableCard({
   });
 
   const rIconStyle = useAnimatedStyle(() => {
-    const opacity = withTiming(translateX.value < -100 ? 1 : 0);
+    const opacity = withTiming(translateX.value < -100 ? 1 : 0, {
+      duration: 200,
+    });
     return { opacity };
   });
 
+  function handlePressIn() {
+    isPressed.value = true;
+  }
+
+  function handlePressOut() {
+    isPressed.value = false;
+  }
+
+  function handlePress() {
+    if (!isSwiping.value && onPress) {
+      onPress();
+    }
+  }
+
+  const content = onPress ? (
+    <Pressable
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={handlePress}
+      disabled={disabled}
+    >
+      {children}
+    </Pressable>
+  ) : (
+    <View>{children}</View>
+  );
+
   return (
     <Animated.View
-      entering={FadeInLeft}
+      entering={FadeIn.duration(100)}
       exiting={FadeOut.duration(200)}
-      layout={LinearTransition.springify().damping(15)}
+      layout={LinearTransition.duration(150)}
       className="relative w-full"
     >
       <View className="absolute right-0 top-0 bottom-0 w-full justify-center items-end pr-6">
@@ -141,9 +153,9 @@ export default function SwipeableCard({
         </Animated.View>
       </View>
 
-      <GestureDetector gesture={gesture}>
+      <GestureDetector gesture={panGesture}>
         <Animated.View style={rStyle} className={className}>
-          {children}
+          {content}
         </Animated.View>
       </GestureDetector>
     </Animated.View>
