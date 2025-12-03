@@ -49,7 +49,7 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>
         <KeyboardProvider>
           <StatusBar style="dark" backgroundColor={colors["surface-2"]} />

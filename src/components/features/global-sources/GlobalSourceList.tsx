@@ -1,11 +1,13 @@
-import { globalSourcesCollection } from "@db/index";
-import GlobalSource from "@db/model/GlobalSource";
+import { useCallback } from "react";
+import { FlatList } from "react-native";
+
 import { withObservables } from "@nozbe/watermelondb/react";
+import { globalSourcesCollection } from "@db/index";
+
+import GlobalSource from "@db/model/GlobalSource";
 
 import GlobalSourceCard from "@features/global-sources/GlobalSourceCard";
 import GlobalSourceListEmpty from "@features/global-sources/GlobalSourceListEmpty";
-
-import { FlatList } from "react-native";
 
 type ExternalProps = {
   onUpdateGlobalSource: (source: GlobalSource, newRate: number) => void;
@@ -21,19 +23,27 @@ function GlobalSourceList({
   onUpdateGlobalSource,
   onDeleteGlobalSource,
 }: Props) {
+  const renderItem = useCallback(
+    ({ item }: { item: GlobalSource }) => (
+      <GlobalSourceCard
+        globalSource={item}
+        onUpdate={onUpdateGlobalSource}
+        onDelete={onDeleteGlobalSource}
+      />
+    ),
+    []
+  );
+
   return (
     <FlatList
       data={globalSources}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <GlobalSourceCard
-          globalSource={item}
-          onUpdate={onUpdateGlobalSource}
-          onDelete={onDeleteGlobalSource}
-        />
-      )}
+      renderItem={renderItem}
       contentContainerClassName="px-md py-lg pb-[96] gap-md"
       ListEmptyComponent={GlobalSourceListEmpty}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={3}
+      windowSize={5}
     />
   );
 }

@@ -3,7 +3,9 @@ import { ActivityIndicator, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
+import { switchMap } from "@nozbe/watermelondb/utils/rx";
 import { withObservables } from "@nozbe/watermelondb/react";
+
 import { productionLinesCollection } from "@db/index";
 import ProductionLine from "@db/model/ProductionLine";
 import Factory from "@db/model/Factory";
@@ -13,13 +15,13 @@ import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
 import { MenuItem } from "@ui/MenuSheet";
 import ContextMenu from "@ui/ContextMenu";
+import ScrollScreenContainer from "@ui/ScrollScreenContainer";
 
 import BaseRecipeCard from "@features/production-line/base-recipe/BaseRecipeCard";
 import ScaleGroupCard from "@features/production-line/scale-group/ScaleGroupCard";
+import SummaryCard from "@features/production-line/summary/SummaryCard";
 
 import { colors } from "@theme/colors";
-import ScrollScreenContainer from "@ui/ScrollScreenContainer";
-import SummaryCard from "@features/production-line/summary/SummaryCard";
 
 type ProductionLineDetailsProps = {
   productionLine: ProductionLine;
@@ -105,23 +107,22 @@ function ProductionLineDetails({
   );
 }
 
-const enhanceLine = withObservables(
+const enhance = withObservables(
   ["productionLineId"],
-  ({ productionLineId }) => ({
-    productionLine: productionLinesCollection.findAndObserve(productionLineId),
-  })
+  ({ productionLineId }) => {
+    const productionLineObservable =
+      productionLinesCollection.findAndObserve(productionLineId);
+
+    return {
+      productionLine: productionLineObservable,
+      factory: productionLineObservable.pipe(
+        switchMap((line) => line.factory.fetch())
+      ),
+    };
+  }
 );
 
-const enhanceWithFactory = withObservables(
-  ["productionLine"],
-  ({ productionLine }) => ({
-    factory: productionLine.factory,
-  })
-);
-
-const EnhancedProductionLineDetails = enhanceLine(
-  enhanceWithFactory(ProductionLineDetails)
-);
+const EnhancedProductionLineDetails = enhance(ProductionLineDetails);
 
 export default function ProductionLineScreen() {
   const { id } = useLocalSearchParams();

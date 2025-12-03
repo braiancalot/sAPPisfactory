@@ -1,11 +1,15 @@
-import { getItemData } from "@data/item";
+import { useCallback } from "react";
+import { View, FlatList } from "react-native";
+
+import { withObservables } from "@nozbe/watermelondb/react";
+
 import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
-import { withObservables } from "@nozbe/watermelondb/react";
+import { getItemData } from "@data/item";
+
 import Item from "@ui/Item";
 import RateDisplay from "@ui/RateDisplay";
 import Text from "@ui/Text";
-import { View, FlatList } from "react-native";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -16,41 +20,46 @@ type Props = ExternalProps & {
 };
 
 function InputConsumptionList({ inputs }: Props) {
+  const renderItem = useCallback(({ item }: { item: ProductionLineInput }) => {
+    const itemData = getItemData(item.inputItem);
+    return (
+      <View className="flex-row items-center justify-between gap-md">
+        <Item icon={itemData.icon} size="sm" />
+        <Text
+          variant="footnote"
+          className="text-text-secondary flex-1"
+          numberOfLines={1}
+        >
+          {itemData.name}
+        </Text>
+
+        <RateDisplay value={-item.inputBaseRate} size="sm" colored={false} />
+      </View>
+    );
+  }, []);
+
   return (
     <FlatList
       data={inputs}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => {
-        const itemData = getItemData(item.inputItem);
-        return (
-          <View className="flex-row items-center justify-between gap-md">
-            <Item icon={itemData.icon} size="sm" />
-            <Text
-              variant="footnote"
-              className="text-text-secondary flex-1"
-              numberOfLines={1}
-            >
-              {itemData.name}
-            </Text>
-
-            <RateDisplay
-              value={-item.inputBaseRate}
-              size="sm"
-              colored={false}
-            />
-          </View>
-        );
-      }}
+      renderItem={renderItem}
       contentContainerClassName="bg-surface-2 rounded-md p-sm gap-sm mt-xs"
-      ListEmptyComponent={() => (
-        <View className="items-center justify-center opacity-50">
-          <Text variant="caption" className="text-text-tertiary">
-            Nenhum ingrediente configurado
-          </Text>
-        </View>
-      )}
+      ListEmptyComponent={ListEmptyComponent}
       scrollEnabled={false}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={3}
+      windowSize={5}
     />
+  );
+}
+
+function ListEmptyComponent() {
+  return (
+    <View className="items-center justify-center opacity-50">
+      <Text variant="caption" className="text-text-tertiary">
+        Nenhum ingrediente configurado
+      </Text>
+    </View>
   );
 }
 

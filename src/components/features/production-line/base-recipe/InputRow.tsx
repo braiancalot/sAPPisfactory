@@ -148,7 +148,7 @@ const enhance = withObservables(["input"], ({ input }: ExternalProps) => ({
   sourceProductionLine: input.sourceProductionLine,
   factory: input.sourceProductionLine
     .observe()
-    .pipe(switchMap((line) => (line ? line.factory.observe() : of(null)))),
+    .pipe(switchMap((line) => (line ? line.factory.fetch() : of(null)))),
 }));
 
 export default enhance(InputRow) as React.ComponentType<ExternalProps>;

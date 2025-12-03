@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
@@ -43,7 +43,7 @@ export default function BaseRecipeCard({ productionLine }: Props) {
     setAddInputModalVisible(true);
   }
 
-  function handleInputAction(input: ProductionLineInput) {
+  const handleInputAction = useCallback((input: ProductionLineInput) => {
     if (!input.sourceType) {
       setSelectedInput(input);
       setTimeout(() => associateInputSourceSheetRef.current?.present(), 100);
@@ -55,12 +55,12 @@ export default function BaseRecipeCard({ productionLine }: Props) {
     } else if (input.sourceType === SourceType.GLOBAL_SOURCE) {
       router.push("/global-sources");
     }
-  }
+  }, []);
 
-  function handleInputPress(input: ProductionLineInput) {
+  const handleInputPress = useCallback((input: ProductionLineInput) => {
     setSelectedInput(input);
     menuSheetRef.current?.present();
-  }
+  }, []);
 
   async function handleRequestEditInputRate() {
     dismissAll();

@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { FlatList } from "react-native";
 import { withObservables } from "@nozbe/watermelondb/react";
 
@@ -16,14 +17,22 @@ type Props = ExternalProps & {
 };
 
 function ScaleGroupList({ scaleGroups }: Props) {
+  const renderItem = useCallback(
+    ({ item }: { item: ScaleGroup }) => <ScaleGroupRow scaleGroup={item} />,
+    []
+  );
+
   return (
     <FlatList
       data={scaleGroups}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <ScaleGroupRow scaleGroup={item} />}
+      renderItem={renderItem}
       contentContainerClassName="mt-lg gap-sm"
       ListEmptyComponent={ScaleGroupEmpty}
       scrollEnabled={false}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={3}
+      windowSize={5}
     />
   );
 }

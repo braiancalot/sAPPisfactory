@@ -77,14 +77,6 @@ function AssociateInputSourceSheet({
     onCancel();
   }
 
-  const SectionHeader = ({ title }: { title: string }) => (
-    <View className="mt-lg mb-xs px-xs">
-      <Text variant="caption" className="text-text-tertiary uppercase">
-        {title}
-      </Text>
-    </View>
-  );
-
   return (
     <BottomSheetModal
       ref={sheetRef}
@@ -166,6 +158,16 @@ function renderBackdrop(props: BottomSheetBackdropProps) {
       disappearsOnIndex={-1}
       opacity={0.5}
     />
+  );
+}
+
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <View className="mt-lg mb-xs px-xs">
+      <Text variant="caption" className="text-text-tertiary uppercase">
+        {title}
+      </Text>
+    </View>
   );
 }
 
