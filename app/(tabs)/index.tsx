@@ -10,21 +10,18 @@ import ScreenContainer from "@ui/ScreenContainer";
 import FAB from "@ui/FAB";
 import Text from "@ui/Text";
 import ConfirmDialog from "@ui/ConfirmDialog";
+
 import FactoryList from "@features/factories/FactoryList";
-import AddFactoryModal from "@features/factories/AddFactoryModal";
+import AddFactorySheet from "@features/factories/AddFactorySheet";
 
 export default function FactoriesScreen() {
-  const [addModalVisible, setAddModalVisible] = useState(false);
   const [factoryToDelete, setFactoryToDelete] = useState<Factory | null>(null);
 
+  const addSheetRef = useRef<BottomSheetModal>(null);
   const confirmSheetRef = useRef<BottomSheetModal>(null);
 
-  function handleOpenAddModal() {
-    setAddModalVisible(true);
-  }
-
-  function handleCloseAddModal() {
-    setAddModalVisible(false);
+  function handleOpenAddSheet() {
+    addSheetRef.current?.present();
   }
 
   async function handleAdd(name: string) {
@@ -60,13 +57,9 @@ export default function FactoriesScreen() {
         onDeleteFactory={handleDeleteRequest}
       />
 
-      <FAB onPress={handleOpenAddModal} />
+      <FAB onPress={handleOpenAddSheet} />
 
-      <AddFactoryModal
-        visible={addModalVisible}
-        onClose={handleCloseAddModal}
-        onAdd={handleAdd}
-      />
+      <AddFactorySheet ref={addSheetRef} onAdd={handleAdd} />
 
       <ConfirmDialog
         ref={confirmSheetRef}

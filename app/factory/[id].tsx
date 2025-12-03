@@ -16,8 +16,9 @@ import ContextMenu from "@ui/ContextMenu";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
 import FAB from "@ui/FAB";
+
 import EditFactorySheet from "@features/factory/EditFactorySheet";
-import AddProductionLineModal from "@features/factory/AddProductionLineModal";
+import AddProductionLineSheet from "@features/factory/AddProductionLineSheet";
 import ProductionLineList from "@features/factory/ProductionLineList";
 
 import { colors } from "@theme/colors";
@@ -28,21 +29,17 @@ type FactoryDetailsProps = {
 };
 
 function FactoryDetails({ factory }: FactoryDetailsProps) {
-  const [addModalVisible, setAddModalVisible] = useState(false);
   const { dismissAll } = useBottomSheetModal();
   const [productionLineToDelete, setProductionLineToDelete] =
     useState<ProductionLine | null>(null);
 
+  const addSheetRef = useRef<BottomSheetModal>(null);
   const editSheetRef = useRef<BottomSheetModal>(null);
   const confirmFactoryDeletionSheetRef = useRef<BottomSheetModal>(null);
   const confirmProductionLineDeletionSheetRef = useRef<BottomSheetModal>(null);
 
   function handleOpenAddModal() {
-    setAddModalVisible(true);
-  }
-
-  function handleCloseAddModal() {
-    setAddModalVisible(false);
+    addSheetRef.current?.present();
   }
 
   function handleOpenEditSheet() {
@@ -129,11 +126,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
 
       <FAB onPress={handleOpenAddModal} />
 
-      <AddProductionLineModal
-        visible={addModalVisible}
-        onClose={handleCloseAddModal}
-        onAdd={handleAdd}
-      />
+      <AddProductionLineSheet ref={addSheetRef} onAdd={handleAdd} />
 
       <EditFactorySheet
         ref={editSheetRef}

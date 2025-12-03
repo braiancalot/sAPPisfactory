@@ -10,22 +10,19 @@ import ScreenContainer from "@ui/ScreenContainer";
 import FAB from "@ui/FAB";
 import ConfirmDialog from "@ui/ConfirmDialog";
 import Text from "@ui/Text";
-import AddGlobalSourceModal from "@features/global-sources/AddGlobalSourceModal";
+
+import AddGlobalSourceSheet from "@features/global-sources/AddGlobalSourceSheet";
 import GlobalSourceList from "@features/global-sources/GlobalSourceList";
 
 export default function GlobalSourcesScreen() {
-  const [addModalVisible, setAddModalVisible] = useState(false);
   const [globalSourceToDelete, setGlobalSourceToDelete] =
     useState<GlobalSource | null>(null);
 
+  const addSheetRef = useRef<BottomSheetModal>(null);
   const confirmSheetRef = useRef<BottomSheetModal>(null);
 
   function handleOpenAddModal() {
-    setAddModalVisible(true);
-  }
-
-  function handleCloseAddModal() {
-    setAddModalVisible(false);
+    addSheetRef.current?.present();
   }
 
   async function handleAdd(item: ItemId, rate: number) {
@@ -67,11 +64,7 @@ export default function GlobalSourcesScreen() {
 
       <FAB onPress={handleOpenAddModal} />
 
-      <AddGlobalSourceModal
-        visible={addModalVisible}
-        onClose={handleCloseAddModal}
-        onAdd={handleAdd}
-      />
+      <AddGlobalSourceSheet ref={addSheetRef} onAdd={handleAdd} />
 
       <ConfirmDialog
         ref={confirmSheetRef}

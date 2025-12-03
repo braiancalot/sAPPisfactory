@@ -15,7 +15,7 @@ import Text from "@ui/Text";
 import Button from "@ui/Button";
 import MenuSheet, { MenuItem } from "@ui/MenuSheet";
 
-import AddInputModal from "@features/production-line/AddInputModal";
+import AddInputSheet from "@features/production-line/AddInputSheet";
 import EditInputSheet from "@features/production-line/EditInputSheet";
 import OutputCard from "@features/production-line/base-recipe/OutputCard";
 import AssociateInputSourceSheet, {
@@ -31,16 +31,16 @@ type Props = {
 export default function BaseRecipeCard({ productionLine }: Props) {
   const { dismissAll } = useBottomSheetModal();
 
-  const [addInputModalVisible, setAddInputModalVisible] = useState(false);
   const [selectedInput, setSelectedInput] =
     useState<ProductionLineInput | null>(null);
 
+  const addInputSheetRef = useRef<BottomSheetModal>(null);
   const menuSheetRef = useRef<BottomSheetModal>(null);
   const editInputSheetRef = useRef<BottomSheetModal>(null);
   const associateInputSourceSheetRef = useRef<BottomSheetModal>(null);
 
-  function handleOpenAddInputModal() {
-    setAddInputModalVisible(true);
+  function handleOpenAddInputSheet() {
+    addInputSheetRef.current?.present();
   }
 
   const handleInputAction = useCallback((input: ProductionLineInput) => {
@@ -70,10 +70,6 @@ export default function BaseRecipeCard({ productionLine }: Props) {
   async function handleRequestAssociateSource() {
     dismissAll();
     setTimeout(() => associateInputSourceSheetRef.current?.present(), 100);
-  }
-
-  function handleCloseAddInputModal() {
-    setAddInputModalVisible(false);
   }
 
   function handleCancelAll() {
@@ -163,7 +159,7 @@ export default function BaseRecipeCard({ productionLine }: Props) {
           title="Adicionar ingrediente"
           icon="add"
           size="sm"
-          onPress={handleOpenAddInputModal}
+          onPress={handleOpenAddInputSheet}
         />
       </View>
 
@@ -184,11 +180,7 @@ export default function BaseRecipeCard({ productionLine }: Props) {
         onSelect={handleAssociateInputSource}
       />
 
-      <AddInputModal
-        visible={addInputModalVisible}
-        onClose={handleCloseAddInputModal}
-        onAdd={handleAddInput}
-      />
+      <AddInputSheet ref={addInputSheetRef} onAdd={handleAddInput} />
     </Card>
   );
 }

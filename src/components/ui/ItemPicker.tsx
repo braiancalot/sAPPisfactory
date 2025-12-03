@@ -2,6 +2,8 @@ import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { useBottomSheetBackHandler } from "@hooks/useBottomSheetBackHandler";
+
 import {
   ITEM_LIST,
   Item as ItemType,
@@ -40,6 +42,7 @@ export default function ItemPicker({
 }: ItemPickerProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { handleSheetChanges } = useBottomSheetBackHandler(bottomSheetRef);
 
   const selectedItemData = selectedItemId ? getItemData(selectedItemId) : null;
 
@@ -155,6 +158,7 @@ export default function ItemPicker({
         backgroundStyle={{ backgroundColor: colors["surface-2"] }}
         handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
         onDismiss={handleDismiss}
+        onChange={handleSheetChanges}
       >
         <View className="px-lg pb-md border-b border-border">
           <Text variant="title" className="text-text-primary">

@@ -68,23 +68,6 @@ export default function Input({
   const isUncontrolled = defaultValue !== undefined;
 
   useEffect(() => {
-    if (autoFocus) {
-      const timer = setTimeout(
-        () => {
-          const animationFrame = requestAnimationFrame(() => {
-            inputRef.current?.focus();
-          });
-
-          return () => cancelAnimationFrame(animationFrame);
-        },
-        useBottomSheet ? 0 : 250
-      );
-
-      return () => clearTimeout(timer);
-    }
-  }, [autoFocus, useBottomSheet]);
-
-  useEffect(() => {
     const hideSub = Keyboard.addListener("keyboardDidHide", () => {
       if (isFocused) {
         inputRef.current?.blur();
@@ -135,7 +118,7 @@ export default function Input({
         placeholderTextColor={colors["text-tertiary"]}
         keyboardType={numeric ? "numeric" : "default"}
         placeholder={placeholder || "\u200B"}
-        // autoFocus={useBottomSheet ? autoFocus : undefined}
+        autoFocus={autoFocus}
         defaultValue={defaultValue}
         value={isUncontrolled ? undefined : value}
         onChangeText={handleTextChange}
