@@ -1,5 +1,4 @@
 import { useState, forwardRef } from "react";
-import { Keyboard, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import ProductionLineInput from "@db/model/ProductionLineInput";
@@ -22,10 +21,12 @@ const EditInputSheet = forwardRef<BottomSheetModal, Props>(
 
     function handleDismiss() {
       onCancel();
+      setNewRate("");
     }
 
     function handleConfirm() {
       onConfirm(parsePtBrNumber(newRate));
+      setNewRate("");
     }
 
     return (
@@ -40,10 +41,10 @@ const EditInputSheet = forwardRef<BottomSheetModal, Props>(
         confirmLabel="Salvar"
       >
         <Input
-          //   key={input?.id || "no-production-line"}
+          key={input?.id || "no-production-line"}
           label="Taxa base de consumo (por minuto)"
           defaultValue={sanitizeNumericInput(
-            input?.inputBaseRate.toString() || "0"
+            input?.inputBaseRate.toString() || ""
           )}
           onChangeValue={setNewRate}
           useBottomSheet
