@@ -1,13 +1,6 @@
 import { colors } from "@theme/colors";
-import { useEffect, useRef, useState } from "react";
-import {
-  Keyboard,
-  TextInput,
-  TextStyle,
-  View,
-  StyleProp,
-  InteractionManager,
-} from "react-native";
+import { memo, useEffect, useRef, useState } from "react";
+import { Keyboard, TextInput, TextStyle, View, StyleProp } from "react-native";
 import { sanitizeNumericInput } from "src/utils/numberFormat";
 
 import Text from "@ui/Text";
@@ -46,7 +39,7 @@ type Props = {
   style?: StyleProp<TextStyle>;
 };
 
-export default function Input({
+function Input({
   value,
   onChangeValue,
   defaultValue,
@@ -135,3 +128,5 @@ export default function Input({
     </View>
   );
 }
+
+export default memo(Input);

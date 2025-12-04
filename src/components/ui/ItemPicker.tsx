@@ -199,6 +199,8 @@ export default function ItemPicker({
           contentContainerClassName="gap-xs px-md"
           keyboardShouldPersistTaps="handled"
           windowSize={7}
+          removeClippedSubviews={true}
+          maxToRenderPerBatch={10}
           ListEmptyComponent={
             <View className="items-center justify-center py-xl">
               <MaterialIcons
