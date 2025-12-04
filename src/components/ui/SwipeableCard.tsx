@@ -153,8 +153,8 @@ export default function SwipeableCard({
 
   return (
     <Animated.View
-      entering={FadeIn.duration(100)}
-      exiting={FadeOut.duration(200)}
+      entering={FadeIn.duration(250)}
+      exiting={FadeOut.duration(250)}
       layout={LinearTransition.duration(150)}
       className="relative w-full"
     >
