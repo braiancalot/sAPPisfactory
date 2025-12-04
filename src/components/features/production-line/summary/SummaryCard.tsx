@@ -40,7 +40,7 @@ function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
         Balanço Global
       </Text>
 
-      <View className="bg-surface-2 rounded-md mt-xs overflow-hidden">
+      <View className="border border-surface-2 rounded-md mt-xs overflow-hidden">
         <View className="p-md gap-xs">
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center gap-xs">
@@ -71,7 +71,7 @@ function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
           </View>
         </View>
 
-        <View className="border-t border-border p-md flex-row items-center justify-between bg-surface-2">
+        <View className="border-t border-surface-2 p-md flex-row items-center justify-between">
           <View className="flex-row items-center gap-xs flex-1">
             <MaterialIcons name={iconName} size={16} color={iconColor} />
             <Text variant="body" className="text-white font-bold uppercase">
@@ -109,7 +109,7 @@ export default function SummaryCard({ productionLine }: Props) {
           Produção Total
         </Text>
 
-        <View className="p-sm bg-surface-2 rounded-md mt-xs">
+        <View className="p-sm border border-surface-2 rounded-md mt-xs">
           <View className="flex-row items-center gap-md">
             <Item icon={outputItem.icon} size="md" />
 

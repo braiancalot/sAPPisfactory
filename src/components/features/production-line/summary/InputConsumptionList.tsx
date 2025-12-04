@@ -43,7 +43,7 @@ function InputConsumptionList({ inputs }: Props) {
       data={inputs}
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      contentContainerClassName="bg-surface-2 rounded-md p-sm gap-sm mt-xs"
+      contentContainerClassName="border border-surface-2 rounded-md p-sm gap-sm mt-xs"
       ListEmptyComponent={ListEmptyComponent}
       scrollEnabled={false}
       removeClippedSubviews={true}
