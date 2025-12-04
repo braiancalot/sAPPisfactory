@@ -1,22 +1,11 @@
 import { useState, forwardRef } from "react";
-import { View } from "react-native";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
 
-import {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetModal,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
-
-import { useBottomSheetBackHandler } from "@hooks/useBottomSheetBackHandler";
-
-import Button from "@ui/Button";
-import Text from "@ui/Text";
 import Input from "@ui/Input";
 import ItemPicker from "@ui/ItemPicker";
+import BottomSheet from "@ui/BottomSheet";
 
-import { colors } from "@theme/colors";
 import { ItemId } from "@data/item";
 import { parsePtBrNumber } from "src/utils/numberFormat";
 
@@ -28,7 +17,6 @@ const AddGlobalSourceSheet = forwardRef<BottomSheetModal, Props>(
   ({ onAdd }, ref) => {
     const [rate, setRate] = useState("");
     const [selectedItemId, setSelectedItemId] = useState<ItemId | null>(null);
-    const { handleSheetChanges } = useBottomSheetBackHandler(ref);
 
     function handleDismiss() {
       setSelectedItemId(null);
@@ -40,78 +28,35 @@ const AddGlobalSourceSheet = forwardRef<BottomSheetModal, Props>(
 
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await onAdd(selectedItemId, parsePtBrNumber(rate));
-      if (ref && "current" in ref) ref.current?.dismiss();
     }
 
     const isValid = selectedItemId !== null && !!rate;
 
     return (
-      <BottomSheetModal
+      <BottomSheet
         ref={ref}
-        index={0}
-        enablePanDownToClose
-        backdropComponent={renderBackdrop}
-        backgroundStyle={{ backgroundColor: colors["surface-2"] }}
-        handleIndicatorStyle={{ backgroundColor: colors["surface-4"] }}
+        title="Adicionar fonte"
+        onConfirm={handleAdd}
         onDismiss={handleDismiss}
-        onChange={handleSheetChanges}
+        confirmDisabled={!isValid}
       >
-        <BottomSheetView className="pb-lg">
-          <View className="px-lg pb-md border-b border-border">
-            <Text variant="title" className="text-text-primary">
-              Adicionar fonte
-            </Text>
-          </View>
+        <ItemPicker
+          selectedItemId={selectedItemId}
+          onSelect={setSelectedItemId}
+          label="Item"
+        />
 
-          <View className="px-lg mt-lg gap-lg">
-            <ItemPicker
-              selectedItemId={selectedItemId}
-              onSelect={setSelectedItemId}
-              label="Item"
-            />
-
-            <Input
-              label="Produção (por minuto)"
-              placeholder="180"
-              numeric
-              defaultValue=""
-              onChangeValue={setRate}
-              useBottomSheet
-            />
-          </View>
-
-          <View className="flex-row gap-md mt-2xl px-lg">
-            <Button
-              title="Cancelar"
-              variant="secondary"
-              onPress={() => {
-                if (ref && "current" in ref) ref.current?.dismiss();
-              }}
-              fullWidth
-            />
-            <Button
-              title="Adicionar"
-              variant="primary"
-              onPress={handleAdd}
-              fullWidth
-              disabled={!isValid}
-            />
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
+        <Input
+          label="Produção (por minuto)"
+          placeholder="180"
+          numeric
+          defaultValue=""
+          onChangeValue={setRate}
+          useBottomSheet
+        />
+      </BottomSheet>
     );
   }
 );
-
-function renderBackdrop(props: BottomSheetBackdropProps) {
-  return (
-    <BottomSheetBackdrop
-      {...props}
-      appearsOnIndex={0}
-      disappearsOnIndex={-1}
-      opacity={0.5}
-    />
-  );
-}
 
 export default AddGlobalSourceSheet;
