@@ -37,7 +37,7 @@ function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
   return (
     <View className="mt-lg px-xs">
       <Text variant="caption" className="text-text-tertiary uppercase">
-        Balanço de Recursos
+        Balanço Global
       </Text>
 
       <View className="bg-surface-2 rounded-md mt-xs overflow-hidden">

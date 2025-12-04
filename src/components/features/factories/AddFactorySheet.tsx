@@ -1,5 +1,6 @@
 import { useState, forwardRef } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import {
   BottomSheetBackdrop,
@@ -31,7 +32,10 @@ const AddFactorySheet = forwardRef<BottomSheetModal, Props>(
 
     async function handleAdd() {
       if (!name) return;
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await onAdd(name);
+
       if (ref && "current" in ref) ref.current?.dismiss();
     }
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
+
 import { withObservables } from "@nozbe/watermelondb/react";
 
 import GlobalSource from "@db/model/GlobalSource";
@@ -37,6 +39,7 @@ function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
 
   async function handleSave() {
     setIsEditing(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     onUpdate(globalSource, parsePtBrNumber(editValue));
   }
 

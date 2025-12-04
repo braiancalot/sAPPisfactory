@@ -11,6 +11,7 @@ import Animated, {
 import { scheduleOnRN } from "react-native-worklets";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Dimensions, Pressable, View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@theme/colors";
@@ -42,6 +43,7 @@ export default function SwipeableCard({
   const translateX = useSharedValue(0);
   const isPressed = useSharedValue(false);
   const isSwiping = useSharedValue(false);
+  const hapticTriggered = useSharedValue(false);
 
   const panGesture = Gesture.Pan()
     .enabled(!disabled)
@@ -50,8 +52,16 @@ export default function SwipeableCard({
       isSwiping.value = false;
     })
     .onUpdate((event) => {
-      if (Math.abs(event.translationX) > 5) {
+      const startedSwiping = Math.abs(event.translationX) > 5;
+
+      if (startedSwiping) {
         isSwiping.value = true;
+
+        if (!hapticTriggered.value) {
+          hapticTriggered.value = true;
+
+          scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Medium);
+        }
       }
 
       if (event.translationX > 0) {
@@ -64,10 +74,13 @@ export default function SwipeableCard({
       const shouldTrigger = translateX.value < TRANSLATE_X_THRESHOLD;
 
       if (shouldTrigger && onDelete) {
-        // scheduleOnRN(Haptics.notificationAsync, Haptics.NotificationFeedbackType.Success)
         scheduleOnRN(onDelete);
 
         if (!shouldResetOnAction) {
+          scheduleOnRN(
+            Haptics.notificationAsync,
+            Haptics.NotificationFeedbackType.Error
+          );
           translateX.value = withTiming(-SCREEN_WIDTH, { duration: 300 });
           return;
         }
@@ -82,6 +95,7 @@ export default function SwipeableCard({
     })
     .onFinalize(() => {
       isSwiping.value = false;
+      hapticTriggered.value = false;
     });
 
   const rStyle = useAnimatedStyle(() => {

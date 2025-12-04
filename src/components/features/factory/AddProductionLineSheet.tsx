@@ -1,5 +1,6 @@
 import { useState, forwardRef } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import {
   BottomSheetBackdrop,
@@ -36,7 +37,10 @@ const AddProductionLineSheet = forwardRef<BottomSheetModal, Props>(
 
     async function handleAdd() {
       if (!selectedItemId || !rate) return;
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await onAdd(selectedItemId, parsePtBrNumber(rate));
+
       if (ref && "current" in ref) ref.current?.dismiss();
     }
 

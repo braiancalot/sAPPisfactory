@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 import ProductionLine from "@db/model/ProductionLine";
@@ -25,6 +26,8 @@ function OutputCard({ productionLine }: Props) {
   const outputItem = getItemData(productionLine.outputItem);
 
   function handlePress() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
     setEditValue(
       sanitizeNumericInput(productionLine.outputBaseRate.toString())
     );
@@ -38,6 +41,7 @@ function OutputCard({ productionLine }: Props) {
   async function handleSave() {
     setIsEditing(false);
     const newRate = parsePtBrNumber(editValue);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     await productionLine.updateOutputBaseRate(newRate);
   }
 

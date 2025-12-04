@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 
@@ -9,11 +10,11 @@ import { parsePtBrNumber, sanitizeNumericInput } from "src/utils/numberFormat";
 
 import Text from "@ui/Text";
 import Input from "@ui/Input";
+import SwipeableCard from "@ui/SwipeableCard";
 
 import { colors } from "@theme/colors";
 import { typography } from "src/utils/typography";
 import { MaterialIcons } from "@expo/vector-icons";
-import SwipeableCard from "@ui/SwipeableCard";
 
 type SomersloopSelector = {
   count: number;
@@ -88,7 +89,10 @@ function Stepper({ value, onIncrement, onDecrement, onDelete }: StepperProps) {
     };
   }, [isOpen, value]);
 
-  const toggle = () => setIsOpen(!isOpen);
+  function toggle() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsOpen(!isOpen);
+  }
 
   const ActionButton = ({
     icon,
@@ -149,6 +153,7 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
   const hasSomersloop = scaleGroup.somersloopCount > 0;
 
   async function handleToggleSomersloop() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const currentCount = scaleGroup.somersloopCount;
     const nextCount = currentCount >= 4 ? 0 : currentCount + 1;
     await scaleGroup.updateSomersloopCount(nextCount);
@@ -156,15 +161,20 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
 
   async function handleIncrement() {
     const newCount = scaleGroup.moduleCount + 1;
-    if (newCount < 99) await scaleGroup.updateModuleCount(newCount);
+    if (newCount < 99) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      await scaleGroup.updateModuleCount(newCount);
+    }
   }
 
   async function handleDecrement() {
     const newCount = scaleGroup.moduleCount - 1;
 
     if (newCount <= 0) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       await scaleGroup.delete();
     } else {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       await scaleGroup.updateModuleCount(newCount);
     }
   }
@@ -174,6 +184,7 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
   }
 
   async function startClockEdit() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setClockEditValue(
       sanitizeNumericInput(scaleGroup.clockSpeedPercent.toString())
     );
@@ -182,8 +193,14 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
 
   async function saveClock() {
     setIsEditingClock(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     const val = Math.min(Math.max(parsePtBrNumber(clockEditValue), 0), 250);
     await scaleGroup.updateClockSpeed(val);
+  }
+
+  function cancelClockEdit() {
+    setIsEditingClock(false);
+    setClockEditValue("");
   }
 
   return (
@@ -215,7 +232,7 @@ function ScaleGroupRow({ scaleGroup }: ScaleGroupRowProps) {
                 <Input
                   value={clockEditValue}
                   onChangeValue={setClockEditValue}
-                  onBlur={saveClock}
+                  onBlur={cancelClockEdit}
                   onSubmit={saveClock}
                   autoFocus
                   numeric

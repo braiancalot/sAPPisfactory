@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import {
   BottomSheetBackdrop,
@@ -42,6 +43,11 @@ const ConfirmDialog = forwardRef<BottomSheetModal, Props>(
       onCancel();
     }
 
+    function handleConfirm() {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      onConfirm();
+    }
+
     return (
       <BottomSheetModal
         ref={ref}
@@ -80,7 +86,7 @@ const ConfirmDialog = forwardRef<BottomSheetModal, Props>(
               />
 
               <Button
-                onPress={onConfirm}
+                onPress={handleConfirm}
                 variant="danger"
                 title={confirmText}
                 fullWidth
