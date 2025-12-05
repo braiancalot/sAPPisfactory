@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 import { useBottomSheetBackHandler } from "@hooks/useBottomSheetBackHandler";
 
@@ -71,6 +72,7 @@ export default function ItemPicker({
   }
 
   function handleSelect(itemId: ItemId) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onSelect(itemId);
     Keyboard.dismiss();
     setTimeout(() => {

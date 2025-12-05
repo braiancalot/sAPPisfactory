@@ -60,7 +60,7 @@ export default function SwipeableCard({
         if (!hapticTriggered.value) {
           hapticTriggered.value = true;
 
-          scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Medium);
+          scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
         }
       }
 

@@ -29,6 +29,7 @@ function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
   const itemData = getItemData(globalSource.item);
 
   function handleStartEdit() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setEditValue(sanitizeNumericInput(globalSource.totalRatePerMin.toString()));
     setIsEditing(true);
   }

@@ -1,5 +1,6 @@
 import { forwardRef, RefObject } from "react";
 import { Pressable, View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import {
   BottomSheetBackdrop,
@@ -77,6 +78,14 @@ function AssociateInputSourceSheet({
     onCancel();
   }
 
+  function handleSelect(
+    item: ProductionLine | GlobalSource,
+    sourceType: SourceType
+  ) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onSelect(item.id, sourceType);
+  }
+
   return (
     <BottomSheetModal
       ref={sheetRef}
@@ -121,7 +130,7 @@ function AssociateInputSourceSheet({
                   model={item}
                   type={SourceType.GLOBAL_SOURCE}
                   isSelected={item.id === currentSelectionId}
-                  onPress={() => onSelect(item.id, SourceType.GLOBAL_SOURCE)}
+                  onPress={() => handleSelect(item, SourceType.GLOBAL_SOURCE)}
                 />
               ))}
             </View>
@@ -139,7 +148,7 @@ function AssociateInputSourceSheet({
                   model={item}
                   type={SourceType.PRODUCTION_LINE}
                   isSelected={item.id === currentSelectionId}
-                  onPress={() => onSelect(item.id, SourceType.PRODUCTION_LINE)}
+                  onPress={() => handleSelect(item, SourceType.PRODUCTION_LINE)}
                 />
               ))}
             </View>

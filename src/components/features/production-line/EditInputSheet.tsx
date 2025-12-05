@@ -1,5 +1,6 @@
 import { useState, forwardRef } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import * as Haptics from "expo-haptics";
 
 import ProductionLineInput from "@db/model/ProductionLineInput";
 
@@ -25,6 +26,7 @@ const EditInputSheet = forwardRef<BottomSheetModal, Props>(
     }
 
     function handleConfirm() {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onConfirm(parsePtBrNumber(newRate));
       setNewRate("");
     }
