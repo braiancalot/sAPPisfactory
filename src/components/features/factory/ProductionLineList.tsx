@@ -6,6 +6,8 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import ProductionLine from "@db/model/ProductionLine";
 import Factory from "@db/model/Factory";
 
+import { useGlobalBalances } from "@hooks/useGlobalBalances";
+
 import ProductionLineCard from "./ProductionLineCard";
 import ProductionLineEmpty from "./ProductionLineEmpty";
 
@@ -24,15 +26,22 @@ function ProductionLineList({
   onNavigateToProductionLine,
   onDeleteProductionLine,
 }: Props) {
+  const balances = useGlobalBalances();
+
   const renderItem = useCallback(
-    ({ item }: { item: ProductionLine }) => (
-      <ProductionLineCard
-        productionLine={item}
-        onNavigate={onNavigateToProductionLine}
-        onDelete={onDeleteProductionLine}
-      />
-    ),
-    []
+    ({ item }: { item: ProductionLine }) => {
+      const balance = balances?.productionLines[item.id];
+
+      return (
+        <ProductionLineCard
+          productionLine={item}
+          balance={balance}
+          onNavigate={onNavigateToProductionLine}
+          onDelete={onDeleteProductionLine}
+        />
+      );
+    },
+    [balances]
   );
 
   return (

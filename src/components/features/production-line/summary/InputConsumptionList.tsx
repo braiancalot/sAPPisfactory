@@ -10,18 +10,25 @@ import { getItemData } from "@data/item";
 import Item from "@ui/Item";
 import RateDisplay from "@ui/RateDisplay";
 import Text from "@ui/Text";
+import { LineTotalRates } from "@services/global-balance/globalBalance.types";
 
 type ExternalProps = {
   productionLine: ProductionLine;
+  rates?: LineTotalRates["inputs"];
 };
 
 type Props = ExternalProps & {
   inputs: ProductionLineInput[];
 };
 
-function InputConsumptionList({ inputs }: Props) {
+function InputConsumptionList({ inputs, rates }: Props) {
   const renderItem = useCallback(({ item }: { item: ProductionLineInput }) => {
     const itemData = getItemData(item.inputItem);
+
+    const rate = rates?.find((i) => i.inputItem === item.inputItem);
+
+    const displayRate = rate?.totalInputRate ?? 0;
+
     return (
       <View className="flex-row items-center justify-between gap-md">
         <Item icon={itemData.icon} size="sm" />
@@ -33,7 +40,7 @@ function InputConsumptionList({ inputs }: Props) {
           {itemData.name}
         </Text>
 
-        <RateDisplay value={-item.inputBaseRate} size="sm" colored={false} />
+        <RateDisplay value={-displayRate} size="sm" colored={false} />
       </View>
     );
   }, []);

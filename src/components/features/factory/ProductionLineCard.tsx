@@ -4,6 +4,8 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import ProductionLine from "@db/model/ProductionLine";
 import { getItemData } from "@data/item";
 
+import { ProductionLineBalance } from "@services/global-balance/globalBalance.types";
+
 import RateDisplay from "@ui/RateDisplay";
 import Item from "@ui/Item";
 import Text from "@ui/Text";
@@ -11,11 +13,17 @@ import SwipeableCard from "@ui/SwipeableCard";
 
 type Props = {
   productionLine: ProductionLine;
+  balance: ProductionLineBalance | undefined;
   onNavigate: (productionLine: ProductionLine) => void;
   onDelete: (productionLine: ProductionLine) => void;
 };
 
-function ProductionLineCard({ productionLine, onNavigate, onDelete }: Props) {
+function ProductionLineCard({
+  productionLine,
+  balance,
+  onNavigate,
+  onDelete,
+}: Props) {
   const itemData = getItemData(productionLine.outputItem);
 
   function handlePress() {
@@ -57,7 +65,7 @@ function ProductionLineCard({ productionLine, onNavigate, onDelete }: Props) {
         </View>
 
         <View className="max-w-40">
-          <RateDisplay value={productionLine.outputBaseRate} size="md" />
+          <RateDisplay value={balance?.balance ?? 0} size="md" />
         </View>
       </View>
     </SwipeableCard>

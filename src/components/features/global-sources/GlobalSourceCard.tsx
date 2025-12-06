@@ -7,6 +7,8 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import GlobalSource from "@db/model/GlobalSource";
 import { getItemData } from "@data/item";
 
+import { GlobalSourceBalance } from "@services/global-balance/globalBalance.types";
+
 import RateDisplay from "@ui/RateDisplay";
 import Item from "@ui/Item";
 import Input from "@ui/Input";
@@ -18,11 +20,17 @@ import { typography } from "src/utils/typography";
 
 type Props = {
   globalSource: GlobalSource;
+  balance: GlobalSourceBalance | undefined;
   onUpdate: (source: GlobalSource, newRate: number) => void;
   onDelete: (source: GlobalSource) => void;
 };
 
-function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
+function GlobalSourceCard({
+  globalSource,
+  balance,
+  onUpdate,
+  onDelete,
+}: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
 
@@ -94,7 +102,7 @@ function GlobalSourceCard({ globalSource, onUpdate, onDelete }: Props) {
         </View>
 
         <View className="max-w-40">
-          <RateDisplay value={globalSource.totalRatePerMin} size="md" />
+          <RateDisplay value={balance?.balance ?? 0} size="md" />
         </View>
       </View>
     </SwipeableCard>

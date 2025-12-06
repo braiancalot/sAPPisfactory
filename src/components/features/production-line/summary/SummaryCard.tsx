@@ -1,7 +1,11 @@
+import { useMemo } from "react";
 import { View } from "react-native";
 
 import ProductionLine from "@db/model/ProductionLine";
 import { getItemData } from "@data/item";
+
+import { useGlobalBalances } from "@hooks/useGlobalBalances";
+import { ProductionLineBalance } from "@services/global-balance/globalBalance.types";
 
 import Card from "@ui/Card";
 import Item from "@ui/Item";
@@ -13,15 +17,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "@theme/colors";
 
 type ResourceBalanceProps = {
-  production: number;
-  consumption: number;
+  balance: ProductionLineBalance | undefined;
 };
 
-function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
-  const netBalance = production - consumption;
-
-  const isPositive = netBalance > 0;
-  const isNegative = netBalance < 0;
+function ResourceBalance({ balance }: ResourceBalanceProps) {
+  const isPositive = (balance?.balance ?? 0) > 0;
+  const isNegative = (balance?.balance ?? 0) < 0;
 
   let iconName: keyof typeof MaterialIcons.glyphMap = "check-circle";
   let iconColor = colors["text-tertiary"];
@@ -53,7 +54,11 @@ function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
                 Produção
               </Text>
             </View>
-            <RateDisplay value={production} size="sm" colored={false} />
+            <RateDisplay
+              value={balance?.production ?? 0}
+              size="sm"
+              colored={false}
+            />
           </View>
 
           <View className="flex-row items-center justify-between">
@@ -67,7 +72,11 @@ function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
                 Consumo
               </Text>
             </View>
-            <RateDisplay value={-consumption} size="sm" colored={false} />
+            <RateDisplay
+              value={balance?.consumption ? -balance?.consumption : 0}
+              size="sm"
+              colored={false}
+            />
           </View>
         </View>
 
@@ -79,7 +88,7 @@ function ResourceBalance({ production, consumption }: ResourceBalanceProps) {
             </Text>
           </View>
 
-          <RateDisplay value={netBalance} size="lg" colored={true} />
+          <RateDisplay value={balance?.balance ?? 0} size="lg" colored={true} />
         </View>
       </View>
     </View>
@@ -93,8 +102,17 @@ type Props = {
 export default function SummaryCard({ productionLine }: Props) {
   const outputItem = getItemData(productionLine.outputItem);
 
-  const productionRate = productionLine.outputBaseRate;
-  const consumptionRate = productionLine.outputBaseRate * 0.8; // Placeholder
+  const balances = useGlobalBalances();
+
+  const balance = useMemo(
+    () => balances?.productionLines[productionLine.id],
+    [balances, productionLine]
+  );
+
+  const rates = useMemo(
+    () => balances?.productionLineRates[productionLine.id],
+    [balances, productionLine]
+  );
 
   return (
     <Card className="p-md">
@@ -135,13 +153,13 @@ export default function SummaryCard({ productionLine }: Props) {
           Consumo Total
         </Text>
 
-        <InputConsumptionList productionLine={productionLine} />
+        <InputConsumptionList
+          productionLine={productionLine}
+          rates={rates?.inputs}
+        />
       </View>
 
-      <ResourceBalance
-        production={productionRate}
-        consumption={consumptionRate}
-      />
+      <ResourceBalance balance={balance} />
     </Card>
   );
 }
