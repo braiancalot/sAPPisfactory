@@ -1,7 +1,6 @@
 import { forwardRef } from "react";
 import { Pressable, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
 
 import {
   BottomSheetModal,
@@ -52,7 +51,6 @@ const MenuSheet = forwardRef<BottomSheetModal, Props>(({ options }, ref) => {
                     ref?.current?.close();
                   }
 
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   option.onPress();
                 }}
               >

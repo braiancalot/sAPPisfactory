@@ -1,6 +1,5 @@
 import { useState, forwardRef } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import * as Haptics from "expo-haptics";
 
 import Input from "@ui/Input";
 import BottomSheet from "@ui/BottomSheet";
@@ -20,7 +19,6 @@ const AddFactorySheet = forwardRef<BottomSheetModal, Props>(
     async function handleAdd() {
       if (!name) return;
 
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await onAdd(name);
     }
 

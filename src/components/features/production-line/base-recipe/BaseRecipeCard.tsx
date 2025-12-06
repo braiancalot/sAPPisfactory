@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
-import * as Haptics from "expo-haptics";
 
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
@@ -41,7 +40,6 @@ export default function BaseRecipeCard({ productionLine }: Props) {
   const associateInputSourceSheetRef = useRef<BottomSheetModal>(null);
 
   function handleOpenAddInputSheet() {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     addInputSheetRef.current?.present();
   }
 

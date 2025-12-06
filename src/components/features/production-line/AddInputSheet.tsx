@@ -1,6 +1,5 @@
 import { useState, forwardRef } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import * as Haptics from "expo-haptics";
 
 import Input from "@ui/Input";
 import ItemPicker from "@ui/ItemPicker";
@@ -25,7 +24,6 @@ const AddInputSheet = forwardRef<BottomSheetModal, Props>(({ onAdd }, ref) => {
   async function handleAdd() {
     if (!selectedItemId || !rate) return;
 
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     await onAdd(selectedItemId, parsePtBrNumber(rate));
   }
 

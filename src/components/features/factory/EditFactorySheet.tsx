@@ -1,6 +1,5 @@
 import { useState, forwardRef } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import * as Haptics from "expo-haptics";
 
 import Factory from "@db/model/Factory";
 
@@ -22,7 +21,6 @@ const EditFactorySheet = forwardRef<BottomSheetModal, Props>(
     }
 
     function handleConfirm() {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onConfirm(newName);
     }
 

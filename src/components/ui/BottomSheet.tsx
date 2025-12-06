@@ -1,5 +1,6 @@
 import { forwardRef, useCallback } from "react";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 import {
   BottomSheetBackdrop,
@@ -53,6 +54,7 @@ const BottomSheet = forwardRef<BottomSheetModal, Props>(
     );
 
     async function handleConfirmPress() {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await onConfirm();
       if (ref && "current" in ref) ref.current?.dismiss();
     }

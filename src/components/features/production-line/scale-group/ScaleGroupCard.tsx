@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import * as Haptics from "expo-haptics";
 
 import ProductionLine from "@db/model/ProductionLine";
 
@@ -16,7 +15,6 @@ type Props = {
 
 export default function ScaleGroupCard({ productionLine }: Props) {
   async function handleAddGroup() {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await addScaleGroup(productionLine);
   }
 
