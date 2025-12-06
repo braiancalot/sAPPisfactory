@@ -15,10 +15,26 @@ export function useGlobalBalances() {
   const [balances, setBalances] = useState<GlobalBalancesResult | null>(null);
 
   useEffect(() => {
-    const globalSources$ = globalSourcesCollection.query().observe();
-    const productionLines$ = productionLinesCollection.query().observe();
-    const inputs$ = productionLineInputsCollection.query().observe();
-    const scaleGroups$ = scaleGroupsCollection.query().observe();
+    const globalSources$ = globalSourcesCollection
+      .query()
+      .observeWithColumns(["total_rate_per_min"]);
+    const productionLines$ = productionLinesCollection
+      .query()
+      .observeWithColumns(["output_base_rate"]);
+    const inputs$ = productionLineInputsCollection
+      .query()
+      .observeWithColumns([
+        "input_base_rate",
+        "global_source_id",
+        "source_production_line_id",
+      ]);
+    const scaleGroups$ = scaleGroupsCollection
+      .query()
+      .observeWithColumns([
+        "module_count",
+        "clock_speed_percent",
+        "somersloop_count",
+      ]);
 
     const subscription = combineLatest([
       globalSources$,
