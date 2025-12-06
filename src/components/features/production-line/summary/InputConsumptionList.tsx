@@ -22,28 +22,31 @@ type Props = ExternalProps & {
 };
 
 function InputConsumptionList({ inputs, rates }: Props) {
-  const renderItem = useCallback(({ item }: { item: ProductionLineInput }) => {
-    const itemData = getItemData(item.inputItem);
+  const renderItem = useCallback(
+    ({ item }: { item: ProductionLineInput }) => {
+      const itemData = getItemData(item.inputItem);
 
-    const rate = rates?.find((i) => i.inputItem === item.inputItem);
+      const rate = rates?.find((i) => i.inputItem === item.inputItem);
 
-    const displayRate = rate?.totalInputRate ?? 0;
+      const displayRate = rate?.totalInputRate ?? 0;
 
-    return (
-      <View className="flex-row items-center justify-between gap-md">
-        <Item icon={itemData.icon} size="sm" />
-        <Text
-          variant="footnote"
-          className="text-text-secondary flex-1"
-          numberOfLines={1}
-        >
-          {itemData.name}
-        </Text>
+      return (
+        <View className="flex-row items-center justify-between gap-md">
+          <Item icon={itemData.icon} size="sm" />
+          <Text
+            variant="footnote"
+            className="text-text-secondary flex-1"
+            numberOfLines={1}
+          >
+            {itemData.name}
+          </Text>
 
-        <RateDisplay value={-displayRate} size="sm" colored={false} />
-      </View>
-    );
-  }, []);
+          <RateDisplay value={-displayRate} size="sm" colored={false} />
+        </View>
+      );
+    },
+    [rates]
+  );
 
   return (
     <FlatList
