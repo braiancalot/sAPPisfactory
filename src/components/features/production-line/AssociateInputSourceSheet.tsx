@@ -17,9 +17,16 @@ import ProductionLineInput from "@db/model/ProductionLineInput";
 import GlobalSource from "@db/model/GlobalSource";
 import ProductionLine from "@db/model/ProductionLine";
 import Factory from "@db/model/Factory";
+
 import { getItemData } from "@data/item";
 
 import { useBottomSheetBackHandler } from "@hooks/useBottomSheetBackHandler";
+import { useGlobalBalances } from "@hooks/useGlobalBalances";
+
+import {
+  GlobalSourceBalance,
+  ProductionLineBalance,
+} from "@services/global-balance/globalBalance.types";
 
 import Text from "@ui/Text";
 import Item from "@ui/Item";
@@ -59,6 +66,8 @@ function AssociateInputSourceSheet({
   const { handleSheetChanges } = useBottomSheetBackHandler(
     sheetRef as RefObject<BottomSheetModal>
   );
+
+  const balances = useGlobalBalances();
 
   const currentSelectionId = getCurrentSelectionId();
 
@@ -124,15 +133,20 @@ function AssociateInputSourceSheet({
             <SectionHeader title="Fontes Globais" />
 
             <View className="gap-xs">
-              {globalSources.map((item) => (
-                <EnhancedSourceRow
-                  key={item.id}
-                  model={item}
-                  type={SourceType.GLOBAL_SOURCE}
-                  isSelected={item.id === currentSelectionId}
-                  onPress={() => handleSelect(item, SourceType.GLOBAL_SOURCE)}
-                />
-              ))}
+              {globalSources.map((item) => {
+                const balance = balances?.globalSources[item.id];
+
+                return (
+                  <EnhancedSourceRow
+                    key={item.id}
+                    model={item}
+                    balance={balance}
+                    type={SourceType.GLOBAL_SOURCE}
+                    isSelected={item.id === currentSelectionId}
+                    onPress={() => handleSelect(item, SourceType.GLOBAL_SOURCE)}
+                  />
+                );
+              })}
             </View>
           </View>
         )}
@@ -142,15 +156,22 @@ function AssociateInputSourceSheet({
             <SectionHeader title="Linhas de produção" />
 
             <View className="gap-xs">
-              {productionLines.map((item) => (
-                <EnhancedSourceRow
-                  key={item.id}
-                  model={item}
-                  type={SourceType.PRODUCTION_LINE}
-                  isSelected={item.id === currentSelectionId}
-                  onPress={() => handleSelect(item, SourceType.PRODUCTION_LINE)}
-                />
-              ))}
+              {productionLines.map((item) => {
+                const balance = balances?.productionLines[item.id];
+
+                return (
+                  <EnhancedSourceRow
+                    key={item.id}
+                    model={item}
+                    balance={balance}
+                    type={SourceType.PRODUCTION_LINE}
+                    isSelected={item.id === currentSelectionId}
+                    onPress={() =>
+                      handleSelect(item, SourceType.PRODUCTION_LINE)
+                    }
+                  />
+                );
+              })}
             </View>
           </View>
         )}
@@ -210,6 +231,7 @@ export default forwardRef<BottomSheetModal, ExternalProps>((props, ref) => (
 
 type SourceRowProps = {
   model: GlobalSource | ProductionLine;
+  balance: GlobalSourceBalance | ProductionLineBalance | undefined;
   type: SourceType;
   isSelected: boolean;
   onPress: () => void;
@@ -218,6 +240,7 @@ type SourceRowProps = {
 
 function SourceRow({
   model,
+  balance,
   type,
   isSelected,
   onPress,
@@ -290,7 +313,7 @@ function SourceRow({
       </View>
 
       <View className="flex-row items-center gap-md">
-        <RateDisplay value={rate} size="sm" />
+        <RateDisplay value={balance?.balance ?? 0} size="sm" />
 
         {isSelected && (
           <View className="w-5 h-5 bg-primary rounded-full items-center justify-center">
@@ -317,4 +340,4 @@ const EnhancedSourceRow = withObservables(
     }
     return { model };
   }
-)(SourceRow);
+)(SourceRow) as React.ComponentType<SourceRowProps>;
