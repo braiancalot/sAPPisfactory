@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { colors } from "@theme/colors";
 import { typography } from "src/utils/typography";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
@@ -47,6 +48,21 @@ export default function TabLayout() {
           tabBarLabel: "Fábricas",
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="factory" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="projector"
+        options={{
+          title: "Projetor de Metas",
+          tabBarLabel: "Projetor",
+          tabBarIcon: ({ size, color }) => (
+            <MaterialCommunityIcons
+              name="crosshairs-gps"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
