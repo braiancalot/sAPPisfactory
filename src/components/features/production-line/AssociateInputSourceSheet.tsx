@@ -21,7 +21,7 @@ import Factory from "@db/model/Factory";
 import { getItemData } from "@data/item";
 
 import { useBottomSheetBackHandler } from "@hooks/useBottomSheetBackHandler";
-import { useGlobalBalances } from "@hooks/useGlobalBalances";
+import { useGlobalBalance } from "@hooks/useGlobalBalance";
 
 import {
   GlobalSourceBalance,
@@ -67,7 +67,8 @@ function AssociateInputSourceSheet({
     sheetRef as RefObject<BottomSheetModal>
   );
 
-  const balances = useGlobalBalances();
+  const { getGlobalSourceBalance, getProductionLineBalance } =
+    useGlobalBalance();
 
   const currentSelectionId = getCurrentSelectionId();
 
@@ -134,7 +135,7 @@ function AssociateInputSourceSheet({
 
             <View className="gap-xs">
               {globalSources.map((item) => {
-                const balance = balances?.globalSources[item.id];
+                const balance = getGlobalSourceBalance(item.id);
 
                 return (
                   <EnhancedSourceRow
@@ -157,7 +158,7 @@ function AssociateInputSourceSheet({
 
             <View className="gap-xs">
               {productionLines.map((item) => {
-                const balance = balances?.productionLines[item.id];
+                const balance = getProductionLineBalance(item.id);
 
                 return (
                   <EnhancedSourceRow

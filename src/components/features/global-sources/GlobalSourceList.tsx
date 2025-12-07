@@ -6,7 +6,7 @@ import { globalSourcesCollection } from "@db/index";
 
 import GlobalSource from "@db/model/GlobalSource";
 
-import { useGlobalBalances } from "@hooks/useGlobalBalances";
+import { useGlobalBalance } from "@hooks/useGlobalBalance";
 
 import GlobalSourceCard from "@features/global-sources/GlobalSourceCard";
 import GlobalSourceListEmpty from "@features/global-sources/GlobalSourceListEmpty";
@@ -25,11 +25,11 @@ function GlobalSourceList({
   onUpdateGlobalSource,
   onDeleteGlobalSource,
 }: Props) {
-  const balances = useGlobalBalances();
+  const { getGlobalSourceBalance } = useGlobalBalance();
 
   const renderItem = useCallback(
     ({ item }: { item: GlobalSource }) => {
-      const balance = balances?.globalSources[item.id];
+      const balance = getGlobalSourceBalance(item.id);
 
       return (
         <GlobalSourceCard
@@ -40,7 +40,7 @@ function GlobalSourceList({
         />
       );
     },
-    [balances]
+    [getGlobalSourceBalance]
   );
 
   return (

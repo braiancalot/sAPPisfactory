@@ -4,7 +4,7 @@ import { View } from "react-native";
 import ProductionLine from "@db/model/ProductionLine";
 import { getItemData } from "@data/item";
 
-import { useGlobalBalances } from "@hooks/useGlobalBalances";
+import { useGlobalBalance } from "@hooks/useGlobalBalance";
 import { ProductionLineBalance } from "@services/global-balance/globalBalance.types";
 
 import Card from "@ui/Card";
@@ -102,17 +102,11 @@ type Props = {
 export default function SummaryCard({ productionLine }: Props) {
   const outputItem = getItemData(productionLine.outputItem);
 
-  const balances = useGlobalBalances();
+  const { getProductionLineBalance, getProductionLineRates } =
+    useGlobalBalance();
 
-  const balance = useMemo(
-    () => balances?.productionLines[productionLine.id],
-    [balances, productionLine]
-  );
-
-  const rates = useMemo(
-    () => balances?.productionLineRates[productionLine.id],
-    [balances, productionLine]
-  );
+  const balance = getProductionLineBalance(productionLine.id);
+  const rates = getProductionLineRates(productionLine.id);
 
   return (
     <Card className="p-md">
@@ -140,7 +134,7 @@ export default function SummaryCard({ productionLine }: Props) {
             </Text>
 
             <RateDisplay
-              value={productionLine.outputBaseRate}
+              value={balance?.production ?? 0}
               size="md"
               colored={false}
             />

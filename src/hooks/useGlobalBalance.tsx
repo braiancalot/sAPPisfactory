@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { combineLatest, map } from "rxjs";
 
 import database, {
@@ -9,9 +9,30 @@ import database, {
 } from "@db/index";
 
 import { computeGlobalSources } from "@services/global-balance/globalBalanceService";
-import { GlobalBalancesResult } from "@services/global-balance/globalBalance.types";
 
-export function useGlobalBalances() {
+import {
+  GlobalBalancesResult,
+  GlobalSourceBalance,
+  LineTotalRates,
+  ProductionLineBalance,
+} from "@services/global-balance/globalBalance.types";
+
+type GlobalBalanceContextType = {
+  balances: GlobalBalancesResult | null;
+  getGlobalSourceBalance: (id: string) => GlobalSourceBalance | undefined;
+  getProductionLineBalance: (id: string) => ProductionLineBalance | undefined;
+  getProductionLineRates: (id: string) => LineTotalRates | undefined;
+};
+
+const GlobalBalanceContext = createContext<GlobalBalanceContextType | null>(
+  null
+);
+
+export function GlobalBalanceProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [balances, setBalances] = useState<GlobalBalancesResult | null>(null);
 
   useEffect(() => {
@@ -57,5 +78,38 @@ export function useGlobalBalances() {
     return () => subscription.unsubscribe();
   }, [database]);
 
-  return balances;
+  function getGlobalSourceBalance(id: string) {
+    return balances?.globalSources[id];
+  }
+
+  function getProductionLineBalance(id: string) {
+    return balances?.productionLines[id];
+  }
+
+  function getProductionLineRates(id: string) {
+    return balances?.productionLineRates[id];
+  }
+
+  return (
+    <GlobalBalanceContext.Provider
+      value={{
+        balances,
+        getGlobalSourceBalance,
+        getProductionLineBalance,
+        getProductionLineRates,
+      }}
+    >
+      {children}
+    </GlobalBalanceContext.Provider>
+  );
+}
+
+export function useGlobalBalance() {
+  const context = useContext(GlobalBalanceContext);
+  if (!context) {
+    throw new Error(
+      "useGlobalBalance must be used within a GlobalBalanceProvider"
+    );
+  }
+  return context;
 }

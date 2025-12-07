@@ -8,6 +8,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
+import { GlobalBalanceProvider } from "@hooks/useGlobalBalance";
+
 import "../global.css";
 import { colors } from "@theme/colors";
 
@@ -52,14 +54,16 @@ export default function RootLayout() {
     <GestureHandlerRootView className="flex-1">
       <BottomSheetModalProvider>
         <KeyboardProvider>
-          <StatusBar style="dark" backgroundColor={colors["surface-2"]} />
+          <GlobalBalanceProvider>
+            <StatusBar style="dark" backgroundColor={colors["surface-2"]} />
 
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.background },
-            }}
-          />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.background },
+              }}
+            />
+          </GlobalBalanceProvider>
         </KeyboardProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

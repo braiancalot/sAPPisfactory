@@ -22,7 +22,6 @@ import ScaleGroupCard from "@features/production-line/scale-group/ScaleGroupCard
 import SummaryCard from "@features/production-line/summary/SummaryCard";
 
 import { colors } from "@theme/colors";
-import { useGlobalBalances } from "@hooks/useGlobalBalances";
 
 type ProductionLineDetailsProps = {
   productionLine: ProductionLine;
