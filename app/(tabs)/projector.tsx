@@ -1,42 +1,39 @@
+import { useEffect, useState } from "react";
+import { ScrollView, View } from "react-native";
+
 import {
   productionLineInputsCollection,
   productionLinesCollection,
 } from "@db/index";
 
 import { useGlobalBalance } from "@hooks/useGlobalBalance";
+import { SimulationNode } from "@services/goal-projector/goalProjector.types";
 import {
   createProjectorContext,
   projectGoal,
 } from "@services/goal-projector/goalProjectorService";
 
 import ScreenContainer from "@ui/ScreenContainer";
-import { useEffect } from "react";
+import Button from "@ui/Button";
+
+import DependencyTree from "@features/projector/DependencyTree";
 
 export default function ProjectorScreen() {
+  const [simulationTree, setSimulationTree] = useState<SimulationNode | null>(
+    null
+  );
+
   const { balances } = useGlobalBalance();
 
   useEffect(() => {
-    handlePress();
-  }, []);
+    project();
+  }, [balances]);
 
-  async function handlePress() {
+  async function project() {
     if (!balances) return;
 
     const productionLine =
       await productionLinesCollection.find("CmtpJdhnO4uUipiy");
-
-    console.log(
-      "\n== Calculando impacto ==\n",
-      JSON.stringify(
-        {
-          id: productionLine.id,
-          item: productionLine.outputItem,
-          baseRate: productionLine.outputBaseRate,
-        },
-        null,
-        2
-      )
-    );
 
     const productionLines = await productionLinesCollection.query().fetch();
     const productionLineInputs = await productionLineInputsCollection
@@ -49,13 +46,22 @@ export default function ProjectorScreen() {
       balances
     );
 
-    const result = projectGoal(productionLine.id, 5, context);
-    console.log(JSON.stringify(result, null, 2));
+    const tree = projectGoal(productionLine.id, 8, context);
+    setSimulationTree(tree);
+  }
+
+  async function handlePress() {
+    await project();
   }
 
   return (
     <ScreenContainer>
       <Button title="Calcular impacto" onPress={handlePress} />
+      {simulationTree && (
+        <ScrollView className="px-sm mt-lg">
+          <DependencyTree node={simulationTree} />
+        </ScrollView>
+      )}
     </ScreenContainer>
   );
 }
