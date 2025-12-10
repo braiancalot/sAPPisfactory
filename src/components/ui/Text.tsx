@@ -10,6 +10,7 @@ export type TextVariant =
   | "button"
   | "title"
   | "headline"
+  | "numberXs"
   | "numberSm"
   | "numberMd"
   | "numberLg";
@@ -35,6 +36,7 @@ export default function Text({
     button: typography.button,
     title: typography.title,
     headline: typography.headline,
+    numberXs: typography.numberXs,
     numberSm: typography.numberSm,
     numberMd: typography.numberMd,
     numberLg: typography.numberLg,

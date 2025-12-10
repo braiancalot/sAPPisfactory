@@ -24,6 +24,8 @@ import Card from "@ui/Card";
 import Text from "@ui/Text";
 import ProductionLinePicker from "@features/projector/ProductionLinePicker";
 import DependencyTree from "@features/projector/DependencyTree";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { colors } from "@theme/colors";
 
 export default function ProjectorScreen() {
   const [selectedProductionLine, setSelectedProductionLine] =
@@ -55,6 +57,9 @@ export default function ProjectorScreen() {
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
+    setSimulationTree(null);
+    // loading
+
     const targetRate = parsePtBrNumber(targetRateStr);
 
     const productionLines = await productionLinesCollection.query().fetch();
@@ -74,7 +79,7 @@ export default function ProjectorScreen() {
 
   return (
     <ScrollScreenContainer>
-      <Card className="p-md gap-lg mx-md my-lg">
+      <Card className="p-md gap-lg mx-md mt-lg">
         <View>
           <ProductionLinePicker
             label="Linha base"
@@ -139,11 +144,52 @@ export default function ProjectorScreen() {
         />
       </Card>
 
-      {simulationTree && (
-        <View className="mx-md">
-          <DependencyTree node={simulationTree} />
-        </View>
-      )}
+      <View className="p-md mt-xl">
+        {simulationTree ? (
+          <View>
+            <View className="flex-row items-center justify-between mb-md">
+              <Text variant="subhead" className="text-text-secondary uppercase">
+                Relatório de impacto
+              </Text>
+
+              <View
+                className={`px-sm py-2xs rounded-pill ${simulationTree.status === "OK" ? "bg-success/20" : "bg-danger/20"}`}
+              >
+                <Text
+                  variant="caption"
+                  className={
+                    simulationTree.status === "OK"
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                >
+                  {simulationTree.status === "OK"
+                    ? "SISTEMA ESTÁVEL"
+                    : "GARGALOS ENCONTRADOS"}
+                </Text>
+              </View>
+            </View>
+
+            <DependencyTree node={simulationTree} />
+          </View>
+        ) : (
+          <View className="items-center justify-center mt-3xl gap-md opacity-80">
+            <MaterialCommunityIcons
+              name="chart-timeline-variant"
+              size={48}
+              color={colors["text-tertiary"]}
+            />
+
+            <Text
+              variant="body"
+              className="text-text-tertiary max-w-[250px] text-center"
+            >
+              Selecione uma linha acima e defina uma meta para simular o
+              impactado nas fábricas.
+            </Text>
+          </View>
+        )}
+      </View>
     </ScrollScreenContainer>
   );
 }

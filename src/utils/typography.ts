@@ -46,6 +46,11 @@ export const typography = StyleSheet.create({
     fontSize: 20,
     lineHeight: 24,
   },
+  numberXs: {
+    fontFamily: "InterRegular",
+    fontSize: 10,
+    lineHeight: 15,
+  },
   numberSm: {
     fontFamily: "InterMedium",
     fontSize: 15,
