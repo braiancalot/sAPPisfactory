@@ -1,7 +1,6 @@
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 type Props = {
-  withFAB?: boolean;
   children: React.ReactNode;
 };
 
