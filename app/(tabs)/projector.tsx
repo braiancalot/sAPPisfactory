@@ -176,6 +176,13 @@ function SimulationPanel({
   isLoading: boolean;
   simulationTree: SimulationNode | null;
 }) {
+  const status =
+    simulationTree?.requestedAmount === 0
+      ? "META JÁ ATENDIDA"
+      : simulationTree?.status === "OK"
+        ? "PRONTO PARA PRODUZIR"
+        : "GARGALOS ENCONTRADOS";
+
   return (
     <View className="p-md mt-xl">
       {isLoading ? (
@@ -207,9 +214,7 @@ function SimulationPanel({
                     : "text-danger"
                 }
               >
-                {simulationTree.status === "OK"
-                  ? "META ATINGIDA"
-                  : "GARGALOS ENCONTRADOS"}
+                {status}
               </Text>
             </View>
           </View>
