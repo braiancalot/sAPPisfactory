@@ -151,7 +151,7 @@ function ProjectorForm({
                 <Text variant="caption" className="text-success">
                   +{projectedDelta}/min
                 </Text>{" "}
-                à produção
+                à produção atual
               </Text>
             )}
           </View>
@@ -280,15 +280,12 @@ export default function ProjectorScreen() {
   );
 
   const runSimulation = useCallback(async () => {
-    console.log("try...", new Date());
-
     if (!canRunSimulation) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      console.log("running...", new Date());
       const targetRate = parsePtBrNumber(targetRateStr);
 
       const productionLines = await productionLinesCollection.query().fetch();

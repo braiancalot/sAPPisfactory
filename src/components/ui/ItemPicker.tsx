@@ -198,7 +198,7 @@ export default function ItemPicker({
           data={filteredItems}
           initialNumToRender={3}
           keyExtractor={(i: ItemType) => i.id}
-          contentContainerClassName="gap-xs px-md"
+          contentContainerClassName="gap-xs px-md pb-lg"
           keyboardShouldPersistTaps="handled"
           windowSize={7}
           removeClippedSubviews={true}

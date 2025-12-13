@@ -40,15 +40,16 @@ export function projectGoal(
   targetRate: number,
   context: ProjectorContext,
   simulationState: SimulationState = { demandedTotal: {} },
-  visitedItems = new Set<ItemId>(),
+  visitedItems = new Set<string>(),
   depth = 0
 ): SimulationNode | null {
   const line = context.linesById[targetLineId];
   if (!line) return null;
 
+  const isRootNode = depth === 0;
   const itemData = getItemData(line.outputItem);
 
-  if (visitedItems.has(line.outputItem)) {
+  if (visitedItems.has(line.id)) {
     return {
       id: `${line.id}-${depth}-cycle`,
       itemId: line.outputItem,
@@ -64,7 +65,7 @@ export function projectGoal(
   }
 
   const newVisited = new Set(visitedItems);
-  newVisited.add(line.outputItem);
+  newVisited.add(line.id);
 
   const currentLineStats = context.balances.productionLineRates[line.id];
   const currentProduction = currentLineStats?.totalOutputRate ?? 0;
@@ -77,10 +78,11 @@ export function projectGoal(
 
   const globalBalance = context.balances.productionLines[line.id];
   const currentGlobalBalance = globalBalance?.balance ?? 0;
-  const projectedBalance = currentGlobalBalance - totalLineDemand;
+  const projectedBalance = isRootNode
+    ? currentGlobalBalance + addedDemand
+    : currentGlobalBalance - totalLineDemand;
 
-  let status: SimulationNodeStatus =
-    projectedBalance < -0.0001 ? "DEFICIT" : "OK";
+  let status: SimulationNodeStatus = projectedBalance < 0 ? "DEFICIT" : "OK";
 
   const children: SimulationNode[] = [];
   const lineInputs = context.inputsByLineId[line.id] ?? [];
@@ -135,7 +137,7 @@ export function projectGoal(
         projectedBalance: projectedGSBalance,
         sourceType: "GLOBAL_SOURCE",
         globalSourceId: gsId,
-        status: projectedGSBalance < -0.001 ? "DEFICIT" : "OK",
+        status: projectedGSBalance < 0 ? "DEFICIT" : "OK",
         children: [],
       });
     } else {
@@ -160,7 +162,7 @@ export function projectGoal(
     itemName: itemData.name,
     requestedAmount: addedDemand,
     currentBalance: currentGlobalBalance,
-    projectedBalance: projectedBalance,
+    projectedBalance,
     sourceType: "PRODUCTION_LINE",
     productionLineId: line.id,
     status,

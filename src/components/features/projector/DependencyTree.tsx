@@ -200,7 +200,7 @@ function DependencyTree({ node, level = 0, ancestors = [] }: Props) {
             <View className="items-end justify-center">
               <RateDisplay
                 value={node.projectedBalance}
-                size="sm"
+                size="md"
                 colored={true}
               />
               <Text
