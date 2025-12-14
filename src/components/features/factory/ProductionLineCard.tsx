@@ -56,7 +56,7 @@ function ProductionLineCard({
 
             <View className="h-[19]">
               <RateDisplay
-                value={productionLine.outputBaseRate}
+                value={balance?.production ?? 0}
                 size="sm"
                 colored={false}
               />
