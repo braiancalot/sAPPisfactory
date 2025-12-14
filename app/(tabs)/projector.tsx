@@ -302,7 +302,11 @@ export default function ProjectorScreen() {
         balances!
       );
 
-      const tree = projectGoal(selectedProductionLine!.id, targetRate, context);
+      const tree = await projectGoal(
+        selectedProductionLine!.id,
+        targetRate,
+        context
+      );
       setSimulationTree(tree);
     } catch (error) {
       setError("Não foi possível calcular o impacto. Tente novamente");

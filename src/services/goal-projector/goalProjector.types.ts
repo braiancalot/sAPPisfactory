@@ -16,6 +16,7 @@ export type SimulationNode = {
   projectedBalance: number;
 
   sourceType: "PRODUCTION_LINE" | "GLOBAL_SOURCE" | "UNLINKED" | "CYCLE";
+  sourceName: string;
   productionLineId?: string;
   globalSourceId?: string;
 

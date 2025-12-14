@@ -1,4 +1,4 @@
-import { getItemData, ItemId } from "@data/item";
+import { getItemData } from "@data/item";
 import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
 import { GlobalBalancesResult } from "@services/global-balance/globalBalance.types";
@@ -35,14 +35,14 @@ export function createProjectorContext(
   return { linesById, inputsByLineId, balances };
 }
 
-export function projectGoal(
+export async function projectGoal(
   targetLineId: string,
   targetRate: number,
   context: ProjectorContext,
   simulationState: SimulationState = { demandedTotal: {} },
   visitedItems = new Set<string>(),
   depth = 0
-): SimulationNode | null {
+): Promise<SimulationNode | null> {
   const line = context.linesById[targetLineId];
   if (!line) return null;
 
@@ -58,6 +58,7 @@ export function projectGoal(
       currentBalance: 0,
       projectedBalance: 0,
       sourceType: "CYCLE",
+      sourceName: "Ciclo detectado",
       productionLineId: line.id,
       status: "CYCLE_DETECTED",
       children: [],
@@ -104,7 +105,7 @@ export function projectGoal(
 
       const childTargetRate = sourceCurrentProd + inputDemandIncrease;
 
-      const childNode = projectGoal(
+      const childNode = await projectGoal(
         sourceLineId,
         childTargetRate,
         context,
@@ -136,6 +137,7 @@ export function projectGoal(
         currentBalance: currentGSBalance,
         projectedBalance: projectedGSBalance,
         sourceType: "GLOBAL_SOURCE",
+        sourceName: "Fonte Global",
         globalSourceId: gsId,
         status: projectedGSBalance < 0 ? "DEFICIT" : "OK",
         children: [],
@@ -150,11 +152,14 @@ export function projectGoal(
         currentBalance: 0,
         projectedBalance: -inputDemandIncrease,
         sourceType: "UNLINKED",
+        sourceName: "Sem origem definida",
         status: "WARNING",
         children: [],
       });
     }
   }
+
+  const factoryName = (await line.factory.fetch()).name;
 
   return {
     id: `${line.id}-${depth}`,
@@ -164,6 +169,7 @@ export function projectGoal(
     currentBalance: currentGlobalBalance,
     projectedBalance,
     sourceType: "PRODUCTION_LINE",
+    sourceName: factoryName ?? "Linha de Produção",
     productionLineId: line.id,
     status,
     children,

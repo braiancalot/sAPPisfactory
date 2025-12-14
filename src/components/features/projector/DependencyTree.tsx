@@ -7,7 +7,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { getItemData } from "@data/item";
 import { SimulationNode } from "@services/goal-projector/goalProjector.types";
 
-import Card from "@ui/Card";
 import Item from "@ui/Item";
 import Text from "@ui/Text";
 import RateDisplay from "@ui/RateDisplay";
@@ -83,19 +82,6 @@ function DependencyTree({ node, level = 0, ancestors = [] }: Props) {
     }
 
     return colors["text-tertiary"];
-  }
-
-  function getSourceLabel() {
-    switch (node.sourceType) {
-      case "PRODUCTION_LINE":
-        return "Linha de produção";
-      case "GLOBAL_SOURCE":
-        return "Fonte Global";
-      case "CYCLE":
-        return "Ciclo detectado";
-      case "UNLINKED":
-        return "Sem origem definida";
-    }
   }
 
   function getSourceLabelColor() {
@@ -193,7 +179,7 @@ function DependencyTree({ node, level = 0, ancestors = [] }: Props) {
                     color={getSourceIconColor()}
                   />
                   <Text variant="caption" className={getSourceLabelColor()}>
-                    {getSourceLabel()}
+                    {node.sourceName}
                   </Text>
                 </View>
               </View>
