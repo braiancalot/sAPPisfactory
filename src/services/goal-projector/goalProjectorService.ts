@@ -156,10 +156,6 @@ export function projectGoal(
     }
   }
 
-  if (children.some((child) => child.status === "DEFICIT")) {
-    status = "DEFICIT";
-  }
-
   return {
     id: `${line.id}-${depth}`,
     itemId: line.outputItem,

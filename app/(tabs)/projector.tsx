@@ -176,12 +176,16 @@ function SimulationPanel({
   isLoading: boolean;
   simulationTree: SimulationNode | null;
 }) {
+  const hasProblemInTree = simulationTree
+    ? hasDeficitInBranch(simulationTree)
+    : false;
+
   const status =
     simulationTree?.requestedAmount === 0
       ? "META JÁ ATENDIDA"
-      : simulationTree?.status === "OK"
-        ? "PRONTO PARA PRODUZIR"
-        : "GARGALOS ENCONTRADOS";
+      : hasProblemInTree
+        ? "GARGALOS ENCONTRADOS"
+        : "PRONTO PARA PRODUZIR";
 
   return (
     <View className="p-md mt-xl">
@@ -201,18 +205,12 @@ function SimulationPanel({
 
             <View
               className={`px-sm py-2xs rounded-pill ${
-                simulationTree.status === "OK"
-                  ? "bg-success/20"
-                  : "bg-danger/20"
+                hasProblemInTree ? "bg-danger/20" : "bg-success/20"
               }`}
             >
               <Text
                 variant="caption"
-                className={
-                  simulationTree.status === "OK"
-                    ? "text-success"
-                    : "text-danger"
-                }
+                className={hasProblemInTree ? "text-danger" : "text-success"}
               >
                 {status}
               </Text>
@@ -385,4 +383,9 @@ export default function ProjectorScreen() {
       <SimulationPanel simulationTree={simulationTree} isLoading={isLoading} />
     </ScrollScreenContainer>
   );
+}
+
+function hasDeficitInBranch(node: SimulationNode): boolean {
+  if (node.status === "DEFICIT" || node.status === "WARNING") return true;
+  return node.children.some(hasDeficitInBranch);
 }

@@ -36,6 +36,8 @@ function formatCompact(number: number) {
 function DependencyTree({ node, level = 0, ancestors = [] }: Props) {
   const router = useRouter();
   const itemData = getItemData(node.itemId);
+
+  const isRoot = level === 0;
   const hasChildren = node.children.length > 0;
 
   const shouldStartExpanded = level === 0 || hasDeficitInBranch(node);
@@ -203,12 +205,15 @@ function DependencyTree({ node, level = 0, ancestors = [] }: Props) {
                 size="md"
                 colored={true}
               />
-              <Text
-                variant="numberXs"
-                className="text-text-tertiary opacity-80 mt-[-2]"
-              >
-                {formatCompact(displayDemand)}/{formatCompact(totalCapacity)}
-              </Text>
+
+              {!isRoot && (
+                <Text
+                  variant="numberXs"
+                  className="text-text-tertiary opacity-80 mt-[-2]"
+                >
+                  {formatCompact(displayDemand)}/{formatCompact(totalCapacity)}
+                </Text>
+              )}
             </View>
           </View>
         </PressableCard>
