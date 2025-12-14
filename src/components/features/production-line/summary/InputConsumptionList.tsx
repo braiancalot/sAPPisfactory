@@ -7,10 +7,13 @@ import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
 import { getItemData } from "@data/item";
 
+import { LineTotalRates } from "@services/global-balance/globalBalance.types";
+import { useGlobalBalance } from "@hooks/useGlobalBalance";
+import { formatPtBrNumber } from "src/utils/numberFormat";
+
 import Item from "@ui/Item";
 import RateDisplay from "@ui/RateDisplay";
 import Text from "@ui/Text";
-import { LineTotalRates } from "@services/global-balance/globalBalance.types";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -22,6 +25,9 @@ type Props = ExternalProps & {
 };
 
 function InputConsumptionList({ inputs, rates }: Props) {
+  const { getProductionLineBalance, getGlobalSourceBalance } =
+    useGlobalBalance();
+
   const renderItem = useCallback(
     ({ item }: { item: ProductionLineInput }) => {
       const itemData = getItemData(item.inputItem);
@@ -30,16 +36,34 @@ function InputConsumptionList({ inputs, rates }: Props) {
 
       const displayRate = rate?.totalInputRate ?? 0;
 
+      const balance =
+        item.sourceType === "GLOBAL_SOURCE"
+          ? getGlobalSourceBalance(item.globalSource.id)
+          : getProductionLineBalance(item.sourceProductionLine.id);
+
       return (
         <View className="flex-row items-center justify-between gap-md">
           <Item icon={itemData.icon} size="sm" />
-          <Text
-            variant="footnote"
-            className="text-text-secondary flex-1"
-            numberOfLines={1}
-          >
-            {itemData.name}
-          </Text>
+          <View className="flex-row flex-1 gap-xs items-center">
+            <Text
+              variant="footnote"
+              className="text-text-secondary"
+              numberOfLines={1}
+            >
+              {itemData.name}
+            </Text>
+
+            {balance?.balance && (
+              <Text
+                variant="caption"
+                className="text-text-tertiary"
+                numberOfLines={1}
+              >
+                {balance.balance > 0 ? "+" : ""}
+                {formatPtBrNumber(balance.balance)}
+              </Text>
+            )}
+          </View>
 
           <RateDisplay value={-displayRate} size="sm" colored={false} />
         </View>
