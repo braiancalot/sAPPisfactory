@@ -31,9 +31,7 @@ function InputConsumptionList({ inputs, rates }: Props) {
   const renderItem = useCallback(
     ({ item }: { item: ProductionLineInput }) => {
       const itemData = getItemData(item.inputItem);
-
       const rate = rates?.find((i) => i.inputItem === item.inputItem);
-
       const displayRate = rate?.totalInputRate ?? 0;
 
       const balance =
@@ -41,27 +39,38 @@ function InputConsumptionList({ inputs, rates }: Props) {
           ? getGlobalSourceBalance(item.globalSource.id)
           : getProductionLineBalance(item.sourceProductionLine.id);
 
+      const balanceValue = balance?.balance;
+
+      let badgeColor = "bg-surface-3";
+      let badgeTextColor = "text-text-tertiary";
+
+      if ((balanceValue ?? 0) > 0) {
+        badgeColor = "bg-success/10";
+        badgeTextColor = "text-success-dark";
+      } else if ((balanceValue ?? 0) < 0) {
+        badgeColor = "bg-danger/10";
+        badgeTextColor = "text-danger-dark";
+      }
+
       return (
         <View className="flex-row items-center justify-between gap-md">
           <Item icon={itemData.icon} size="sm" />
-          <View className="flex-row flex-1 gap-xs items-center">
+          <View className="flex-row flex-1 gap-xs items-baseline">
             <Text
               variant="footnote"
-              className="text-text-secondary"
+              className="text-text-tertiary"
               numberOfLines={1}
             >
               {itemData.name}
             </Text>
 
-            {balance?.balance && (
-              <Text
-                variant="caption"
-                className="text-text-tertiary"
-                numberOfLines={1}
-              >
-                {balance.balance > 0 ? "+" : ""}
-                {formatPtBrNumber(balance.balance)}
-              </Text>
+            {balanceValue != null && (
+              <View className={`px-[6] py-[2] rounded-sm ${badgeColor}`}>
+                <Text variant="caption" className={badgeTextColor}>
+                  {balanceValue > 0 ? "+" : ""}
+                  {formatPtBrNumber(balanceValue)}
+                </Text>
+              </View>
             )}
           </View>
 
