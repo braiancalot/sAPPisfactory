@@ -29,6 +29,7 @@ export default function TabLayout() {
         headerTitleStyle: typography.headline,
         animation: "shift",
       }}
+      backBehavior="history"
     >
       <Tabs.Screen
         name="global-sources"
