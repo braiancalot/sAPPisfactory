@@ -50,18 +50,23 @@ export default function SwipeableCard({
     .activeOffsetX([-20, 1000])
     .onBegin(() => {
       isSwiping.value = false;
+      hapticTriggered.value = false;
     })
     .onUpdate((event) => {
       const startedSwiping = Math.abs(event.translationX) > 5;
 
       if (startedSwiping) {
         isSwiping.value = true;
+      }
 
-        if (!hapticTriggered.value) {
-          hapticTriggered.value = true;
+      const passedThreshold = event.translationX < TRANSLATE_X_THRESHOLD;
 
-          scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Light);
-        }
+      if (passedThreshold && !hapticTriggered.value) {
+        hapticTriggered.value = true;
+
+        scheduleOnRN(Haptics.impactAsync, Haptics.ImpactFeedbackStyle.Medium);
+      } else if (!passedThreshold && hapticTriggered.value) {
+        hapticTriggered.value = false;
       }
 
       if (event.translationX > 0) {
@@ -118,9 +123,12 @@ export default function SwipeableCard({
   });
 
   const rIconStyle = useAnimatedStyle(() => {
-    const opacity = withTiming(translateX.value < -100 ? 1 : 0, {
-      duration: 200,
-    });
+    const opacity = withTiming(
+      translateX.value < TRANSLATE_X_THRESHOLD ? 1 : 0,
+      {
+        duration: 200,
+      }
+    );
     return { opacity };
   });
 
