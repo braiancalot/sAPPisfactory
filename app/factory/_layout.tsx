@@ -13,6 +13,7 @@ export default function TabLayout() {
         headerTintColor: colors["text-primary"],
         headerTitleStyle: typography.headlineSm,
         animation: "ios_from_right",
+        presentation: "modal",
       }}
     >
       <Stack.Screen

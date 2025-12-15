@@ -61,6 +61,7 @@ export default function RootLayout() {
               screenOptions={{
                 headerShown: false,
                 contentStyle: { backgroundColor: colors.background },
+                presentation: "modal",
               }}
             />
           </GlobalBalanceProvider>
