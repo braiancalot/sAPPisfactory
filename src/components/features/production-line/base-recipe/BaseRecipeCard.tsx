@@ -1,13 +1,14 @@
 import { router } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
+import { withObservables } from "@nozbe/watermelondb/react";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
 
-import { ItemId } from "@data/item";
+import { ITEM_LIST, ItemId } from "@data/item";
 import { addProductionLineInput } from "@services/productionLineService";
 
 import Card from "@ui/Card";
@@ -24,11 +25,15 @@ import AssociateInputSourceSheet, {
 import { SourceType } from "@features/production-line/AssociateInputSourceSheet";
 import InputList from "@features/production-line/base-recipe/InputList";
 
-type Props = {
+type ExternalProps = {
   productionLine: ProductionLine;
 };
 
-export default function BaseRecipeCard({ productionLine }: Props) {
+type Props = ExternalProps & {
+  inputs: ProductionLineInput[];
+};
+
+function BaseRecipeCard({ productionLine, inputs }: Props) {
   const { dismissAll } = useBottomSheetModal();
 
   const [selectedInput, setSelectedInput] =
@@ -125,6 +130,13 @@ export default function BaseRecipeCard({ productionLine }: Props) {
     },
   ];
 
+  const addedInputs = useMemo(
+    () => inputs.map((input) => input.inputItem),
+    [inputs]
+  );
+
+  const canAdd = addedInputs.length < ITEM_LIST.length;
+
   return (
     <Card className="p-md">
       <View className="flex-row items-center justify-between px-xs">
@@ -148,20 +160,22 @@ export default function BaseRecipeCard({ productionLine }: Props) {
       </View>
 
       <InputList
-        productionLine={productionLine}
+        inputs={inputs}
         onInputAction={handleInputAction}
         onInputPress={handleInputPress}
       />
 
-      <View className="mt-xs w-full">
-        <Button
-          variant="ghost"
-          title="Adicionar ingrediente"
-          icon="add"
-          size="sm"
-          onPress={handleOpenAddInputSheet}
-        />
-      </View>
+      {canAdd && (
+        <View className="mt-xs w-full">
+          <Button
+            variant="ghost"
+            title="Adicionar ingrediente"
+            icon="add"
+            size="sm"
+            onPress={handleOpenAddInputSheet}
+          />
+        </View>
+      )}
 
       <MenuSheet ref={menuSheetRef} options={menuOptions} />
 
@@ -180,7 +194,20 @@ export default function BaseRecipeCard({ productionLine }: Props) {
         onSelect={handleAssociateInputSource}
       />
 
-      <AddInputSheet ref={addInputSheetRef} onAdd={handleAddInput} />
+      <AddInputSheet
+        ref={addInputSheetRef}
+        onAdd={handleAddInput}
+        excludeItems={addedInputs}
+      />
     </Card>
   );
 }
+
+const enhance = withObservables(
+  ["productionLine"],
+  ({ productionLine }: ExternalProps) => ({
+    inputs: productionLine.inputs,
+  })
+);
+
+export default enhance(BaseRecipeCard) as React.ComponentType<ExternalProps>;
