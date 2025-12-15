@@ -14,6 +14,8 @@ import { formatPtBrNumber } from "src/utils/numberFormat";
 import Item from "@ui/Item";
 import RateDisplay from "@ui/RateDisplay";
 import Text from "@ui/Text";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors } from "@theme/colors";
 
 type ExternalProps = {
   productionLine: ProductionLine;
@@ -55,7 +57,7 @@ function InputConsumptionList({ inputs, rates }: Props) {
       return (
         <View className="flex-row items-center justify-between gap-md">
           <Item icon={itemData.icon} size="sm" />
-          <View className="flex-row flex-1 gap-xs items-baseline">
+          <View className="flex-row flex-1 gap-xs items-center">
             <Text
               variant="footnote"
               className="text-text-tertiary"
@@ -71,6 +73,14 @@ function InputConsumptionList({ inputs, rates }: Props) {
                   {formatPtBrNumber(balanceValue)}
                 </Text>
               </View>
+            )}
+
+            {!item.sourceType && (
+              <MaterialIcons
+                name="error-outline"
+                size={12}
+                color={colors.warning}
+              />
             )}
           </View>
 

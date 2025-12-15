@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { withObservables } from "@nozbe/watermelondb/react";
 
 import ProductionLine from "@db/model/ProductionLine";
+import ProductionLineInput from "@db/model/ProductionLineInput";
 import { getItemData } from "@data/item";
 
 import { ProductionLineBalance } from "@services/global-balance/globalBalance.types";
@@ -10,21 +11,30 @@ import RateDisplay from "@ui/RateDisplay";
 import Item from "@ui/Item";
 import Text from "@ui/Text";
 import SwipeableCard from "@ui/SwipeableCard";
+import { MaterialIcons } from "@expo/vector-icons";
+import { colors } from "@theme/colors";
 
-type Props = {
+type ExternalProps = {
   productionLine: ProductionLine;
   balance: ProductionLineBalance | undefined;
   onNavigate: (productionLine: ProductionLine) => void;
   onDelete: (productionLine: ProductionLine) => void;
 };
 
+type Props = ExternalProps & {
+  inputs: ProductionLineInput[];
+};
+
 function ProductionLineCard({
   productionLine,
+  inputs,
   balance,
   onNavigate,
   onDelete,
 }: Props) {
   const itemData = getItemData(productionLine.outputItem);
+
+  const warning = inputs.some((input) => !input.sourceType);
 
   function handlePress() {
     onNavigate(productionLine);
@@ -39,20 +49,30 @@ function ProductionLineCard({
       onPress={handlePress}
       onDelete={handleDelete}
       shouldResetOnAction
-      className="p-md rounded-lg"
+      className={`p-md rounded-lg border ${warning ? "border-warning" : "border-transparent"}`}
     >
       <View className="flex-row items-center justify-between gap-md">
         <View className="flex-row items-center gap-lg flex-1">
           <Item icon={itemData.icon} size="md" />
 
           <View className="gap-2xs items-start flex-1">
-            <Text
-              variant="subhead"
-              className="text-text-primary flex-wrap"
-              numberOfLines={2}
-            >
-              {itemData.name}
-            </Text>
+            <View className="flex-row items-center gap-xs">
+              <Text
+                variant="subhead"
+                className="text-text-primary flex-wrap"
+                numberOfLines={2}
+              >
+                {itemData.name}
+              </Text>
+
+              {warning && (
+                <MaterialIcons
+                  name="error-outline"
+                  size={16}
+                  color={colors.warning}
+                />
+              )}
+            </View>
 
             <View className="h-[19]">
               <RateDisplay
@@ -73,7 +93,10 @@ function ProductionLineCard({
 }
 
 const enhance = withObservables(["productionLine"], ({ productionLine }) => ({
-  productionLine: productionLine,
+  productionLine,
+  inputs: productionLine.inputs,
 }));
 
-export default enhance(ProductionLineCard) as React.ComponentType<Props>;
+export default enhance(
+  ProductionLineCard
+) as React.ComponentType<ExternalProps>;
