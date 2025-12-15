@@ -10,10 +10,11 @@ import { parsePtBrNumber } from "src/utils/numberFormat";
 
 type Props = {
   onAdd: (item: ItemId, rate: number) => Promise<void>;
+  excludeItems: ItemId[];
 };
 
 const AddGlobalSourceSheet = forwardRef<BottomSheetModal, Props>(
-  ({ onAdd }, ref) => {
+  ({ onAdd, excludeItems }, ref) => {
     const [rate, setRate] = useState("");
     const [selectedItemId, setSelectedItemId] = useState<ItemId | null>(null);
 
@@ -42,6 +43,7 @@ const AddGlobalSourceSheet = forwardRef<BottomSheetModal, Props>(
           selectedItemId={selectedItemId}
           onSelect={setSelectedItemId}
           label="Item"
+          excludeItems={excludeItems}
         />
 
         <Input

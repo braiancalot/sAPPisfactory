@@ -1,9 +1,6 @@
 import { useCallback } from "react";
 import { FlatList } from "react-native";
 
-import { withObservables } from "@nozbe/watermelondb/react";
-import { globalSourcesCollection } from "@db/index";
-
 import GlobalSource from "@db/model/GlobalSource";
 
 import { useGlobalBalance } from "@hooks/useGlobalBalance";
@@ -11,16 +8,13 @@ import { useGlobalBalance } from "@hooks/useGlobalBalance";
 import GlobalSourceCard from "@features/global-sources/GlobalSourceCard";
 import GlobalSourceListEmpty from "@features/global-sources/GlobalSourceListEmpty";
 
-type ExternalProps = {
+type Props = {
+  globalSources: GlobalSource[];
   onUpdateGlobalSource: (source: GlobalSource, newRate: number) => void;
   onDeleteGlobalSource: (source: GlobalSource) => void;
 };
 
-type Props = ExternalProps & {
-  globalSources: GlobalSource[];
-};
-
-function GlobalSourceList({
+export default function GlobalSourceList({
   globalSources,
   onUpdateGlobalSource,
   onDeleteGlobalSource,
@@ -56,9 +50,3 @@ function GlobalSourceList({
     />
   );
 }
-
-const enhance = withObservables([], () => ({
-  globalSources: globalSourcesCollection.query(),
-}));
-
-export default enhance(GlobalSourceList) as React.ComponentType<ExternalProps>;

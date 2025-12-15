@@ -1,8 +1,11 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { withObservables } from "@nozbe/watermelondb/react";
 
 import GlobalSource from "@db/model/GlobalSource";
+import { globalSourcesCollection } from "@db/index";
+
+import { getItemData, ITEM_LIST, ItemId } from "@data/item";
 import { addGlobalSource } from "@services/globalSourceService";
-import { getItemData, ItemId } from "@data/item";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
@@ -14,7 +17,11 @@ import Text from "@ui/Text";
 import AddGlobalSourceSheet from "@features/global-sources/AddGlobalSourceSheet";
 import GlobalSourceList from "@features/global-sources/GlobalSourceList";
 
-export default function GlobalSourcesScreen() {
+type Props = {
+  globalSources: GlobalSource[];
+};
+
+function GlobalSourcesScreen({ globalSources }: Props) {
   const [globalSourceToDelete, setGlobalSourceToDelete] =
     useState<GlobalSource | null>(null);
 
@@ -55,16 +62,28 @@ export default function GlobalSourcesScreen() {
     ? getItemData(globalSourceToDelete.item)
     : null;
 
+  const addedItems = useMemo(
+    () => globalSources.map((gs) => gs.item),
+    [globalSources]
+  );
+
+  const canAdd = addedItems.length < ITEM_LIST.length;
+
   return (
     <ScreenContainer>
       <GlobalSourceList
+        globalSources={globalSources}
         onUpdateGlobalSource={handleUpdateRate}
         onDeleteGlobalSource={handleDeleteRequest}
       />
 
-      <FAB onPress={handleOpenAddModal} />
+      {canAdd && <FAB onPress={handleOpenAddModal} />}
 
-      <AddGlobalSourceSheet ref={addSheetRef} onAdd={handleAdd} />
+      <AddGlobalSourceSheet
+        ref={addSheetRef}
+        onAdd={handleAdd}
+        excludeItems={addedItems}
+      />
 
       <ConfirmDialog
         ref={confirmSheetRef}
@@ -86,3 +105,9 @@ export default function GlobalSourcesScreen() {
     </ScreenContainer>
   );
 }
+
+const enhance = withObservables([], () => ({
+  globalSources: globalSourcesCollection.query(),
+}));
+
+export default enhance(GlobalSourcesScreen);

@@ -32,6 +32,7 @@ type ItemPickerProps = {
   onSelect: (itemId: ItemId) => void;
   placeholder?: string;
   startOpen?: boolean;
+  excludeItems?: ItemId[];
 };
 
 export default function ItemPicker({
@@ -40,6 +41,7 @@ export default function ItemPicker({
   onSelect,
   placeholder = "Selecione um item",
   startOpen = false,
+  excludeItems = [],
 }: ItemPickerProps) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,11 +62,17 @@ export default function ItemPicker({
   }, [startOpen]);
 
   const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return ITEM_LIST;
+    let items = ITEM_LIST;
+
+    if (excludeItems.length > 0) {
+      items = ITEM_LIST.filter((item) => !excludeItems.includes(item.id));
+    }
+
+    if (!searchQuery.trim()) return items;
 
     const query = searchQuery.toLowerCase().trim();
-    return ITEM_LIST.filter((item) => item.name.toLowerCase().includes(query));
-  }, [searchQuery]);
+    return items.filter((item) => item.name.toLowerCase().includes(query));
+  }, [searchQuery, excludeItems]);
 
   function handleOpen() {
     Keyboard.dismiss();
