@@ -176,16 +176,19 @@ function SimulationPanel({
   isLoading: boolean;
   simulationTree: SimulationNode | null;
 }) {
+  const isTargetMet = simulationTree?.requestedAmount === 0;
+
   const hasProblemInTree = simulationTree
     ? hasDeficitInBranch(simulationTree)
     : false;
 
-  const status =
-    simulationTree?.requestedAmount === 0
-      ? "META JÁ ATENDIDA"
-      : hasProblemInTree
-        ? "GARGALOS ENCONTRADOS"
-        : "PRONTO PARA PRODUZIR";
+  const status = isTargetMet
+    ? hasProblemInTree
+      ? "META ATENDIDA COM GARGALOS"
+      : "META JÁ ATENDIDA"
+    : hasProblemInTree
+      ? "GARGALOS ENCONTRADOS"
+      : "PRONTO PARA PRODUZIR";
 
   return (
     <View className="p-md mt-xl">
@@ -205,12 +208,26 @@ function SimulationPanel({
 
             <View
               className={`px-sm py-2xs rounded-pill ${
-                hasProblemInTree ? "bg-danger/20" : "bg-success/20"
+                isTargetMet && !hasProblemInTree
+                  ? "bg-success/20"
+                  : isTargetMet && hasProblemInTree
+                    ? "bg-warning/20"
+                    : !hasProblemInTree
+                      ? "bg-success/20"
+                      : "bg-danger/20"
               }`}
             >
               <Text
                 variant="caption"
-                className={hasProblemInTree ? "text-danger" : "text-success"}
+                className={
+                  isTargetMet && !hasProblemInTree
+                    ? "text-success"
+                    : isTargetMet && hasProblemInTree
+                      ? "text-warning"
+                      : !hasProblemInTree
+                        ? "text-success"
+                        : "text-danger"
+                }
               >
                 {status}
               </Text>
