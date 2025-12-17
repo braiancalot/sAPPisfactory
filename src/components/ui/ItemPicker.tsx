@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect, memo } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -25,6 +25,54 @@ import Item from "@ui/Item";
 
 import { colors } from "@theme/colors";
 import { typography } from "src/utils/typography";
+
+const PickerItem = memo(
+  ({
+    item,
+    isSelected,
+    onSelect,
+  }: {
+    item: ItemType;
+    isSelected: boolean;
+    onSelect: (id: ItemId) => void;
+  }) => {
+    return (
+      <Pressable
+        className={`p-sm rounded-md flex-row items-center justify-between ${
+          isSelected
+            ? "bg-surface-3 border border-primary"
+            : "bg-surface-1 active:bg-background border border-transparent"
+        }`}
+        onPress={() => onSelect(item.id)}
+      >
+        <View className="flex-row items-center gap-md flex-1">
+          <Item icon={item.icon} size="md" />
+          <Text
+            variant="body"
+            className={`${isSelected ? "text-text-primary" : "text-text-secondary"}`}
+            numberOfLines={1}
+          >
+            {item.name}
+          </Text>
+        </View>
+
+        {isSelected && (
+          <View className="w-6 h-6 bg-primary rounded-full items-center justify-center">
+            <MaterialIcons
+              name="check"
+              size={16}
+              color={colors["text-on-primary"]}
+            />
+          </View>
+        )}
+      </Pressable>
+    );
+  },
+  (prev, next) => {
+    // Só re-renderiza se o status de seleção mudar ou o item for diferente
+    return prev.isSelected === next.isSelected && prev.item.id === next.item.id;
+  }
+);
 
 type ItemPickerProps = {
   label?: string;
@@ -79,52 +127,29 @@ export default function ItemPicker({
     bottomSheetRef.current?.present();
   }
 
-  function handleSelect(itemId: ItemId) {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onSelect(itemId);
-    Keyboard.dismiss();
-    setTimeout(() => {
-      bottomSheetRef.current?.close();
-    }, 150);
-  }
+  const handleSelect = useCallback(
+    (itemId: ItemId) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      onSelect(itemId);
+      Keyboard.dismiss();
+      setTimeout(() => bottomSheetRef.current?.close(), 150);
+    },
+    [onSelect]
+  );
 
   function handleDismiss() {
     setSearchQuery("");
   }
 
   const renderItem = useCallback(
-    ({ item }: { item: ItemType }) => {
-      const isSelected = item.id === selectedItemId;
-
-      return (
-        <Pressable
-          className={`p-sm rounded-md flex-row items-center justify-between ${isSelected ? "bg-surface-3 border border-primary" : "bg-surface-1 active:bg-background border border-transparent"}`}
-          onPress={() => handleSelect(item.id)}
-        >
-          <View className="flex-row items-center gap-md flex-1">
-            <Item icon={item.icon} size="md" />
-            <Text
-              variant="body"
-              className={`${isSelected ? "text-text-primary" : "text-text-secondary"}`}
-              numberOfLines={1}
-            >
-              {item.name}
-            </Text>
-          </View>
-
-          {isSelected && (
-            <View className="w-6 h-6 bg-primary rounded-full items-center justify-center">
-              <MaterialIcons
-                name="check"
-                size={16}
-                color={colors["text-on-primary"]}
-              />
-            </View>
-          )}
-        </Pressable>
-      );
-    },
-    [selectedItemId]
+    ({ item }: { item: ItemType }) => (
+      <PickerItem
+        item={item}
+        isSelected={item.id === selectedItemId}
+        onSelect={handleSelect}
+      />
+    ),
+    [selectedItemId, handleSelect]
   );
 
   return (
@@ -161,7 +186,7 @@ export default function ItemPicker({
 
       <BottomSheetModal
         ref={bottomSheetRef}
-        snapPoints={["50%"]}
+        snapPoints={["60%"]}
         enableDynamicSizing={false}
         enablePanDownToClose
         backdropComponent={renderBackdrop}
@@ -204,13 +229,14 @@ export default function ItemPicker({
 
         <BottomSheetFlatList
           data={filteredItems}
-          initialNumToRender={3}
           keyExtractor={(i: ItemType) => i.id}
+          initialNumToRender={12}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          removeClippedSubviews={true}
+          updateCellsBatchingPeriod={50}
           contentContainerClassName="gap-xs px-md pb-lg"
           keyboardShouldPersistTaps="handled"
-          windowSize={7}
-          removeClippedSubviews={true}
-          maxToRenderPerBatch={10}
           ListEmptyComponent={
             <View className="items-center justify-center py-xl">
               <MaterialIcons
