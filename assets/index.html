@@ -46,7 +46,7 @@
         transition: all 0.2s ease;
       }
 
-      .marker-collected .node-icon-img {
+      img.node-icon-img.marker-collected {
         filter: grayscale(1) opacity(0.5);
         border-color: #292929;
         transform: scale(0.9);
@@ -114,7 +114,6 @@
         font-size: 16px;
         font-weight: 700;
         font-family: sans-serif;
-        transition: transform 0.1s;
       }
       .btn:active {
         transform: scale(0.98);
@@ -141,8 +140,11 @@
     <script>
       const tileLayerUrl =
         (window.TILE_PATH || "map_tiles") + "/{z}/{x}/{y}.png";
-      const MIN_ZOOM = 3;
+      const MIN_ZOOM = 4;
       const MAX_ZOOM = 6;
+
+      let markersMap = {};
+      let nodesDataMap = {};
 
       const map = L.map("map", {
         crs: L.CRS.Simple,
@@ -190,57 +192,82 @@
         return [-mapY, -mapX];
       }
 
+      function createIcon(iconPath, isCollected) {
+        const collectedClass = isCollected ? "marker-collected" : "";
+        const iconHtml = `<img src="${iconPath}" class="node-icon-img ${collectedClass}">`;
+
+        return L.divIcon({
+          html: iconHtml,
+          className: "",
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -18],
+        });
+      }
+
+      function createPopupContent(node, isCollected) {
+        const altitude = Math.round(node.z / 1000);
+        const btnLabel = isCollected ? "Desmarcar" : "Pegar";
+        const btnClass = isCollected ? "btn-secondary" : "btn-primary";
+
+        return `
+            <div class="popup-card">
+                <div class="popup-header">
+                  <img src="${node.icon}" class="popup-icon">
+                  <span class="popup-title">${node.name}</span>
+                </div>
+                <div class="popup-coords">Altitude: ${altitude}m</div>
+                <button onclick="toggleCollectible('${node.id}')" class="btn ${btnClass}">
+                    ${btnLabel}
+                </button>
+            </div>
+          `;
+      }
+
       window.renderMarkers = function (jsonString) {
         markersLayer.clearLayers();
+        markersMap = {};
+        nodesDataMap = {};
+
         const nodes = JSON.parse(jsonString);
 
         nodes.forEach((node) => {
           const coords = gameToMap(node.x, node.y);
           const isCollected = node.collected;
 
-          const altitude = Math.round(node.z / 1000);
-
-          const iconHtml = `<img src="${node.icon}" class="node-icon-img">`;
-
-          const customDivIcon = L.divIcon({
-            html: iconHtml,
-            className: isCollected ? "marker-collected" : "",
-            iconSize: [32, 32],
-            iconAnchor: [16, 16],
-            popupAnchor: [0, -18],
-          });
-
+          const customDivIcon = createIcon(node.icon, isCollected);
           const marker = L.marker(coords, { icon: customDivIcon });
 
-          const btnLabel = isCollected ? "Desmarcar" : "Pegar";
-          const btnClass = isCollected ? "btn-secondary" : "btn-primary";
+          const popupHtml = createPopupContent(node, isCollected);
+          marker.bindPopup(popupHtml);
 
-          const popupContent = `
-            <div class="popup-card">
-                <div class="popup-header">
-                  <img src="${node.icon}" class="popup-icon">
-                  <span class="popup-title">${node.name}</span>
-                </div>
-                
-                <div class="popup-coords">
-                  Altitude: ${altitude}m
-                </div>
-
-                <button onclick="toggleNode('${node.id}')" class="btn ${btnClass}">
-                    ${btnLabel}
-                </button>
-            </div>
-          `;
-
-          marker.bindPopup(popupContent);
           markersLayer.addLayer(marker);
+
+          markersMap[node.id] = marker;
+          nodesDataMap[node.id] = node;
         });
       };
 
-      window.toggleNode = function (id) {
+      window.updateCollectibleStatus = function (id, newStatus) {
+        const marker = markersMap[id];
+        const node = nodesDataMap[id];
+
+        if (marker && node) {
+          node.collected = newStatus;
+
+          const newIcon = createIcon(node.icon, newStatus);
+          marker.setIcon(newIcon);
+
+          const newPopup = createPopupContent(node, newStatus);
+          marker.setPopupContent(newPopup);
+        }
+      };
+
+      window.toggleCollectible = function (id) {
         window.ReactNativeWebView.postMessage(
-          JSON.stringify({ type: "TOGGLE_NODE", id: id })
+          JSON.stringify({ type: "TOGGLE_COLLECTIBLE", id: id })
         );
+
         map.closePopup();
       };
 

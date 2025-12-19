@@ -52,5 +52,17 @@ export default appSchema({
         { name: "production_line_id", type: "string", isIndexed: true },
       ],
     }),
+    tableSchema({
+      name: "collectibles",
+      columns: [
+        { name: "type", type: "string", isIndexed: true },
+        { name: "name", type: "string" },
+        { name: "x", type: "number" },
+        { name: "y", type: "number" },
+        { name: "z", type: "number" },
+        { name: "collected", type: "boolean" },
+        { name: "icon", type: "string" },
+      ],
+    }),
   ],
 });

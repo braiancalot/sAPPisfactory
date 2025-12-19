@@ -1,10 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { Asset } from "expo-asset";
 import { unzip } from "react-native-zip-archive";
 import * as FileSystem from "expo-file-system/legacy";
 import { WebView } from "react-native-webview";
 import type { WebViewMessageEvent } from "react-native-webview";
+
+import { withObservables } from "@nozbe/watermelondb/react";
+import { collectiblesCollection } from "@db/index";
+import Collectible from "@db/model/Collectible";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import Text from "@ui/Text";
@@ -13,32 +17,27 @@ import { colors } from "@theme/colors";
 
 const MAP_DIR = FileSystem.documentDirectory + "satisfactory_map/";
 
-export default function MapScreen() {
+type Props = {
+  collectibles: Collectible[];
+};
+
+function MapScreen({ collectibles }: Props) {
   const webViewRef = useRef<WebView>(null);
   const [ready, setReady] = useState(false);
   const [htmlContent, setHtmlContent] = useState("");
   const [isWebViewReady, setIsWebViewReady] = useState(false);
 
-  const [nodes, setNodes] = useState([
-    {
-      id: "node_1",
-      x: 38000.171875,
-      y: 91735.953125,
-      z: -4809.0512695312,
-      name: "Esfera de Mercer",
-      icon: "icons/mercer_sphere.png",
-      collected: false,
-    },
-    {
-      id: "node_2",
-      x: -75893.15625,
-      y: 51636.9609375,
-      z: 19145.953125,
-      name: "Esfera de Mercer",
-      icon: "icons/somersloop.png",
-      collected: true,
-    },
-  ]);
+  const collectiblesJson = useMemo(() => {
+    return collectibles.map((item) => ({
+      id: item.id,
+      x: item.x,
+      y: item.y,
+      z: item.z,
+      name: item.name,
+      icon: item.icon,
+      collected: item.collected,
+    }));
+  }, [collectibles]);
 
   useEffect(() => {
     async function setupMap() {
@@ -64,7 +63,7 @@ export default function MapScreen() {
 
   useEffect(() => {
     if (ready && isWebViewReady && webViewRef.current) {
-      const data = JSON.stringify(nodes);
+      const data = JSON.stringify(collectiblesJson);
       webViewRef.current.injectJavaScript(`
       if (window.renderMarkers) {
         window.renderMarkers('${data}');
@@ -72,9 +71,9 @@ export default function MapScreen() {
       true;
     `);
     }
-  }, [nodes, ready, isWebViewReady]);
+  }, [collectiblesJson, ready, isWebViewReady]);
 
-  function handleMessage(event: WebViewMessageEvent) {
+  async function handleMessage(event: WebViewMessageEvent) {
     try {
       const data = JSON.parse(event.nativeEvent.data);
 
@@ -82,12 +81,23 @@ export default function MapScreen() {
         setIsWebViewReady(true);
       }
 
-      if (data.type === "TOGGLE_NODE") {
-        setNodes((prevNodes) =>
-          prevNodes.map((node) =>
-            node.id === data.id ? { ...node, collected: !node.collected } : node
-          )
-        );
+      if (data.type === "TOGGLE_COLLECTIBLE") {
+        const id = data.id;
+        const collectible = await collectiblesCollection.find(id);
+
+        if (collectible) {
+          const newStatus = !collectible.collected;
+          if (webViewRef.current) {
+            webViewRef.current.injectJavaScript(`
+              if (window.updateCollectibleStatus) {
+                window.updateCollectibleStatus('${id}', ${newStatus});
+              }
+              true;
+            `);
+          }
+
+          await collectible.toggleCollected();
+        }
       }
     } catch (error) {
       console.log("Error reading message:", error);
@@ -127,3 +137,9 @@ export default function MapScreen() {
     </ScreenContainer>
   );
 }
+
+const enhance = withObservables([], () => ({
+  collectibles: collectiblesCollection.query().observe(),
+}));
+
+export default enhance(MapScreen);

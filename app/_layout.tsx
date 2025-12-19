@@ -12,13 +12,10 @@ import { GlobalBalanceProvider } from "@hooks/useGlobalBalance";
 
 import "../global.css";
 import { colors } from "@theme/colors";
+import { seedCollectibles } from "@services/seedCollectibles";
 
 SplashScreen.preventAutoHideAsync();
-
-SplashScreen.setOptions({
-  duration: 400,
-  fade: true,
-});
+SplashScreen.setOptions({ duration: 400, fade: true });
 
 SystemUI.setBackgroundColorAsync(colors.background);
 
@@ -32,13 +29,30 @@ export default function RootLayout() {
     RajdhaniBold: require("../src/assets/fonts/Rajdhani-Bold.ttf"),
   });
 
+  const [dbReady, setDbReady] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    async function prepareDatabase() {
+      try {
+        await seedCollectibles();
+      } catch (error) {
+        console.warn("Error seeding database:", error);
+      } finally {
+        setDbReady(true);
+      }
+    }
+
+    prepareDatabase();
+  }, []);
+
+  useEffect(() => {
+    const fontsDone = fontsLoaded || fontError;
+
+    if (fontsDone && dbReady) {
       setIsReady(true);
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, dbReady]);
 
   useEffect(() => {
     if (isReady) {
