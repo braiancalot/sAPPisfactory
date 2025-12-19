@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Satisfactory Map</title>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #0f0f0f;
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+        background: #0f0f0f;
+      }
+
+      .node-icon-img {
+        width: 32px;
+        height: 32px;
+        display: block;
+        transition: all 0.2s ease;
+      }
+
+      .marker-collected .node-icon-img {
+        filter: grayscale(1) opacity(0.5);
+        border-color: #292929;
+        transform: scale(0.9);
+      }
+
+      .leaflet-popup-content-wrapper {
+        background: #292929 !important;
+        border: 1px solid #404040 !important;
+        border-radius: 14px !important;
+        padding: 0 !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+      }
+
+      .leaflet-popup-tip {
+        background: #292929 !important;
+        border: 1px solid #404040 !important;
+      }
+      .leaflet-popup-tip-container {
+        margin-top: -1px;
+      }
+
+      .popup-card {
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .popup-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .popup-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .popup-title {
+        font-family: sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .popup-coords {
+        font-size: 12px;
+        color: #858585;
+        margin-top: -8px;
+        font-weight: 500;
+      }
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        font-family: sans-serif;
+        transition: transform 0.1s;
+      }
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary {
+        background-color: #ff8533;
+        color: #1a1a1a;
+      }
+      .btn-secondary {
+        background-color: #3d3d3d;
+        color: #c2c2c2;
+      }
+
+      .leaflet-div-icon {
+        background: transparent;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      const tileLayerUrl =
+        (window.TILE_PATH || "map_tiles") + "/{z}/{x}/{y}.png";
+      const MIN_ZOOM = 3;
+      const MAX_ZOOM = 6;
+
+      const map = L.map("map", {
+        crs: L.CRS.Simple,
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+        attributionControl: false,
+        zoomControl: false,
+        bounceAtZoomLimits: false,
+        maxBoundsViscosity: 1.0,
+      });
+
+      const bounds = L.latLngBounds([
+        [-143, 17],
+        [-17, 143],
+      ]);
+      map.fitBounds(bounds);
+      map.setMaxBounds(bounds);
+      map.setView([-80, 80], MIN_ZOOM, { animate: false });
+
+      L.tileLayer(tileLayerUrl, {
+        noWrap: true,
+        tms: false,
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+        maxNativeZoom: MAX_ZOOM,
+      }).addTo(map);
+
+      const markersLayer = L.layerGroup().addTo(map);
+
+      function gameToMap(x, y) {
+        x = x / 1000;
+        y = y / 1000;
+        const gameMinX = -324.6;
+        const gameMaxX = 425.3;
+        const gameMinY = -375.1;
+        const gameMaxY = 374.9;
+        const mapMinX = -16;
+        const mapMaxX = -144;
+        const mapMinY = 16;
+        const mapMaxY = 144;
+        const scaleX = (mapMaxX - mapMinX) / (gameMaxX - gameMinX);
+        const scaleY = (mapMaxY - mapMinY) / (gameMaxY - gameMinY);
+        const mapX = mapMinX + (x - gameMinX) * scaleX;
+        const mapY = mapMinY + (y - gameMinY) * scaleY;
+        return [-mapY, -mapX];
+      }
+
+      window.renderMarkers = function (jsonString) {
+        markersLayer.clearLayers();
+        const nodes = JSON.parse(jsonString);
+
+        nodes.forEach((node) => {
+          const coords = gameToMap(node.x, node.y);
+          const isCollected = node.collected;
+
+          const altitude = Math.round(node.z / 1000);
+
+          const iconHtml = `<img src="${node.icon}" class="node-icon-img">`;
+
+          const customDivIcon = L.divIcon({
+            html: iconHtml,
+            className: isCollected ? "marker-collected" : "",
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -18],
+          });
+
+          const marker = L.marker(coords, { icon: customDivIcon });
+
+          const btnLabel = isCollected ? "Desmarcar" : "Pegar";
+          const btnClass = isCollected ? "btn-secondary" : "btn-primary";
+
+          const popupContent = `
+            <div class="popup-card">
+                <div class="popup-header">
+                  <img src="${node.icon}" class="popup-icon">
+                  <span class="popup-title">${node.name}</span>
+                </div>
+                
+                <div class="popup-coords">
+                  Altitude: ${altitude}m
+                </div>
+
+                <button onclick="toggleNode('${node.id}')" class="btn ${btnClass}">
+                    ${btnLabel}
+                </button>
+            </div>
+          `;
+
+          marker.bindPopup(popupContent);
+          markersLayer.addLayer(marker);
+        });
+      };
+
+      window.toggleNode = function (id) {
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({ type: "TOGGLE_NODE", id: id })
+        );
+        map.closePopup();
+      };
+
+      window.onload = function () {
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({ type: "READY" })
+        );
+      };
+    </script>
+  </body>
+</html>

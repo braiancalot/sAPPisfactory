@@ -67,6 +67,19 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="map"
+        options={{
+          title: "Mapa",
+          lazy: true,
+          freezeOnBlur: true,
+          tabBarLabel: "Mapa",
+          tabBarIcon: ({ size, color }) => (
+            <MaterialCommunityIcons name="map" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
