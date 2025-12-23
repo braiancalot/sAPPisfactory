@@ -74,7 +74,6 @@ export async function projectGoal(
 
   const previousLineDemand = simulationState.demandedTotal[line.id] || 0;
   simulationState.demandedTotal[line.id] = previousLineDemand + addedDemand;
-
   const totalLineDemand = simulationState.demandedTotal[line.id];
 
   const globalBalance = context.balances.productionLines[line.id];
@@ -85,6 +84,8 @@ export async function projectGoal(
 
   let status: SimulationNodeStatus = projectedBalance < 0 ? "DEFICIT" : "OK";
 
+  const unmetDemand = Math.max(0, totalLineDemand - currentGlobalBalance);
+
   const children: SimulationNode[] = [];
   const lineInputs = context.inputsByLineId[line.id] ?? [];
 
@@ -92,7 +93,7 @@ export async function projectGoal(
     const ratio =
       line.outputBaseRate > 0 ? input.inputBaseRate / line.outputBaseRate : 0;
 
-    const inputDemandIncrease = addedDemand * ratio;
+    const inputDemandIncrease = unmetDemand * ratio;
 
     if (
       input.sourceType === "PRODUCTION_LINE" &&

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Pressable, View } from "react-native";
+import { Keyboard, Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
 
 import {
@@ -59,6 +59,7 @@ function ProductionLinePicker({
   }
 
   function handleSelect(productionLine: ProductionLine) {
+    Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onSelect(productionLine);
     bottomSheetRef.current?.close();
