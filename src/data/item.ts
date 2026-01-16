@@ -258,6 +258,68 @@ export const ITEM_DATABASE = {
     icon: getIconByItemId("assembly_director_system"),
   },
 
+  // --- Líquidos e Gases
+  water: {
+    name: "Água",
+    icon: getIconByItemId("water"),
+  },
+  crude_oil: {
+    name: "Petróleo",
+    icon: getIconByItemId("crude_oil"),
+  },
+  heavy_oil_residue: {
+    name: "Resíduo pesado de petróleo",
+    icon: getIconByItemId("heavy_oil_residue"),
+  },
+  fuel: {
+    name: "Combustível",
+    icon: getIconByItemId("fuel"),
+  },
+  liquid_biofuel: {
+    name: "Biocombustível líquido",
+    icon: getIconByItemId("liquid_biofuel"),
+  },
+  liquid_turbo_fuel: {
+    name: "Turbocombustível",
+    icon: getIconByItemId("liquid_turbo_fuel"),
+  },
+  alumina_solution: {
+    name: "Solução de alumina",
+    icon: getIconByItemId("alumina_solution"),
+  },
+  sulfuric_acid: {
+    name: "Ácido sulfúrico",
+    icon: getIconByItemId("sulfuric_acid"),
+  },
+  nitric_acid: {
+    name: "Ácido nítrico",
+    icon: getIconByItemId("nitric_acid"),
+  },
+  dissolved_silica: {
+    name: "Solução de sílica",
+    icon: getIconByItemId("dissolved_silica"),
+  },
+  nitrogen_gas: {
+    name: "Gás nitrogênio",
+    icon: getIconByItemId("nitrogen_gas"),
+  },
+  rocket_fuel: {
+    name: "Combustível de foguete",
+    icon: getIconByItemId("rocket_fuel"),
+  },
+  ionized_fuel: {
+    name: "Combustível ionizado",
+    icon: getIconByItemId("ionized_fuel"),
+  },
+  dark_matter_residue: {
+    name: "Resíduo de Matéria escura",
+    icon: getIconByItemId("dark_matter_residue"),
+  },
+  excited_photonic_matter: {
+    name: "Matéria fotônica energizada",
+    icon: getIconByItemId("excited_photonic_matter"),
+  },
+
   // --- TIER 8: Nuclear ---
   uranium_ore: {
     name: "Urânio",
