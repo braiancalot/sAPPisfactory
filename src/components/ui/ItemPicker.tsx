@@ -118,8 +118,15 @@ export default function ItemPicker({
 
     if (!searchQuery.trim()) return items;
 
-    const query = searchQuery.toLowerCase().trim();
-    return items.filter((item) => item.name.toLowerCase().includes(query));
+    const normalizeText = (text: string) => {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    };
+
+    const query = normalizeText(searchQuery.trim());
+    return items.filter((item) => normalizeText(item.name).includes(query));
   }, [searchQuery, excludeItems]);
 
   function handleOpen() {
