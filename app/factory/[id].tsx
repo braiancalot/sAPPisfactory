@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { withObservables } from "@nozbe/watermelondb/react";
 import { factoriesCollection } from "@db/index";
@@ -32,6 +33,7 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
   const { dismissAll } = useBottomSheetModal();
   const [productionLineToDelete, setProductionLineToDelete] =
     useState<ProductionLine | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
 
   const addSheetRef = useRef<BottomSheetModal>(null);
   const editSheetRef = useRef<BottomSheetModal>(null);
@@ -95,6 +97,10 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
     router.push(`production-line/${productionLine.id}`);
   }
 
+  function handleToggleReordering() {
+    setIsReordering((prev) => !prev);
+  }
+
   const menuOptions: MenuItem[] = [
     {
       label: "Editar",
@@ -114,7 +120,20 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
       <Stack.Screen
         options={{
           title: factory?.name || "Carregando...",
-          headerRight: () => <ContextMenu options={menuOptions} />,
+          headerRight: () => (
+            <View className="flex-row items-center">
+              <Pressable onPress={handleToggleReordering} className="px-sm">
+                <MaterialIcons
+                  name={isReordering ? "check" : "swap-vert"}
+                  size={20}
+                  color={
+                    isReordering ? colors.primary : colors["text-secondary"]
+                  }
+                />
+              </Pressable>
+              {!isReordering && <ContextMenu options={menuOptions} />}
+            </View>
+          ),
         }}
       />
 
@@ -122,9 +141,10 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
         factory={factory}
         onNavigateToProductionLine={handleNavigateToProductionLine}
         onDeleteProductionLine={handleDeleteProductionLineRequest}
+        isReordering={isReordering}
       />
 
-      <FAB onPress={handleOpenAddModal} />
+      {!isReordering && <FAB onPress={handleOpenAddModal} />}
 
       <AddProductionLineSheet ref={addSheetRef} onAdd={handleAdd} />
 

@@ -19,6 +19,9 @@ type ExternalProps = {
   balance: ProductionLineBalance | undefined;
   onNavigate: (productionLine: ProductionLine) => void;
   onDelete: (productionLine: ProductionLine) => void;
+  onLongPress?: () => void;
+  isActive?: boolean;
+  disableSwipe?: boolean;
 };
 
 type Props = ExternalProps & {
@@ -31,6 +34,8 @@ function ProductionLineCard({
   balance,
   onNavigate,
   onDelete,
+  onLongPress,
+  disableSwipe = false,
 }: Props) {
   const itemData = getItemData(productionLine.outputItem);
 
@@ -48,8 +53,11 @@ function ProductionLineCard({
     <SwipeableCard
       onPress={handlePress}
       onDelete={handleDelete}
+      onLongPress={onLongPress}
+      disableSwipe={disableSwipe}
+      disablePress={disableSwipe}
       shouldResetOnAction
-      className={`p-md rounded-lg border ${warning ? "border-warning" : "border-transparent"}`}
+      className={`p-md rounded-lg border ${warning ? "border-warning" : "border-transparent"} mb-md`}
     >
       <View className="flex-row items-center justify-between gap-md">
         <View className="flex-row items-center gap-lg flex-1">

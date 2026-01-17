@@ -63,12 +63,7 @@ const MenuSheet = forwardRef<BottomSheetModal, Props>(({ options }, ref) => {
                       : colors["text-secondary"]
                   }
                 />
-                <Text
-                  variant="body"
-                  className={
-                    option.isDestructive ? "text-danger" : "text-text-primary"
-                  }
-                >
+                <Text variant="body" className={"text-text-primary"}>
                   {option.label}
                 </Text>
               </Pressable>

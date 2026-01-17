@@ -1,12 +1,18 @@
 import { useCallback } from "react";
-import { FlatList } from "react-native";
+import { FlatList, ListRenderItemInfo } from "react-native";
+import DraggableFlatList, {
+  RenderItemParams,
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
 
 import { withObservables } from "@nozbe/watermelondb/react";
+import { Q } from "@nozbe/watermelondb";
 
 import ProductionLine from "@db/model/ProductionLine";
 import Factory from "@db/model/Factory";
 
 import { useGlobalBalance } from "@hooks/useGlobalBalance";
+import { updatePositions } from "@services/reorderService";
 
 import ProductionLineCard from "./ProductionLineCard";
 import ProductionLineEmpty from "./ProductionLineEmpty";
@@ -15,6 +21,8 @@ type ExternalProps = {
   factory: Factory;
   onNavigateToProductionLine: (productionLine: ProductionLine) => void;
   onDeleteProductionLine: (productionLine: ProductionLine) => void;
+  isReordering?: boolean;
+  onReorderEnd?: () => void;
 };
 
 type Props = ExternalProps & {
@@ -25,11 +33,38 @@ function ProductionLineList({
   productionLines,
   onNavigateToProductionLine,
   onDeleteProductionLine,
+  isReordering = false,
+  onReorderEnd,
 }: Props) {
   const { getProductionLineBalance } = useGlobalBalance();
 
+  const renderDraggableItem = useCallback(
+    ({ item, drag, isActive }: RenderItemParams<ProductionLine>) => {
+      const balance = getProductionLineBalance(item.id);
+
+      return (
+        <ScaleDecorator>
+          <ProductionLineCard
+            productionLine={item}
+            balance={balance}
+            onNavigate={onNavigateToProductionLine}
+            onDelete={onDeleteProductionLine}
+            onLongPress={drag}
+            isActive={isActive}
+            disableSwipe
+          />
+        </ScaleDecorator>
+      );
+    },
+    [
+      getProductionLineBalance,
+      onNavigateToProductionLine,
+      onDeleteProductionLine,
+    ]
+  );
+
   const renderItem = useCallback(
-    ({ item }: { item: ProductionLine }) => {
+    ({ item }: ListRenderItemInfo<ProductionLine>) => {
       const balance = getProductionLineBalance(item.id);
 
       return (
@@ -41,15 +76,40 @@ function ProductionLineList({
         />
       );
     },
-    [getProductionLineBalance]
+    [
+      getProductionLineBalance,
+      onNavigateToProductionLine,
+      onDeleteProductionLine,
+    ]
   );
+
+  const handleDragEnd = useCallback(
+    async ({ data }: { data: ProductionLine[] }) => {
+      await updatePositions(data);
+      onReorderEnd?.();
+    },
+    [onReorderEnd]
+  );
+
+  if (isReordering) {
+    return (
+      <DraggableFlatList
+        data={productionLines}
+        keyExtractor={(item) => item.id}
+        renderItem={renderDraggableItem}
+        onDragEnd={handleDragEnd}
+        contentContainerClassName="px-md py-lg pb-[96]"
+        ListEmptyComponent={ProductionLineEmpty}
+      />
+    );
+  }
 
   return (
     <FlatList
       data={productionLines}
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      contentContainerClassName="px-md py-lg pb-[96] gap-md"
+      contentContainerClassName="px-md py-lg pb-[96]"
       ListEmptyComponent={ProductionLineEmpty}
       removeClippedSubviews={true}
       maxToRenderPerBatch={3}
@@ -59,7 +119,7 @@ function ProductionLineList({
 }
 
 const enhance = withObservables(["factory"], ({ factory }: ExternalProps) => ({
-  productionLines: factory.productionLines,
+  productionLines: factory.productionLines.extend(Q.sortBy("position", Q.asc)),
 }));
 
 export default enhance(

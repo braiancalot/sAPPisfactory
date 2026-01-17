@@ -29,6 +29,7 @@ export default class ProductionLine extends Model {
 
   @field("output_item") outputItem!: ItemId;
   @field("output_base_rate") outputBaseRate!: number;
+  @field("position") position!: number;
 
   @immutableRelation("factories", "factory_id") factory!: Relation<Factory>;
 

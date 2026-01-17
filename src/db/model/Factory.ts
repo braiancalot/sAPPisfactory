@@ -1,5 +1,5 @@
 import { Model, Query } from "@nozbe/watermelondb";
-import { children, text, writer } from "@nozbe/watermelondb/decorators";
+import { children, field, text, writer } from "@nozbe/watermelondb/decorators";
 import { Associations } from "@nozbe/watermelondb/Model";
 import ProductionLine from "./ProductionLine";
 
@@ -11,6 +11,7 @@ export default class Factory extends Model {
   };
 
   @text("name") name!: string;
+  @field("position") position!: number;
 
   @children("production_lines") productionLines!: Query<ProductionLine>;
 

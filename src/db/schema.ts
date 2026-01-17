@@ -1,18 +1,22 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export default appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: "global_sources",
       columns: [
         { name: "item", type: "string", isIndexed: true },
         { name: "total_rate_per_min", type: "number" },
+        { name: "position", type: "number", isIndexed: true },
       ],
     }),
     tableSchema({
       name: "factories",
-      columns: [{ name: "name", type: "string" }],
+      columns: [
+        { name: "name", type: "string" },
+        { name: "position", type: "number", isIndexed: true },
+      ],
     }),
     tableSchema({
       name: "production_lines",
@@ -20,6 +24,7 @@ export default appSchema({
         { name: "output_item", type: "string", isIndexed: true },
         { name: "output_base_rate", type: "number" },
         { name: "factory_id", type: "string", isIndexed: true },
+        { name: "position", type: "number", isIndexed: true },
       ],
     }),
     tableSchema({

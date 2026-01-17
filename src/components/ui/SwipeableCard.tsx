@@ -20,7 +20,10 @@ type Props = {
   children: React.ReactNode;
   onPress?: () => void;
   onDelete?: () => void;
+  onLongPress?: () => void;
   disabled?: boolean;
+  disableSwipe?: boolean;
+  disablePress?: boolean;
   shouldResetOnAction?: boolean;
   backgroundColor?: string;
   activeBackgroundColor?: string;
@@ -34,7 +37,10 @@ export default function SwipeableCard({
   children,
   onPress,
   onDelete,
+  onLongPress,
   disabled = false,
+  disableSwipe = false,
+  disablePress = false,
   shouldResetOnAction = false,
   backgroundColor = colors["surface-2"],
   activeBackgroundColor = colors["surface-3"],
@@ -46,7 +52,7 @@ export default function SwipeableCard({
   const hapticTriggered = useSharedValue(false);
 
   const panGesture = Gesture.Pan()
-    .enabled(!disabled)
+    .enabled(!disabled && !disableSwipe)
     .activeOffsetX([-20, 1000])
     .onBegin(() => {
       isSwiping.value = false;
@@ -141,7 +147,7 @@ export default function SwipeableCard({
   }
 
   function handlePress() {
-    if (!isSwiping.value && onPress) {
+    if (!isSwiping.value && onPress && !disablePress) {
       onPress();
     }
   }
@@ -151,6 +157,7 @@ export default function SwipeableCard({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={handlePress}
+      onLongPress={onLongPress}
       disabled={disabled}
     >
       {children}

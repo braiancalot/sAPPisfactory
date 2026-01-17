@@ -17,6 +17,7 @@ export default class GlobalSource extends Model {
 
   @field("item") item!: ItemId;
   @field("total_rate_per_min") totalRatePerMin!: number;
+  @field("position") position!: number;
 
   @children("production_line_inputs")
   consumingInputs!: Query<ProductionLineInput>;

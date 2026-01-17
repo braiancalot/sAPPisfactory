@@ -1,5 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Pressable } from "react-native";
+import { useNavigation } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+
 import { withObservables } from "@nozbe/watermelondb/react";
+import { Q } from "@nozbe/watermelondb";
 
 import GlobalSource from "@db/model/GlobalSource";
 import { globalSourcesCollection } from "@db/index";
@@ -17,6 +22,8 @@ import Text from "@ui/Text";
 import AddGlobalSourceSheet from "@features/global-sources/AddGlobalSourceSheet";
 import GlobalSourceList from "@features/global-sources/GlobalSourceList";
 
+import { colors } from "@theme/colors";
+
 type Props = {
   globalSources: GlobalSource[];
 };
@@ -24,9 +31,29 @@ type Props = {
 function GlobalSourcesScreen({ globalSources }: Props) {
   const [globalSourceToDelete, setGlobalSourceToDelete] =
     useState<GlobalSource | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
+
+  const navigation = useNavigation();
 
   const addSheetRef = useRef<BottomSheetModal>(null);
   const confirmSheetRef = useRef<BottomSheetModal>(null);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => setIsReordering((prev) => !prev)}
+          className="px-md"
+        >
+          <MaterialIcons
+            name={isReordering ? "check" : "swap-vert"}
+            size={20}
+            color={isReordering ? colors.primary : colors["text-secondary"]}
+          />
+        </Pressable>
+      ),
+    });
+  }, [navigation, isReordering]);
 
   function handleOpenAddModal() {
     addSheetRef.current?.present();
@@ -75,9 +102,10 @@ function GlobalSourcesScreen({ globalSources }: Props) {
         globalSources={globalSources}
         onUpdateGlobalSource={handleUpdateRate}
         onDeleteGlobalSource={handleDeleteRequest}
+        isReordering={isReordering}
       />
 
-      {canAdd && <FAB onPress={handleOpenAddModal} />}
+      {canAdd && !isReordering && <FAB onPress={handleOpenAddModal} />}
 
       <AddGlobalSourceSheet
         ref={addSheetRef}
@@ -107,7 +135,7 @@ function GlobalSourcesScreen({ globalSources }: Props) {
 }
 
 const enhance = withObservables([], () => ({
-  globalSources: globalSourcesCollection.query(),
+  globalSources: globalSourcesCollection.query(Q.sortBy("position", Q.asc)),
 }));
 
 export default enhance(GlobalSourcesScreen);

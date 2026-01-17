@@ -15,6 +15,9 @@ type ExternalProps = {
   factory: Factory;
   onNavigate: (factory: Factory) => void;
   onDelete: (factory: Factory) => void;
+  onLongPress?: () => void;
+  isActive?: boolean;
+  disableSwipe?: boolean;
 };
 
 type Props = ExternalProps & {
@@ -26,6 +29,8 @@ function FactoryCard({
   productionLines,
   onNavigate,
   onDelete,
+  onLongPress,
+  disableSwipe = false,
 }: Props) {
   function handlePress() {
     onNavigate(factory);
@@ -38,9 +43,12 @@ function FactoryCard({
   return (
     <SwipeableCard
       onPress={handlePress}
+      onLongPress={onLongPress}
       onDelete={handleDelete}
       shouldResetOnAction
-      className="p-md rounded-lg"
+      disableSwipe={disableSwipe}
+      disablePress={disableSwipe}
+      className="p-md rounded-lg mb-md"
     >
       <View className="flex-row items-end justify-between gap-md">
         <View className="flex-1">

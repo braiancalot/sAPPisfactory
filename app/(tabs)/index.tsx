@@ -1,5 +1,7 @@
-import { useRef, useState } from "react";
-import { router } from "expo-router";
+import { useLayoutEffect, useRef, useState } from "react";
+import { Pressable } from "react-native";
+import { router, useNavigation } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import Factory from "@db/model/Factory";
 import { addFactory } from "@services/factoryService";
@@ -14,11 +16,33 @@ import ConfirmDialog from "@ui/ConfirmDialog";
 import FactoryList from "@features/factories/FactoryList";
 import AddFactorySheet from "@features/factories/AddFactorySheet";
 
+import { colors } from "@theme/colors";
+
 export default function FactoriesScreen() {
   const [factoryToDelete, setFactoryToDelete] = useState<Factory | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
+
+  const navigation = useNavigation();
 
   const addSheetRef = useRef<BottomSheetModal>(null);
   const confirmSheetRef = useRef<BottomSheetModal>(null);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => setIsReordering((prev) => !prev)}
+          className="px-md"
+        >
+          <MaterialIcons
+            name={isReordering ? "check" : "swap-vert"}
+            size={20}
+            color={isReordering ? colors.primary : colors["text-secondary"]}
+          />
+        </Pressable>
+      ),
+    });
+  }, [navigation, isReordering]);
 
   function handleOpenAddSheet() {
     addSheetRef.current?.present();
@@ -55,9 +79,10 @@ export default function FactoriesScreen() {
       <FactoryList
         onNavigateToFactory={handleNavigateToFactory}
         onDeleteFactory={handleDeleteRequest}
+        isReordering={isReordering}
       />
 
-      <FAB onPress={handleOpenAddSheet} />
+      {!isReordering && <FAB onPress={handleOpenAddSheet} />}
 
       <AddFactorySheet ref={addSheetRef} onAdd={handleAdd} />
 

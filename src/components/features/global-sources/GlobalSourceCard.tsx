@@ -23,6 +23,9 @@ type Props = {
   balance: GlobalSourceBalance | undefined;
   onUpdate: (source: GlobalSource, newRate: number) => void;
   onDelete: (source: GlobalSource) => void;
+  onLongPress?: () => void;
+  isActive?: boolean;
+  disableSwipe?: boolean;
 };
 
 function GlobalSourceCard({
@@ -30,6 +33,8 @@ function GlobalSourceCard({
   balance,
   onUpdate,
   onDelete,
+  onLongPress,
+  disableSwipe = false,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
@@ -60,9 +65,12 @@ function GlobalSourceCard({
     <SwipeableCard
       onPress={handleStartEdit}
       onDelete={handleDelete}
+      onLongPress={onLongPress}
       disabled={isEditing}
+      disableSwipe={disableSwipe}
+      disablePress={disableSwipe}
       shouldResetOnAction
-      className="p-md rounded-lg"
+      className="p-md rounded-lg mb-md"
     >
       <View className="flex-row items-center justify-between gap-md">
         <View className="flex-row items-center gap-lg flex-1">
