@@ -84,7 +84,9 @@ export async function projectGoal(
 
   let status: SimulationNodeStatus = projectedBalance < 0 ? "DEFICIT" : "OK";
 
-  const unmetDemand = Math.max(0, totalLineDemand - currentGlobalBalance);
+  const unmetDemand = isRootNode
+    ? addedDemand
+    : Math.max(0, totalLineDemand - currentGlobalBalance);
 
   const children: SimulationNode[] = [];
   const lineInputs = context.inputsByLineId[line.id] ?? [];
