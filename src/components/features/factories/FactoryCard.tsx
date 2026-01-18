@@ -10,6 +10,7 @@ import Text from "@ui/Text";
 import Item from "@ui/Item";
 import SwipeableCard from "@ui/SwipeableCard";
 import { useGlobalBalance } from "@hooks/useGlobalBalance";
+import { Q } from "@nozbe/watermelondb";
 
 type ExternalProps = {
   factory: Factory;
@@ -76,7 +77,9 @@ function FactoryCard({
 
 const enhance = withObservables(["factory"], ({ factory }) => ({
   factory: factory,
-  productionLines: factory.productionLines,
+  productionLines: factory.productionLines
+    .extend(Q.sortBy("position", Q.desc))
+    .observe(),
 }));
 
 export default enhance(FactoryCard) as React.ComponentType<ExternalProps>;
