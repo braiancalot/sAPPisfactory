@@ -68,7 +68,7 @@ function ProductionLineCard({
               <Text
                 variant="subhead"
                 className="text-text-primary flex-wrap"
-                numberOfLines={2}
+                numberOfLines={1}
               >
                 {itemData.name}
               </Text>

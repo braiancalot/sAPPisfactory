@@ -57,10 +57,10 @@ function InputConsumptionList({ inputs, rates }: Props) {
       return (
         <View className="flex-row items-center justify-between gap-md">
           <Item icon={itemData.icon} size="sm" />
-          <View className="flex-row flex-1 gap-xs items-center">
+          <View className="flex-row gap-xs items-center flex-1">
             <Text
               variant="footnote"
-              className="text-text-tertiary"
+              className="text-text-tertiary shrink"
               numberOfLines={1}
             >
               {itemData.name}
