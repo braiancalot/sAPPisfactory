@@ -5,6 +5,7 @@ import database, {
 } from "@db/index";
 import Factory from "@db/model/Factory";
 import ProductionLine from "@db/model/ProductionLine";
+import { Q } from "@nozbe/watermelondb";
 
 export async function addProductionLine(
   factory: Factory,
@@ -12,10 +13,18 @@ export async function addProductionLine(
   rate: number
 ) {
   await database.write(async () => {
+    const productionLines = await productionLinesCollection
+      .query(Q.sortBy("position", Q.desc), Q.take(1))
+      .fetch();
+
+    const maxPosition =
+      productionLines.length > 0 ? productionLines[0].position : -1;
+
     await productionLinesCollection.create((record) => {
       record.outputItem = item;
       record.outputBaseRate = rate;
       record.factory.set(factory);
+      record.position = maxPosition + 1;
     });
   });
 }
