@@ -319,8 +319,21 @@ export const ITEM_DATABASE = {
     name: "Matéria fotônica energizada",
     icon: getIconByItemId("excited_photonic_matter"),
   },
+  empty_fluid_tank: {
+    name: "Tanque de fluidos vazio",
+    icon: getIconByItemId("empty_fluid_tank"),
+  },
+  packaged_rocket_fuel: {
+    name: "Galão de Combustível de foguete",
+    icon: getIconByItemId("packaged_rocket_fuel"),
+  },
+  packaged_ionized_fuel: {
+    name: "Galão de Combustível ionizado",
+    icon: getIconByItemId("packaged_ionized_fuel"),
+  },
 
   // --- TIER 8: Nuclear ---
+
   uranium_ore: {
     name: "Urânio",
     icon: getIconByItemId("uranium_ore"),
@@ -353,8 +366,12 @@ export const ITEM_DATABASE = {
     name: "Foguete de propulsão térmica",
     icon: getIconByItemId("thermal_propulsion_rocket"),
   },
+  pressure_conversion_cube: {
+    name: "Cubo de conversão de pressão",
+    icon: getIconByItemId("pressure_conversion_cube"),
+  },
   nuclear_pasta: {
-    name: "Pasta nuclear",
+    name: "Massa nuclear",
     icon: getIconByItemId("nuclear_pasta"),
   },
 
