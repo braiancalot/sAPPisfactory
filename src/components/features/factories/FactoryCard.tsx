@@ -33,6 +33,8 @@ function FactoryCard({
   onLongPress,
   disableSwipe = false,
 }: Props) {
+  const { getProductionLineBalance } = useGlobalBalance();
+
   function handlePress() {
     onNavigate(factory);
   }
@@ -40,6 +42,23 @@ function FactoryCard({
   function handleDelete() {
     onDelete(factory);
   }
+
+  const sortedLines = [...productionLines].sort((a, b) => {
+    const balanceA = getProductionLineBalance(a.id)?.balance;
+    const balanceB = getProductionLineBalance(b.id)?.balance;
+
+    const isDangerA = balanceA !== undefined && balanceA < 0;
+    const isDangerB = balanceB !== undefined && balanceB < 0;
+
+    if (isDangerA && !isDangerB) return -1;
+    if (!isDangerA && isDangerB) return 1;
+
+    return 0;
+  });
+
+  const VISIBLE_LIMIT = 4;
+  const visibleItems = sortedLines.slice(0, VISIBLE_LIMIT);
+  const remainingCount = productionLines.length - VISIBLE_LIMIT;
 
   return (
     <SwipeableCard
@@ -62,13 +81,19 @@ function FactoryCard({
           </Text>
         </View>
 
-        <View className="flex-row gap-xs">
-          {productionLines.map((productionLine) => (
+        <View className="flex-row gap-xs items-center">
+          {visibleItems.map((productionLine) => (
             <ProductionLineStatusEnhanced
               key={productionLine.id}
               productionLine={productionLine}
             />
           ))}
+
+          {remainingCount > 0 && (
+            <Text variant="caption" className="text-text-secondary font-medium">
+              + {remainingCount}
+            </Text>
+          )}
         </View>
       </View>
     </SwipeableCard>
