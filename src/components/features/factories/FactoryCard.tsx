@@ -57,7 +57,6 @@ function FactoryCard({
   });
 
   const VISIBLE_LIMIT = 4;
-  const visibleItems = sortedLines.slice(0, VISIBLE_LIMIT);
   const remainingCount = productionLines.length - VISIBLE_LIMIT;
 
   return (
@@ -82,16 +81,20 @@ function FactoryCard({
         </View>
 
         <View className="flex-row gap-xs items-center">
-          {visibleItems.map((productionLine) => (
-            <ProductionLineStatusEnhanced
+          {sortedLines.map((productionLine, index) => (
+            <View
               key={productionLine.id}
-              productionLine={productionLine}
-            />
+              className={index >= VISIBLE_LIMIT ? "hidden" : ""}
+            >
+              <ProductionLineStatusEnhanced
+                productionLine={productionLine}
+              />
+            </View>
           ))}
 
           {remainingCount > 0 && (
             <Text variant="caption" className="text-text-secondary font-medium">
-              + {remainingCount}
+              +{remainingCount}
             </Text>
           )}
         </View>
