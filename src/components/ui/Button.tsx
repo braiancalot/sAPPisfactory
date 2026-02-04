@@ -21,9 +21,9 @@ const variantStyles = {
   info: {
     container: "bg-secondary active:bg-secondary-dark",
     containerDisabled: "bg-secondary",
-    text: "text-text-on-secondary",
-    textDisabled: "text-text-on-secondary",
-    iconColor: colors["text-on-secondary"],
+    text: "text-text-on-primary",
+    textDisabled: "text-text-on-primary",
+    iconColor: colors["text-on-primary"],
   },
   danger: {
     container: "bg-danger active:bg-danger-dark",

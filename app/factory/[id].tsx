@@ -10,7 +10,10 @@ import Factory from "@db/model/Factory";
 import ProductionLine from "@db/model/ProductionLine";
 
 import { getItemData, ItemId } from "@data/item";
-import { addProductionLine } from "@services/productionLineService";
+import {
+  addProductionLine,
+  addProductionLineWithInputs,
+} from "@services/productionLineService";
 
 import ScreenContainer from "@ui/ScreenContainer";
 import ContextMenu from "@ui/ContextMenu";
@@ -68,8 +71,16 @@ function FactoryDetails({ factory }: FactoryDetailsProps) {
     confirmProductionLineDeletionSheetRef.current?.dismiss();
   }
 
-  async function handleAdd(item: ItemId, rate: number) {
-    await addProductionLine(factory, item, rate);
+  async function handleAdd(
+    item: ItemId,
+    rate: number,
+    inputs?: { item: ItemId; rate: number }[]
+  ) {
+    if (inputs) {
+      await addProductionLineWithInputs(factory, item, rate, inputs);
+    } else {
+      await addProductionLine(factory, item, rate);
+    }
   }
 
   async function handleUpdateName(newName: string) {
