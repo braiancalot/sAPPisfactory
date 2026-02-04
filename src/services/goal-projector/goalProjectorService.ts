@@ -3,6 +3,11 @@ import ProductionLine from "@db/model/ProductionLine";
 import ProductionLineInput from "@db/model/ProductionLineInput";
 import { GlobalBalancesResult } from "@services/global-balance/globalBalance.types";
 import { SimulationNode, SimulationNodeStatus } from "./goalProjector.types";
+import {
+  ceilDiv,
+  computeAddedOutputByBatch,
+  computeInputIncreaseByBatch,
+} from "./utils";
 
 type ProjectorContext = {
   linesById: Record<string, ProductionLine>;
@@ -70,32 +75,38 @@ export async function projectGoal(
 
   const currentLineStats = context.balances.productionLineRates[line.id];
   const currentProduction = currentLineStats?.totalOutputRate ?? 0;
-  const addedDemand = Math.max(0, targetRate - currentProduction);
+
+  const addedOutput = computeAddedOutputByBatch(
+    targetRate,
+    currentProduction,
+    line.outputBaseRate
+  );
 
   const previousLineDemand = simulationState.demandedTotal[line.id] || 0;
-  simulationState.demandedTotal[line.id] = previousLineDemand + addedDemand;
+  simulationState.demandedTotal[line.id] = previousLineDemand + addedOutput;
   const totalLineDemand = simulationState.demandedTotal[line.id];
 
   const globalBalance = context.balances.productionLines[line.id];
   const currentGlobalBalance = globalBalance?.balance ?? 0;
   const projectedBalance = isRootNode
-    ? currentGlobalBalance + addedDemand
+    ? currentGlobalBalance + addedOutput
     : currentGlobalBalance - totalLineDemand;
 
   let status: SimulationNodeStatus = projectedBalance < 0 ? "DEFICIT" : "OK";
 
   const unmetDemand = isRootNode
-    ? addedDemand
+    ? addedOutput
     : Math.max(0, totalLineDemand - currentGlobalBalance);
 
   const children: SimulationNode[] = [];
   const lineInputs = context.inputsByLineId[line.id] ?? [];
 
   for (const input of lineInputs) {
-    const ratio =
-      line.outputBaseRate > 0 ? input.inputBaseRate / line.outputBaseRate : 0;
-
-    const inputDemandIncrease = unmetDemand * ratio;
+    const batchesNeededForUnmet = ceilDiv(unmetDemand, line.outputBaseRate);
+    const inputDemandIncrease = computeInputIncreaseByBatch(
+      batchesNeededForUnmet,
+      input.inputBaseRate
+    );
 
     if (
       input.sourceType === "PRODUCTION_LINE" &&
@@ -168,7 +179,7 @@ export async function projectGoal(
     id: `${line.id}-${depth}`,
     itemId: line.outputItem,
     itemName: itemData.name,
-    requestedAmount: addedDemand,
+    requestedAmount: addedOutput,
     currentBalance: currentGlobalBalance,
     projectedBalance,
     sourceType: "PRODUCTION_LINE",

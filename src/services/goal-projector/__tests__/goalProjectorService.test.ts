@@ -1,7 +1,4 @@
-import {
-  createProjectorContext,
-  projectGoal,
-} from "../goalProjectorService";
+import { createProjectorContext, projectGoal } from "../goalProjectorService";
 import { GlobalBalancesResult } from "@services/global-balance/globalBalance.types";
 
 // Mock getItemData
@@ -41,14 +38,19 @@ function createMockInput(
     inputBaseRate,
     sourceType,
     productionLine: { id: productionLineId },
-    sourceProductionLine: { id: sourceType === "PRODUCTION_LINE" ? sourceId : null },
+    sourceProductionLine: {
+      id: sourceType === "PRODUCTION_LINE" ? sourceId : null,
+    },
     globalSource: { id: sourceType === "GLOBAL_SOURCE" ? sourceId : null },
   } as any;
 }
 
 // Helper to create balances with minimal required fields
 function createBalances(config: {
-  lines?: Record<string, { balance: number; production?: number; consumption?: number }>;
+  lines?: Record<
+    string,
+    { balance: number; production?: number; consumption?: number }
+  >;
   rates?: Record<string, { totalOutputRate: number }>;
   globalSources?: Record<string, { balance: number }>;
 }): GlobalBalancesResult {
@@ -123,15 +125,22 @@ describe("goalProjectorService", () => {
   describe("projectGoal", () => {
     describe("root node demand propagation", () => {
       it("should propagate demand to inputs even when root has positive balance", async () => {
-        // This is the bug we fixed: root node with balance=5, producing 5/min
-        // wants to produce 6/min. Should propagate 1/min demand to inputs.
+        // Root with balance=5, producing 5/min, wants 6/min.
+        // Gap=1, but batch size is 10, so 1 full batch is added (addedOutput=10).
         const lines = [
           createMockLine("root", "output_item", 10), // outputBaseRate
           createMockLine("input_line", "input_item", 10),
         ];
 
         const inputs = [
-          createMockInput("i1", "root", "input_item", 5, "PRODUCTION_LINE", "input_line"),
+          createMockInput(
+            "i1",
+            "root",
+            "input_item",
+            5,
+            "PRODUCTION_LINE",
+            "input_line"
+          ),
         ];
 
         const balances = createBalances({
@@ -149,8 +158,8 @@ describe("goalProjectorService", () => {
         const result = await projectGoal("root", 6, context);
 
         expect(result).not.toBeNull();
-        expect(result!.requestedAmount).toBe(1); // 6 - 5 = 1 additional
-        expect(result!.projectedBalance).toBe(6); // 5 + 1 = 6 for root
+        expect(result!.requestedAmount).toBe(10); // gap=1 rounds up to 1 batch of 10
+        expect(result!.projectedBalance).toBe(15); // 5 + 10 = 15 for root
         expect(result!.children).toHaveLength(1);
 
         // The child should have requestedAmount > 0 because root needs more production
@@ -165,7 +174,14 @@ describe("goalProjectorService", () => {
         ];
 
         const inputs = [
-          createMockInput("i1", "root", "input_item", 5, "PRODUCTION_LINE", "input_line"),
+          createMockInput(
+            "i1",
+            "root",
+            "input_item",
+            5,
+            "PRODUCTION_LINE",
+            "input_line"
+          ),
         ];
 
         const balances = createBalances({
@@ -196,7 +212,14 @@ describe("goalProjectorService", () => {
         ];
 
         const inputs = [
-          createMockInput("i1", "root", "input_item", 5, "PRODUCTION_LINE", "child"),
+          createMockInput(
+            "i1",
+            "root",
+            "input_item",
+            5,
+            "PRODUCTION_LINE",
+            "child"
+          ),
         ];
 
         const balances = createBalances({
@@ -227,7 +250,14 @@ describe("goalProjectorService", () => {
         ];
 
         const inputs = [
-          createMockInput("i1", "root", "input_item", 10, "PRODUCTION_LINE", "child"),
+          createMockInput(
+            "i1",
+            "root",
+            "input_item",
+            10,
+            "PRODUCTION_LINE",
+            "child"
+          ),
         ];
 
         const balances = createBalances({
@@ -261,8 +291,22 @@ describe("goalProjectorService", () => {
 
         // line_a -> line_b -> line_a (cycle)
         const inputs = [
-          createMockInput("i1", "line_a", "item_b", 5, "PRODUCTION_LINE", "line_b"),
-          createMockInput("i2", "line_b", "item_a", 5, "PRODUCTION_LINE", "line_a"),
+          createMockInput(
+            "i1",
+            "line_a",
+            "item_b",
+            5,
+            "PRODUCTION_LINE",
+            "line_b"
+          ),
+          createMockInput(
+            "i2",
+            "line_b",
+            "item_a",
+            5,
+            "PRODUCTION_LINE",
+            "line_a"
+          ),
         ];
 
         const balances = createBalances({
@@ -382,16 +426,23 @@ describe("goalProjectorService", () => {
       });
     });
 
-    describe("input ratio calculation", () => {
-      it("should calculate input demand based on output/input ratio", async () => {
+    describe("input batch calculation", () => {
+      it("should calculate input demand based on batch count", async () => {
         const lines = [
-          createMockLine("root", "output_item", 10), // produces 10/min base
-          createMockLine("child", "input_item", 20),
+          createMockLine("root", "output_item", 10), // produces 10/batch
+          createMockLine("child", "input_item", 20), // produces 20/batch
         ];
 
-        // Input requires 5/min for every 10/min output (ratio = 0.5)
+        // Input requires 5/batch for every batch of root output
         const inputs = [
-          createMockInput("i1", "root", "input_item", 5, "PRODUCTION_LINE", "child"),
+          createMockInput(
+            "i1",
+            "root",
+            "input_item",
+            5,
+            "PRODUCTION_LINE",
+            "child"
+          ),
         ];
 
         const balances = createBalances({
@@ -409,9 +460,10 @@ describe("goalProjectorService", () => {
         const result = await projectGoal("root", 20, context); // Want 20/min output
 
         expect(result).not.toBeNull();
-        // 20/min output needs (5/10) * 20 = 10/min input
+        // root: 20/min output → ceil(20/10)=2 batches → inputDemand=2*5=10
+        // child: needs 10, outputBaseRate=20 → ceil(10/20)=1 batch → addedOutput=20
         const childNode = result!.children[0];
-        expect(childNode.requestedAmount).toBe(10);
+        expect(childNode.requestedAmount).toBe(20);
       });
     });
 
@@ -423,7 +475,14 @@ describe("goalProjectorService", () => {
         ];
 
         const inputs = [
-          createMockInput("i1", "root", "item_a", 4, "PRODUCTION_LINE", "line_a"),
+          createMockInput(
+            "i1",
+            "root",
+            "item_a",
+            4,
+            "PRODUCTION_LINE",
+            "line_a"
+          ),
           createMockInput("i2", "root", "item_b", 2, "GLOBAL_SOURCE", "gs1"),
           createMockInput("i3", "root", "item_c", 1, null), // Unlinked
         ];
@@ -474,8 +533,22 @@ describe("goalProjectorService", () => {
 
         // Both line_a and line_b use shared as input
         const inputs = [
-          createMockInput("i1", "line_a", "shared_item", 5, "PRODUCTION_LINE", "shared"),
-          createMockInput("i2", "line_b", "shared_item", 5, "PRODUCTION_LINE", "shared"),
+          createMockInput(
+            "i1",
+            "line_a",
+            "shared_item",
+            5,
+            "PRODUCTION_LINE",
+            "shared"
+          ),
+          createMockInput(
+            "i2",
+            "line_b",
+            "shared_item",
+            5,
+            "PRODUCTION_LINE",
+            "shared"
+          ),
         ];
 
         const balances = createBalances({
@@ -492,19 +565,22 @@ describe("goalProjectorService", () => {
         });
 
         const context = createProjectorContext(lines, inputs, balances);
-        const simulationState: { demandedTotal: Record<string, number> } = { demandedTotal: {} };
+        const simulationState: { demandedTotal: Record<string, number> } = {
+          demandedTotal: {},
+        };
 
         // First projection
         await projectGoal("line_a", 10, context, simulationState);
 
-        // Shared line should have accumulated demand
-        expect(simulationState.demandedTotal["shared"]).toBe(5);
+        // line_a needs 5 input from shared, shared has outputBaseRate=10
+        // → ceil(5/10)=1 batch → addedOutput=10
+        expect(simulationState.demandedTotal["shared"]).toBe(10);
 
         // Second projection with same state
         await projectGoal("line_b", 10, context, simulationState);
 
-        // Demand should be cumulative
-        expect(simulationState.demandedTotal["shared"]).toBe(10);
+        // Same for line_b: another batch of 10 added → cumulative = 20
+        expect(simulationState.demandedTotal["shared"]).toBe(20);
       });
     });
   });
