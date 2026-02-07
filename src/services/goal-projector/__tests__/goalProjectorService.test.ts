@@ -461,9 +461,9 @@ describe("goalProjectorService", () => {
 
         expect(result).not.toBeNull();
         // root: 20/min output → ceil(20/10)=2 batches → inputDemand=2*5=10
-        // child: needs 10, outputBaseRate=20 → ceil(10/20)=1 batch → addedOutput=20
+        // child: requestedAmount = totalLineDemand (demanda sobre a linha) = 10
         const childNode = result!.children[0];
-        expect(childNode.requestedAmount).toBe(20);
+        expect(childNode.requestedAmount).toBe(10);
       });
     });
 
@@ -572,15 +572,15 @@ describe("goalProjectorService", () => {
         // First projection
         await projectGoal("line_a", 10, context, simulationState);
 
-        // line_a needs 5 input from shared, shared has outputBaseRate=10
-        // → ceil(5/10)=1 batch → addedOutput=10
-        expect(simulationState.demandedTotal["shared"]).toBe(10);
+        // line_a: ceil(10/10)=1 batch → inputDemandIncrease=1*5=5
+        // demandedTotal acumula a demanda (inputDemandIncrease), não a produção
+        expect(simulationState.demandedTotal["shared"]).toBe(5);
 
         // Second projection with same state
         await projectGoal("line_b", 10, context, simulationState);
 
-        // Same for line_b: another batch of 10 added → cumulative = 20
-        expect(simulationState.demandedTotal["shared"]).toBe(20);
+        // Same for line_b: another 5 added → cumulative = 10
+        expect(simulationState.demandedTotal["shared"]).toBe(10);
       });
     });
   });

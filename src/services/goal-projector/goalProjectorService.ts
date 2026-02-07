@@ -82,9 +82,7 @@ export async function projectGoal(
     line.outputBaseRate
   );
 
-  const previousLineDemand = simulationState.demandedTotal[line.id] || 0;
-  simulationState.demandedTotal[line.id] = previousLineDemand + addedOutput;
-  const totalLineDemand = simulationState.demandedTotal[line.id];
+  const totalLineDemand = simulationState.demandedTotal[line.id] || 0;
 
   const globalBalance = context.balances.productionLines[line.id];
   const currentGlobalBalance = globalBalance?.balance ?? 0;
@@ -117,7 +115,16 @@ export async function projectGoal(
         context.balances.productionLineRates[sourceLineId];
       const sourceCurrentProd = sourceLineStats?.totalOutputRate ?? 0;
 
-      const childTargetRate = sourceCurrentProd + inputDemandIncrease;
+      const sourceBalance =
+        context.balances.productionLines[sourceLineId]?.balance ?? 0;
+      const previousDemand = simulationState.demandedTotal[sourceLineId] || 0;
+      const availableBalance = sourceBalance - previousDemand;
+
+      const unmetByBalance = Math.max(0, inputDemandIncrease - availableBalance);
+      const childTargetRate = sourceCurrentProd + unmetByBalance;
+
+      simulationState.demandedTotal[sourceLineId] =
+        previousDemand + inputDemandIncrease;
 
       const childNode = await projectGoal(
         sourceLineId,
@@ -174,12 +181,13 @@ export async function projectGoal(
   }
 
   const factoryName = (await line.factory.fetch()).name;
+  const requestedAmount = isRootNode ? addedOutput : totalLineDemand;
 
   return {
     id: `${line.id}-${depth}`,
     itemId: line.outputItem,
     itemName: itemData.name,
-    requestedAmount: addedOutput,
+    requestedAmount,
     currentBalance: currentGlobalBalance,
     projectedBalance,
     sourceType: "PRODUCTION_LINE",
