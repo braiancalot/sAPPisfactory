@@ -13,7 +13,7 @@ module.exports = function (api) {
           root: ["."],
           alias: {
             "@ui": "./src/components/ui",
-            "@feature": "./src/components/features",
+            "@features": "./src/components/features",
             "@theme": "./src/theme",
             "@db": "./src/db",
             "@data": "./src/data",
