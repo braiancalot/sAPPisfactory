@@ -3,8 +3,11 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { colors } from "@theme/colors";
 import { typography } from "src/utils/typography";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -13,8 +16,9 @@ export default function TabLayout() {
           backgroundColor: colors["surface-1"],
           borderTopWidth: 0,
           borderTopColor: colors.border,
-          height: 60,
+          height: 60 + insets.bottom,
           paddingTop: 6,
+          paddingBottom: insets.bottom,
         },
         tabBarActiveTintColor: colors["primary"],
         tabBarInactiveTintColor: colors["text-secondary"],
