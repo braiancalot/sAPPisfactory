@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { LogBox } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
@@ -13,6 +14,11 @@ import { GlobalBalanceProvider } from "@hooks/useGlobalBalance";
 import "../global.css";
 import { colors } from "@theme/colors";
 import { seedCollectibles } from "@services/seedCollectibles";
+import { isDemoSeedEnabled, seedDemo } from "@services/seedDemo";
+
+if (isDemoSeedEnabled) {
+  LogBox.ignoreAllLogs(true);
+}
 
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({ duration: 400, fade: true });
@@ -35,6 +41,7 @@ export default function RootLayout() {
   useEffect(() => {
     async function prepareDatabase() {
       try {
+        await seedDemo();
         await seedCollectibles();
       } catch (error) {
         console.warn("Error seeding database:", error);
