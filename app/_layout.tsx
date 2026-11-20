@@ -76,7 +76,7 @@ export default function RootLayout() {
       <BottomSheetModalProvider>
         <KeyboardProvider>
           <GlobalBalanceProvider>
-            <StatusBar style="dark" backgroundColor={colors["surface-2"]} />
+            <StatusBar style="light" backgroundColor={colors["surface-2"]} />
 
             <Stack
               screenOptions={{
