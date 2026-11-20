@@ -6,6 +6,8 @@ I built it to solve a problem I had in my own save: dozens of production lines s
 
 It is a personal tool that I turned into a portfolio project. It was never published to a store and it is not meant for a general audience.
 
+> **Status:** complete. It did its job through one full playthrough and is no longer maintained. The repository is archived as a record of the work.
+
 > **Note:** the whole UI is in Portuguese (pt-BR), including the number format. The screenshots and the labels quoted below reflect that.
 
 ---
