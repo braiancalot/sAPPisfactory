@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { router, useNavigation } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -12,6 +12,10 @@ import ScreenContainer from "@ui/ScreenContainer";
 import FAB from "@ui/FAB";
 import Text from "@ui/Text";
 import ConfirmDialog from "@ui/ConfirmDialog";
+import ContextMenu from "@ui/ContextMenu";
+import { MenuItem } from "@ui/MenuSheet";
+
+import { exportDatabaseAsJson } from "@services/exportService";
 
 import FactoryList from "@features/factories/FactoryList";
 import AddFactorySheet from "@features/factories/AddFactorySheet";
@@ -27,19 +31,34 @@ export default function FactoriesScreen() {
   const addSheetRef = useRef<BottomSheetModal>(null);
   const confirmSheetRef = useRef<BottomSheetModal>(null);
 
+  const menuOptions: MenuItem[] = [
+    {
+      label: "Exportar dados",
+      icon: "file-upload",
+      onPress: () => {
+        exportDatabaseAsJson().catch((error) =>
+          console.error("Falha ao exportar dados:", error)
+        );
+      },
+    },
+  ];
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable
-          onPress={() => setIsReordering((prev) => !prev)}
-          className="px-md"
-        >
-          <MaterialIcons
-            name={isReordering ? "check" : "swap-vert"}
-            size={20}
-            color={isReordering ? colors.primary : colors["text-secondary"]}
-          />
-        </Pressable>
+        <View className="flex-row items-center pr-sm">
+          <Pressable
+            onPress={() => setIsReordering((prev) => !prev)}
+            className="px-sm"
+          >
+            <MaterialIcons
+              name={isReordering ? "check" : "swap-vert"}
+              size={20}
+              color={isReordering ? colors.primary : colors["text-secondary"]}
+            />
+          </Pressable>
+          {!isReordering && <ContextMenu options={menuOptions} />}
+        </View>
       ),
     });
   }, [navigation, isReordering]);
